@@ -57,6 +57,47 @@ footer{padding-top:30px;color:var(--muted);font-size:13px}
 .asset-link{display:inline-block;margin-top:10px;text-decoration:none;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px}.demo-cta{margin-top:24px;background:linear-gradient(135deg,#eef5ff,#fff);border:1px solid #bfd7ff;border-radius:16px;padding:20px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}.demo-cta strong{display:block;font-size:18px;margin-bottom:5px}.demo-cta p{margin:0;color:#4b5563;font-size:14px}.demo-btn{display:inline-block;text-decoration:none;background:#0c66e4;color:#fff;border-radius:9px;padding:11px 15px;font-weight:800;font-size:13px;white-space:nowrap}@media(max-width:760px){.demo-cta{grid-template-columns:1fr}}
 @media(max-width:760px){.diagram-grid{grid-template-columns:1fr}}
 
+
+/* Portfolio-wide presentation pass */
+:root{--portfolio-ink:#172b4d;--portfolio-ink2:#0f1f3d;--portfolio-muted:#5e6c84;--portfolio-line:#dfe1e6;--portfolio-blue:#0c66e4;--portfolio-blue-soft:#e9f2ff;--portfolio-bg:#fff}
+body{background:#fff;color:var(--portfolio-ink)}
+.sitebar{background:rgba(255,255,255,.94);border-bottom:1px solid rgba(9,30,66,.12);backdrop-filter:blur(14px)}
+.sitebar-inner{max-width:1160px;padding:14px 24px;align-items:center}
+.brand{color:var(--portfolio-ink2);font-weight:900}
+.nav{font-size:12px;color:var(--portfolio-muted);font-weight:700;align-items:center}
+.nav a{padding:6px 0}
+main{max-width:1160px;padding:72px 24px 100px}
+.hero{padding:54px 0 34px;border-bottom:0}
+.kicker{color:var(--portfolio-blue);font-size:11px;font-weight:900;letter-spacing:.11em}
+h1{font-size:54px;line-height:1.02;letter-spacing:-.045em;color:var(--portfolio-ink2);max-width:980px;margin-top:15px}
+h2{font-size:34px;line-height:1.08;letter-spacing:-.025em;color:var(--portfolio-ink2)}
+h3{color:var(--portfolio-ink2)}
+.lead{font-size:19px;line-height:1.6;color:#42526e;max-width:900px}
+.meta{gap:7px;margin-top:22px}.tag{background:#f7f8f9;border-color:var(--portfolio-line);color:#44546f;font-size:11px;font-weight:700;padding:5px 8px}
+section{padding:58px 0;border-bottom:1px solid var(--portfolio-line)}
+.card,.layer,.diagram,.blueprint,.diagram-card{border-color:var(--portfolio-line);border-radius:16px}
+.card{box-shadow:0 1px 0 rgba(9,30,66,.02);padding:20px}
+.callout{border-radius:14px}
+table{border-radius:12px;overflow:hidden;border-collapse:separate;border-spacing:0;border:1px solid var(--portfolio-line)}
+th,td{border:0;border-bottom:1px solid var(--portfolio-line);border-right:1px solid var(--portfolio-line)}
+tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}th{background:#f7f8f9;color:#44546f}
+.demo-cta{background:linear-gradient(135deg,#e9f2ff,#fff);border-color:#b3d4ff;border-radius:18px;padding:22px;margin-top:28px}
+.demo-btn{background:var(--portfolio-blue);border-radius:8px;box-shadow:0 7px 18px rgba(12,102,228,.18)}
+.demo-btn:hover{background:#0055cc}
+.asset-link,.btn{border-color:var(--portfolio-line);border-radius:8px}
+.project-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 16px;padding:12px;background:#f7f8f9;border:1px solid var(--portfolio-line);border-radius:17px}
+.project-strip .project-item{background:#fff;border:1px solid var(--portfolio-line);border-radius:12px;padding:13px 14px;min-height:72px}
+.project-strip b{display:block;font-size:10px;color:var(--portfolio-blue);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.project-strip span{font-size:12px;color:#44546f;font-weight:700}
+.project-actions{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 34px}
+.project-actions a{display:inline-flex;align-items:center;text-decoration:none;border-radius:8px;padding:9px 12px;font-size:11px;font-weight:850}
+.project-actions .launch{background:var(--portfolio-blue);color:#fff;border:1px solid var(--portfolio-blue)}
+.project-actions .back{background:#fff;border:1px solid var(--portfolio-line);color:#44546f}
+.portfolio-kicker{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--portfolio-blue);font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.portfolio-kicker:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--portfolio-blue)}
+footer{border-top:0;padding-top:34px;color:#7a869a}
+@media(max-width:760px){main{padding:46px 18px 76px}.sitebar-inner{padding:12px 18px}.nav{gap:10px}h1{font-size:39px}.lead{font-size:17px}h2{font-size:29px}.project-strip{grid-template-columns:1fr}.project-actions{margin-bottom:20px}section{padding:44px 0}}
+
 </style>
 </head>
 <body>
@@ -66,7 +107,7 @@ footer{padding-top:30px;color:var(--muted);font-size:13px}
 </div></header>
 <main>
 <div class="hero">
-<div class="kicker">Case Study 02 · AI Transformation</div>
+<div class="kicker">CASE STUDY 02 · INTERACTIVE</div>
 <h1>AI-Assisted Prospecting Operations System</h1>
 <p class="lead">Redesigning a fragmented relationship workflow into a governed operating layer that maintains relationship state, identifies the next best actions, allocates limited human capacity, and uses AI for interpretation while keeping external communication human-controlled.</p>
 <div class="meta"><span class="tag">Process Intelligence</span><span class="tag">Workflow Orchestration</span><span class="tag">State Management</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Governance</span><span class="tag">Requirements & UAT</span></div>
@@ -76,6 +117,17 @@ footer{padding-top:30px;color:var(--muted);font-size:13px}
   <a class="demo-btn" href="demo/index.html">Launch live demo →</a>
 </div>
 
+<div class="portfolio-kicker">Architecture · Governance · Working Prototype</div>
+<div class="project-strip">
+  <div class="project-item"><b>Relationship Memory</b><span>State + event model</span></div>
+  <div class="project-item"><b>Decision Layer</b><span>Eligibility · AI · capacity</span></div>
+  <div class="project-item"><b>Live Prototype</b><span>Action reconciliation console</span></div>
+</div>
+<div class="project-actions">
+  <a class="launch" href="demo/index.html">Launch interactive demo →</a>
+  <a class="back" href="../../index.html">Portfolio home</a>
+  <a class="back" href="../warehouse-flow-stock-accuracy/index.html">Next: Warehouse Decision Support →</a>
+</div>
 <section><h2>Transformation objective</h2>
 <p>Build a relationship-operations layer that converts fragmented network and interaction data into trustworthy state, governed eligibility, transparent priority and a continuously reconciled Action Queue.</p>
 <div class="grid"><div class="card"><strong>Start</strong>New relationship data arrives from professional-network exports, message history, invitation records, research inputs or manual records.</div><div class="card"><strong>End</strong>A human operator receives a current, evidence-backed and capacity-controlled next action with the correct person, relationship context, rationale and audit trail.</div></div>
