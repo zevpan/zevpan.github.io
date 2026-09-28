@@ -3,25 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Thread — MVP 0</title>
+<title>Thread — Interactive Team Workspace Demo</title>
+<meta name="description" content="Interactive synthetic demo of Thread, a team workspace for relationship-driven work.">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="demo-strip"><strong>Interactive portfolio demo</strong><span>Synthetic data · real in-app state transitions</span><a href="https://zevpan.github.io/products/thread/">About Thread</a></div>
 <div class="shell">
   <aside class="sidebar">
     <div class="brand"><div class="mark">T</div><div><strong>Thread</strong><small>Team Workspace</small></div></div>
+
+    <div class="nav-label">Workspace</div>
     <nav>
-      <button class="nav active" data-view="home">Home</button>
-      <button class="nav" data-view="work">My Work</button>
-      <button class="nav" data-view="people">People</button>
-      <button class="nav" data-view="signals">Signals</button>
-      <button class="nav" data-view="reconciliation">Reconciliation</button>
-      <button class="nav" data-view="audit">Audit</button>
+      <button class="nav active" data-view="home"><span class="nav-icon">⌂</span><span>Today</span></button>
+      <button class="nav" data-view="work"><span class="nav-icon">✓</span><span>My Work</span></button>
+      <button class="nav" data-view="people"><span class="nav-icon">◎</span><span>People</span></button>
     </nav>
+
+    <div class="nav-label">Intelligence</div>
+    <nav>
+      <button class="nav" data-view="signals"><span class="nav-icon">⌁</span><span>Signals</span></button>
+      <button class="nav" data-view="reconciliation"><span class="nav-icon">↻</span><span>Reconciliation</span></button>
+      <button class="nav" data-view="audit"><span class="nav-icon">≡</span><span>Audit</span></button>
+    </nav>
+
+    <div class="sidebar-card">
+      <b>Demo path</b>
+      <p>Open Maya Chen and simulate a new inbound reply.</p>
+      <span>Watch Thread supersede the stale follow-up.</span>
+    </div>
+
     <div class="bottom"><span>SYNTHETIC DEMO DATA</span><button id="reset">Reset demo</button></div>
   </aside>
-  <main>
-    <header><div><small>NORTHSTAR CONSULTING</small><h1 id="title">Today</h1></div><div id="capacity" class="pill"></div></header>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb"><span class="workspace-dot"></span>Northstar Consulting <span>/</span> Thread</div>
+      <div class="top-actions"><div class="search">⌕ <span>Search workspace</span><kbd>/</kbd></div><a class="top-link" href="https://zevpan.github.io/products/thread/">Product page ↗</a><div class="user">Z</div></div>
+    </div>
+
+    <header class="page-head">
+      <div><div class="eyebrow">TEAM WORKSPACE</div><h1 id="title">Today</h1><p id="subtitle">Shared context, prioritized for human attention.</p></div>
+      <div id="capacity" class="capacity"></div>
+    </header>
+
     <section id="view"></section>
   </main>
 </div>
