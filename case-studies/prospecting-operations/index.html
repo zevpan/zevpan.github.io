@@ -54,7 +54,7 @@ footer{padding-top:30px;color:var(--muted);font-size:13px}
 .diagram-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
 .diagram-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
 .diagram-card img{display:block;width:100%;height:auto}
-.asset-link{display:inline-block;margin-top:10px;text-decoration:none;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px}
+.asset-link{display:inline-block;margin-top:10px;text-decoration:none;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px}.demo-cta{margin-top:24px;background:linear-gradient(135deg,#eef5ff,#fff);border:1px solid #bfd7ff;border-radius:16px;padding:20px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}.demo-cta strong{display:block;font-size:18px;margin-bottom:5px}.demo-cta p{margin:0;color:#4b5563;font-size:14px}.demo-btn{display:inline-block;text-decoration:none;background:#0c66e4;color:#fff;border-radius:9px;padding:11px 15px;font-weight:800;font-size:13px;white-space:nowrap}@media(max-width:760px){.demo-cta{grid-template-columns:1fr}}
 @media(max-width:760px){.diagram-grid{grid-template-columns:1fr}}
 
 </style>
@@ -62,7 +62,7 @@ footer{padding-top:30px;color:var(--muted);font-size:13px}
 <body>
 <header class="sitebar"><div class="sitebar-inner">
 <a class="brand" href="../../index.html">Zev Pan</a>
-<nav class="nav"><a href="../../index.html">All Case Studies</a><a href="../travel-logistics-transformation/index.html">Travel Logistics</a></nav>
+<nav class="nav"><a href="../../index.html">All Case Studies</a><a href="demo/index.html">Launch interactive demo</a><a href="../travel-logistics-transformation/index.html">Travel Logistics</a></nav>
 </div></header>
 <main>
 <div class="hero">
@@ -70,6 +70,10 @@ footer{padding-top:30px;color:var(--muted);font-size:13px}
 <h1>AI-Assisted Prospecting Operations System</h1>
 <p class="lead">Redesigning a fragmented relationship workflow into a governed operating layer that maintains relationship state, identifies the next best actions, allocates limited human capacity, and uses AI for interpretation while keeping external communication human-controlled.</p>
 <div class="meta"><span class="tag">Process Intelligence</span><span class="tag">Workflow Orchestration</span><span class="tag">State Management</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Governance</span><span class="tag">Requirements & UAT</span></div>
+</div>
+<div class="demo-cta">
+  <div><strong>Interactive Relationship Operations Console</strong><p>Use synthetic relationship data to test state, eligibility, capacity allocation, identity reconciliation and stale-action supersession. The featured walkthrough shows a new inbound reply invalidating an older follow-up.</p></div>
+  <a class="demo-btn" href="demo/index.html">Launch live demo →</a>
 </div>
 
 <section><h2>Transformation objective</h2>
@@ -92,13 +96,13 @@ footer{padding-top:30px;color:var(--muted);font-size:13px}
 <div class="callout" style="margin-top:18px"><strong>Diagnosis</strong> The core problem is not message generation. It is maintaining a trustworthy relationship state and continuously deciding which human action is justified under limited capacity.</div></section>
 
 <section><h2>Target operating model</h2>
-<div class="flow"><span class="step">Ingest</span><span class="arrow">→</span><span class="step">Resolve identity</span><span class="arrow">→</span><span class="step">Update canonical state</span><span class="arrow">→</span><span class="step">Eligibility gate</span><span class="arrow">→</span><span class="step">AI interpretation</span><span class="arrow">→</span><span class="step">Priority + capacity</span><span class="arrow">→</span><span class="step">Action Queue</span><span class="arrow">→</span><span class="step">Human decision</span><span class="arrow">→</span><span class="step">Reconcile</span></div>
+<div class="flow"><span class="step">Ingest</span><span class="arrow">→</span><span class="step">Resolve identity</span><span class="arrow">→</span><span class="step">Update relationship memory</span><span class="arrow">→</span><span class="step">Eligibility gate</span><span class="arrow">→</span><span class="step">AI interpretation</span><span class="arrow">→</span><span class="step">Priority + capacity</span><span class="arrow">→</span><span class="step">Action Queue</span><span class="arrow">→</span><span class="step">Human decision</span><span class="arrow">→</span><span class="step">Reconcile</span></div>
 <div class="grid3" style="margin-top:18px">
-<div class="card"><strong>Canonical relationship data</strong>Person, Account, Interaction, Network Event, Relationship State, Action, Override and Audit Event.</div>
+<div class="card"><strong>Relationship Memory</strong>Persistent canonical context across Person, Account, Interaction, Network Event, Relationship State, Action, Override and Audit Event.</div>
 <div class="card"><strong>State & eligibility engine</strong>Deterministic control of network state, DNC, cooldowns, reconnect timing, open-action conflict and policy gates.</div>
 <div class="card"><strong>AI relationship analysis</strong>Interpret message meaning, reconnect intent, opportunity signals, nurture / closure and relationship history.</div>
 <div class="card"><strong>Capacity-aware prioritization</strong>Treat the weekly ceiling as a resource constraint with protected capacity for emerging work.</div>
-<div class="card"><strong>Live Action Queue</strong>Actions can be reviewed, completed, dismissed, snoozed, blocked, expired or superseded.</div>
+<div class="card"><strong>Relationship Operations Workspace</strong>The human-facing decision surface combines the live Action Queue, relationship detail, interaction timeline, AI evidence, reconciliation and capacity context.</div>
 <div class="card"><strong>Reconciliation loop</strong>Every meaningful new event can recompute state and invalidate an older recommendation.</div>
 </div></section>
 
@@ -122,6 +126,15 @@ footer{padding-top:30px;color:var(--muted);font-size:13px}
 <p>Here is a one-page summary of current state, transformation layers, target state, governance controls and migration roadmap.</p>
 <div class="blueprint"><img src="../../assets/prospecting-operations-blueprint.svg" alt="Executive AI Transformation Blueprint for the Prospecting Operations System"></div>
 <a class="asset-link" href="../../assets/prospecting-operations-blueprint.svg">Open executive blueprint →</a>
+</section>
+
+<section><h2>Interactive prototype</h2>
+<div class="callout good"><strong>The relationship-operations prototype is now live.</strong><p>The demo implements the core operating logic with synthetic data and real browser-state transitions: state → eligibility → priority → capacity → action → reconciliation.</p><a class="asset-link" href="demo/index.html">Launch interactive prototype →</a></div>
+<div class="grid3" style="margin-top:16px">
+  <div class="card"><strong>Featured walkthrough</strong>Open Maya Chen and ingest a new inbound reply. The prior follow-up is visibly moved to <code>SUPERSEDED</code> and replaced with a context-appropriate review action.</div>
+  <div class="card"><strong>Fail-closed controls</strong>Explore Do Not Contact and unresolved identity cases to see deterministic eligibility block action generation.</div>
+  <div class="card"><strong>Capacity allocation</strong>The capacity view protects room for inbound replies and new accepts instead of filling the weekly ceiling with generic follow-up.</div>
+</div>
 </section>
 
 <section><h2>Human vs Automation vs AI</h2>
