@@ -3,102 +3,117 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Zev - AI Transformation Case Studies & Product Builds</title>
-<meta name="description" content="AI transformation case studies and product builds covering process redesign, operating models, automation, applied AI, governance and implementation.">
+<title>Zev Pan — AI Transformation Case Studies & Product Builds</title>
+<meta name="description" content="AI-enabled business transformation case studies and working product prototypes across travel logistics, relationship operations, warehouse decision support and team workspace design.">
 <style>
-:root{--bg:#f7f7f5;--panel:#fff;--text:#171717;--muted:#666;--line:#deded8;--soft:#efefeb;--blue:#edf4ff}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
-a{color:inherit}
-.sitebar{border-bottom:1px solid var(--line);background:rgba(247,247,245,.94);position:sticky;top:0;z-index:10;backdrop-filter:blur(8px)}
-.sitebar-inner{max-width:1120px;margin:0 auto;padding:13px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.brand{text-decoration:none;font-weight:800}
-.nav{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-.nav a{text-decoration:none}.nav a:hover{color:var(--text)}
-main{max-width:1120px;margin:0 auto;padding:68px 24px 96px}
-.hero{padding:30px 0 44px;border-bottom:1px solid var(--line)}
-.kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
-h1{font-size:52px;line-height:1.05;margin:12px 0 18px;max-width:900px}
-.lead{font-size:20px;color:#383838;max-width:820px}
-.framework{margin-top:26px;padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;font-weight:700}
-section{padding:42px 0}
-h2{font-size:28px;margin:0 0 18px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.card{position:relative;display:flex;flex-direction:column;min-height:390px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;text-decoration:none;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
-.card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(16,24,40,.08);border-color:#bfc5cc}
-.num{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
-.card h3{font-size:27px;line-height:1.16;margin:13px 0 10px}
-.card p{color:#4b5563}
-.tags{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0}
-.tag{font-size:12px;background:var(--soft);border:1px solid var(--line);padding:5px 8px;border-radius:999px}
-.card .summary{margin-bottom:18px}
-.highlights{display:grid;gap:7px;margin-top:4px;font-size:13px;color:#3f4650}
-.highlights span:before{content:"→";margin-right:8px;color:#7b8490}
-.cta{margin-top:auto;padding-top:22px;font-weight:800;font-size:14px}
-.note{background:var(--blue);border:1px solid #cbdcf4;border-radius:15px;padding:19px}.product-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}.product-card{min-height:330px;background:linear-gradient(135deg,#fff 0%,#eef5ff 100%);border-color:#cbdcf4}.product-card h3{font-size:34px}.product-label{color:#0c66e4}.product-card .framework-line{font-weight:800;color:#233a5d;margin:4px 0 12px}
-footer{border-top:1px solid var(--line);padding-top:28px;color:var(--muted);font-size:13px}
-@media(max-width:980px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:760px){h1{font-size:38px}.grid{grid-template-columns:1fr}.sitebar-inner{align-items:flex-start}.nav{justify-content:flex-end}}
+:root{
+  --ink:#172b4d;--ink2:#0f1f3d;--muted:#5e6c84;--line:#dfe1e6;--bg:#f7f8f9;--white:#fff;
+  --blue:#0c66e4;--blue-dark:#0055cc;--blue-soft:#e9f2ff;--green:#216e4e;--green-soft:#dcfff1;
+  --purple:#6554c0;--purple-soft:#f3f0ff;--amber:#974f0c;--amber-soft:#fff7d6;
+  --shadow:0 20px 50px rgba(9,30,66,.10)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;line-height:1.55}a{color:inherit}
+.sitebar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(9,30,66,.12)}
+.navwrap{max-width:1220px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:26px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;font-size:17px}.brandmark{width:32px;height:32px;border-radius:10px;background:var(--ink2);color:#fff;display:grid;place-items:center;font-size:12px}.navlinks{display:flex;gap:22px;font-size:12px;color:var(--muted);font-weight:700}.navlinks a{text-decoration:none}.navlinks a:hover{color:var(--ink)}.nav-actions{margin-left:auto;display:flex;gap:10px}.pillbtn{display:inline-flex;align-items:center;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:11px;font-weight:850;background:#fff}.pillbtn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.wrap{max-width:1220px;margin:0 auto;padding:0 24px}
+.hero{padding:92px 0 56px;display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--blue);font-size:11px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}.eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue)}.hero h1{font-size:68px;line-height:.98;letter-spacing:-.055em;margin:18px 0 22px;color:var(--ink2)}.hero h1 em{font-style:normal;color:var(--blue)}.lead{font-size:20px;line-height:1.55;color:#42526e;max-width:760px;margin:0}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.hero-note{margin-top:14px;font-size:10px;color:#8993a4}.primary-btn,.secondary-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;padding:11px 15px;border-radius:8px;font-size:12px;font-weight:900}.primary-btn{background:var(--blue);color:#fff;border:1px solid var(--blue)}.primary-btn:hover{background:var(--blue-dark)}.secondary-btn{background:#fff;border:1px solid var(--line)}
+.hero-visual{background:var(--ink2);border-radius:22px;padding:13px;box-shadow:var(--shadow);transform:perspective(1400px) rotateY(-1.5deg) rotateX(1deg)}.window-top{height:31px;display:flex;align-items:center;gap:6px;padding:0 6px}.dot{width:8px;height:8px;border-radius:50%;background:#526581}.address{margin-left:6px;height:19px;background:#172b4d;border-radius:6px;flex:1;max-width:330px;color:#8ca2bd;font-size:8px;display:flex;align-items:center;padding:0 9px}.portfolio-ui{background:#f7f8f9;border-radius:11px;padding:20px;min-height:480px}.ui-label{font-size:8px;color:#8993a4;font-weight:900;letter-spacing:.1em}.ui-title{font-size:22px;font-weight:900;color:var(--ink2);margin:4px 0 13px}.ui-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.ui-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;min-height:118px}.ui-num{font-size:8px;color:var(--blue);font-weight:900}.ui-card b{display:block;font-size:10px;margin:6px 0 5px}.ui-card p{font-size:8px;color:#6b778c;margin:0;line-height:1.4}.ui-footer{margin-top:9px;display:flex;gap:7px}.chip{font-size:7px;padding:4px 6px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-weight:850}
+.proof{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0}.proof-row{display:flex;justify-content:center;align-items:center;gap:32px;flex-wrap:wrap;color:#5e6c84;font-size:12px;font-weight:850}.proof-row span:first-child{color:#8993a4;font-weight:650}
+section{padding:86px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:28px}.section-head h2{font-size:42px;line-height:1.05;letter-spacing:-.035em;margin:8px 0 0;color:var(--ink2)}.section-head p{max-width:560px;color:#5e6c84;font-size:15px;margin:0}
+.showcase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.showcase{position:relative;border:1px solid var(--line);border-radius:20px;background:#fff;overflow:hidden;transition:.18s;display:flex;flex-direction:column}.showcase:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(9,30,66,.09)}.preview{height:205px;padding:18px;background:#f4f7fb;position:relative;overflow:hidden}.preview.blue{background:linear-gradient(135deg,#e9f2ff,#f8fbff)}.preview.purple{background:linear-gradient(135deg,#f3f0ff,#fbfaff)}.preview.green{background:linear-gradient(135deg,#ebfff5,#fbfffd)}.preview .mini-shell{height:100%;background:#fff;border:1px solid rgba(9,30,66,.12);border-radius:12px;padding:11px;box-shadow:0 8px 22px rgba(9,30,66,.06)}.mini-title{font-size:8px;color:#8993a4;font-weight:900;letter-spacing:.08em}.mini-metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}.mini-metric{border:1px solid var(--line);border-radius:7px;padding:7px}.mini-metric b{font-size:13px}.mini-metric span{display:block;font-size:6px;color:#8993a4}.mini-list{display:grid;gap:5px}.mini-list div{height:22px;border:1px solid var(--line);border-radius:6px;display:grid;grid-template-columns:52px 1fr 45px;align-items:center;gap:5px;padding:0 6px;font-size:6px;color:#44546f}.mini-list strong{color:var(--ink2)}.mini-list i{font-style:normal;color:var(--blue);font-weight:900;text-align:right}.showcase-body{padding:22px;display:flex;flex-direction:column;flex:1}.case-label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8993a4}.live{display:inline-flex;align-items:center;gap:5px;color:var(--green);background:var(--green-soft);padding:4px 7px;border-radius:999px;letter-spacing:0}.live:before{content:"";width:6px;height:6px;border-radius:50%;background:#36b37e}.showcase h3{font-size:24px;line-height:1.12;margin:11px 0 10px;color:var(--ink2)}.showcase p{font-size:13px;color:#5e6c84;margin:0 0 15px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}.tag{font-size:9px;background:#f1f2f4;border:1px solid var(--line);border-radius:999px;padding:5px 7px;color:#44546f;font-weight:750}.artifacts{display:grid;gap:6px;font-size:10px;color:#44546f;margin-bottom:18px}.artifacts span:before{content:"✓";color:var(--blue);font-weight:900;margin-right:7px}.card-actions{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}.card-actions a{text-align:center;text-decoration:none;border-radius:8px;padding:9px 8px;font-size:10px;font-weight:900}.case-link{border:1px solid var(--line);background:#fff}.demo-link{background:var(--blue);border:1px solid var(--blue);color:#fff}
+.thread-spotlight{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;background:linear-gradient(135deg,#0f1f3d,#172b4d);border-radius:24px;padding:46px;color:#fff;overflow:hidden}.thread-spotlight .eyebrow{color:#85b8ff}.thread-spotlight h2{font-size:46px;line-height:1.05;letter-spacing:-.04em;margin:13px 0 14px}.thread-spotlight p{color:#c2cee0;font-size:16px;max-width:610px}.thread-actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}.thread-actions .secondary-btn{color:#fff;background:#172b4d;border-color:#344563}.thread-ui{background:#fff;border-radius:16px;padding:17px;color:var(--ink);box-shadow:0 20px 45px rgba(0,0,0,.25)}.thread-top{display:flex;justify-content:space-between}.thread-top b{font-size:17px}.thread-top span{font-size:8px;background:var(--blue-soft);color:var(--blue);font-weight:900;border-radius:999px;padding:4px 7px}.thread-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.thread-metrics div{border:1px solid var(--line);border-radius:8px;padding:8px}.thread-metrics b{font-size:16px}.thread-metrics small{display:block;font-size:6px;color:#8993a4}.thread-row{display:grid;grid-template-columns:25px 1fr 70px;gap:7px;align-items:center;padding:8px 0;border-top:1px solid #ebecf0}.avatar{width:24px;height:24px;border-radius:7px;background:#deebff;color:#0747a6;display:grid;place-items:center;font-size:7px;font-weight:900}.thread-row strong{font-size:8px}.thread-row small{display:block;font-size:6px;color:#8993a4}.thread-row i{font-style:normal;font-size:7px;color:var(--blue);font-weight:900}
+.method{background:#f7f8f9;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.method-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:28px}.method-step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}.method-step b{display:block;font-size:10px;color:var(--blue);margin-bottom:5px}.method-step span{font-size:10px;color:#5e6c84}.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.principle{border:1px solid var(--line);border-radius:16px;padding:20px}.principle b{font-size:16px}.principle p{font-size:12px;color:#5e6c84;margin:7px 0 0}
+footer{border-top:1px solid var(--line);padding:34px 0 50px;color:#6b778c;font-size:11px}.footer-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media(max-width:980px){.hero{grid-template-columns:1fr}.showcase-grid{grid-template-columns:1fr 1fr}.thread-spotlight{grid-template-columns:1fr}.method-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.navlinks{display:none}.navwrap{padding:12px 16px}.wrap{padding:0 18px}.hero{padding:64px 0 42px}.hero h1{font-size:46px}.lead{font-size:18px}.hero-visual{display:none}.showcase-grid{grid-template-columns:1fr}.section-head{display:block}.section-head h2{font-size:36px}.section-head p{margin-top:12px}.thread-spotlight{padding:28px}.thread-spotlight h2{font-size:36px}.method-grid{grid-template-columns:1fr 1fr}.principles{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header class="sitebar"><div class="sitebar-inner">
-<a class="brand" href="./index.html">Zev Pan</a>
-<nav class="nav"><a href="#case-studies">Case Studies</a><a href="#product-builds">Product Builds</a><a href="case-studies/travel-logistics-transformation/index.html">Travel Logistics</a><a href="case-studies/prospecting-operations/index.html">Prospecting Operations</a><a href="case-studies/warehouse-flow-stock-accuracy/index.html">Warehouse</a><a href="products/thread/index.html">Thread</a></nav>
-</div></header>
+<header class="sitebar">
+  <div class="navwrap">
+    <a class="brand" href="./index.html"><span class="brandmark">ZP</span>Zev Pan</a>
+    <nav class="navlinks"><a href="#case-studies">Case Studies</a><a href="#thread">Product Build</a><a href="#approach">Approach</a></nav>
+    <div class="nav-actions"><a class="pillbtn" href="#case-studies">View work</a><a class="pillbtn primary" href="products/thread/demo/index.html">Launch Thread</a></div>
+  </div>
+</header>
+
 <main>
-<div class="hero">
-<div class="kicker">AI Transformation Case Studies + Product Builds</div>
-<h1>Business problems redesigned into governed operating systems.</h1>
-<p class="lead">Case studies in process diagnosis and transformation, plus working product builds that turn those operating ideas into usable software.</p>
-<div class="framework">Business problem → As-Is → diagnosis → target operating model → Human / Automation / AI → requirements → governance → implementation → value</div>
-</div>
-<section id="case-studies">
-<h2>Case Studies</h2>
-<div class="grid">
-<a class="card" href="case-studies/travel-logistics-transformation/index.html">
-<div class="num">Case Study 01 · Interactive Demo</div>
-<h3>Global Travel Logistics Operations Transformation</h3>
-<p class="summary">Redesigning fragmented, manually coordinated fulfilment into a unified booking and operations model with structured dispatch, event-driven execution and exception-led operations.</p>
-<div class="tags"><span class="tag">Process Redesign</span><span class="tag">OMS / TMS</span><span class="tag">Integration</span><span class="tag">Applied AI</span></div>
-<div class="highlights"><span>As-Is process and root-cause diagnosis</span><span>Target operating model and architecture</span><span>Requirements, UAT and governance</span><span>Live Operations Control Tower demo</span></div>
-<div class="cta">Open case study + interactive demo →</div>
-</a>
-<a class="card" href="case-studies/prospecting-operations/index.html">
-<div class="num">Case Study 02 · Interactive Demo</div>
-<h3>AI-Assisted Prospecting Operations System</h3>
-<p class="summary">Turning fragmented relationship history into a governed decision layer that maintains relationship state, prioritizes limited human capacity and continuously removes stale actions.</p>
-<div class="tags"><span class="tag">Process Intelligence</span><span class="tag">State Management</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Governance</span></div>
-<div class="highlights"><span>Relationship Memory and event model</span><span>Policy-driven eligibility before AI prioritization</span><span>Capacity-aware Action Queue</span><span>Live reconciliation and stale-action demo</span></div>
-<div class="cta">Open case study + interactive demo →</div>
-</a>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">AI-enabled Business Transformation · Process Intelligence · Product Prototyping</div>
+        <h1>I redesign messy work into <em>governed operating systems.</em></h1>
+        <p class="lead">A portfolio of real transformation work and working prototypes across travel logistics, relationship operations and warehouse decision support — plus a standalone Team Workspace product build.</p>
+        <div class="hero-actions"><a class="primary-btn" href="#case-studies">Explore case studies →</a><a class="secondary-btn" href="#thread">See product build</a></div>
+        <div class="hero-note">Process diagnosis · target operating models · deterministic automation · applied AI · governance · interactive demos</div>
+      </div>
+      <div class="hero-visual">
+        <div class="window-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="address">zevpan / transformation portfolio</div></div>
+        <div class="portfolio-ui">
+          <div class="ui-label">INTERACTIVE BODY OF WORK</div>
+          <div class="ui-title">From operating problem to usable system.</div>
+          <div class="ui-grid">
+            <div class="ui-card"><div class="ui-num">01 · TRAVEL LOGISTICS</div><b>Operations Control Tower</b><p>Canonical orders, validation, structured dispatch, exception-led operations.</p><div class="ui-footer"><span class="chip">LIVE DEMO</span><span class="chip">ARCHITECTURE</span></div></div>
+            <div class="ui-card"><div class="ui-num">02 · RELATIONSHIP OPS</div><b>Action & Reconciliation Console</b><p>State, eligibility, capacity, AI analysis and stale-action control.</p><div class="ui-footer"><span class="chip">LIVE DEMO</span><span class="chip">GOVERNANCE</span></div></div>
+            <div class="ui-card"><div class="ui-num">03 · WAREHOUSE</div><b>Evidence Decision Workspace</b><p>High Runner findings, QC checks, human review, outcome learning.</p><div class="ui-footer"><span class="chip">LIVE DEMO</span><span class="chip">PROCESS</span></div></div>
+            <div class="ui-card"><div class="ui-num">04 · PRODUCT BUILD</div><b>Thread Team Workspace</b><p>Relationship Memory, Signals, Decision Intelligence and human action.</p><div class="ui-footer"><span class="chip">WORKING MVP</span><span class="chip">PRODUCT</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
-<a class="card" href="case-studies/warehouse-flow-stock-accuracy/index.html">
-<div class="num">Case Study 03 · Interactive Demo</div>
-<h3>Warehouse Flow & Stock Accuracy Decision Support</h3>
-<p class="summary">Connecting recorded warehouse data with physical operating context to narrow High Runner and QC review cases, support human decisions and track measurable outcomes.</p>
-<div class="tags"><span class="tag">Process Analysis</span><span class="tag">Warehouse Operations</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Support</span></div>
-<div class="highlights"><span>Enterprise-style AS-IS process architecture</span><span>46,117 pick activities and 1,743 qualifying SKUs</span><span>100 High Runners narrowed to 5 findings</span><span>Live Evidence → Decide → Measure → Learn demo</span></div>
-<div class="cta">Open case study + interactive demo →</div>
-</a>
-</div>
-</section>
+  <div class="proof"><div class="wrap"><div class="proof-row"><span>Every featured project includes</span><strong>Problem diagnosis</strong><strong>Process architecture</strong><strong>Human / Automation / AI boundary</strong><strong>Governance</strong><strong>Interactive prototype</strong></div></div></div>
 
-<section id="product-builds">
-<h2>Product Builds</h2>
-<div class="product-grid">
-<a class="card product-card" href="products/thread/index.html">
-<div class="num product-label">Product Build 04 · Live Interactive Demo</div>
-<h3>Thread</h3>
-<div class="framework-line">Memory → Intelligence → Workspace → Human Action</div>
-<p class="summary"><strong>A Team Workspace for relationship-driven work.</strong> Thread maintains shared context, detects meaningful changes, prioritizes limited human attention and keeps humans in control of action.</p>
-<div class="tags"><span class="tag">Team Workspace</span><span class="tag">Relationship Memory</span><span class="tag">Decision Intelligence</span><span class="tag">Human-in-the-Loop AI</span></div>
-<div class="highlights"><span>Functional interactive demo with synthetic data</span><span>Real state transitions and stale-action supersession</span><span>Identity reconciliation and audit trail</span><span>Designed for a $0 / low-cost MVP path</span></div>
-<div class="cta">Explore Thread + launch demo →</div>
-</a>
-</div>
-</section>
-<section><div class="note"><strong>Case-study approach</strong><p>These cases focus on the transformation decisions behind AI-enabled workflows: how the process is diagnosed, what should remain human, what should be deterministic, where AI adds genuine leverage, and how the resulting system is governed.</p></div></section>
-<footer>Case studies are anonymized where appropriate. Product-build demo data and scenarios are synthetic unless explicitly stated otherwise.</footer>
+  <div class="wrap">
+    <section id="case-studies">
+      <div class="section-head">
+        <div><div class="eyebrow">Case Studies 01–03</div><h2>Transformation work you can actually click into.</h2></div>
+        <p>Each case moves from the operating problem through diagnosis and target design into a working interactive prototype. The demos use synthetic public-safe data; the underlying transformation work is grounded in real operating contexts.</p>
+      </div>
+
+      <div class="showcase-grid">
+        <article class="showcase">
+          <div class="preview blue"><div class="mini-shell"><div class="mini-title">OPERATIONS CONTROL TOWER</div><div class="mini-metric-row"><div class="mini-metric"><b>6</b><span>DEMO ORDERS</span></div><div class="mini-metric"><b>2</b><span>AT RISK</span></div><div class="mini-metric"><b>1</b><span>EXCEPTION</span></div></div><div class="mini-list"><div><strong>TRV-1048</strong><span>Osaka · Airport → Hotel</span><i>READY</i></div><div><strong>TRV-1051</strong><span>Seoul · Supplier pending</span><i>RISK</i></div><div><strong>TRV-1054</strong><span>Missing itinerary data</span><i>BLOCKED</i></div></div></div></div>
+          <div class="showcase-body"><div class="case-label"><span>Case Study 01</span><span class="live">Interactive</span></div><h3>Global Travel Logistics Operations Transformation</h3><p>From fragmented, manually coordinated fulfilment to a unified operating model with structured validation, supplier routing, event-driven execution and exception-led operations.</p><div class="tags"><span class="tag">Process Redesign</span><span class="tag">OMS / TMS</span><span class="tag">Applied AI</span></div><div class="artifacts"><span>AS-IS + TO-BE process architecture</span><span>Human / Automation / AI blueprint</span><span>Operations Control Tower demo</span></div><div class="card-actions"><a class="case-link" href="case-studies/travel-logistics-transformation/index.html">Read case</a><a class="demo-link" href="case-studies/travel-logistics-transformation/demo/index.html">Launch demo →</a></div></div>
+        </article>
+
+        <article class="showcase">
+          <div class="preview purple"><div class="mini-shell"><div class="mini-title">RELATIONSHIP OPERATIONS CONSOLE</div><div class="mini-metric-row"><div class="mini-metric"><b>3</b><span>OPEN ACTIONS</span></div><div class="mini-metric"><b>2</b><span>BLOCKED</span></div><div class="mini-metric"><b>17</b><span>SLOTS REMAIN</span></div></div><div class="mini-list"><div><strong>Maya Chen</strong><span>Follow-up due</span><i>REVIEW</i></div><div><strong>Daniel Wong</strong><span>Reconnect date reached</span><i>OPEN</i></div><div><strong>Priya Nair</strong><span>Identity unresolved</span><i>BLOCK</i></div></div></div></div>
+          <div class="showcase-body"><div class="case-label"><span>Case Study 02</span><span class="live">Interactive</span></div><h3>AI-Assisted Prospecting Operations</h3><p>Turning fragmented relationship history into a governed decision layer that maintains state, controls eligibility, allocates scarce human capacity and removes stale actions.</p><div class="tags"><span class="tag">Process Intelligence</span><span class="tag">State Management</span><span class="tag">AI Governance</span></div><div class="artifacts"><span>AS-IS / TO-BE relationship architecture</span><span>Capacity-aware Action Queue</span><span>Live action-reconciliation demo</span></div><div class="card-actions"><a class="case-link" href="case-studies/prospecting-operations/index.html">Read case</a><a class="demo-link" href="case-studies/prospecting-operations/demo/index.html">Launch demo →</a></div></div>
+        </article>
+
+        <article class="showcase">
+          <div class="preview green"><div class="mini-shell"><div class="mini-title">WAREHOUSE DECISION WORKSPACE</div><div class="mini-metric-row"><div class="mini-metric"><b>46k</b><span>PICK ACTIVITIES</span></div><div class="mini-metric"><b>1,743</b><span>QUALIFYING SKUS</span></div><div class="mini-metric"><b>5</b><span>FINDINGS</span></div></div><div class="mini-list"><div><strong>HR-1183</strong><span>Main-bin usage low</span><i>REVIEW</i></div><div><strong>HR-0135</strong><span>Expected concentration</span><i>NORMAL</i></div><div><strong>QC-0241</strong><span>Control point to validate</span><i>GAP</i></div></div></div></div>
+          <div class="showcase-body"><div class="case-label"><span>Case Study 03</span><span class="live">Interactive</span></div><h3>Warehouse Flow & Stock Accuracy Decision Support</h3><p>Connecting recorded warehouse evidence with physical operating context to narrow High Runner and QC reviews, support human decisions and track what happens next.</p><div class="tags"><span class="tag">Warehouse Ops</span><span class="tag">Decision Support</span><span class="tag">Human-in-the-Loop</span></div><div class="artifacts"><span>Enterprise AS-IS process map</span><span>Evidence → Decide → Measure → Learn</span><span>Warehouse Decision Workspace demo</span></div><div class="card-actions"><a class="case-link" href="case-studies/warehouse-flow-stock-accuracy/index.html">Read case</a><a class="demo-link" href="case-studies/warehouse-flow-stock-accuracy/prototype.html">Launch demo →</a></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="thread">
+      <div class="thread-spotlight">
+        <div>
+          <div class="eyebrow">Product Build 04 · Working MVP</div>
+          <h2>Thread</h2>
+          <p><strong style="color:#fff">A Team Workspace for relationship-driven work.</strong> Thread keeps shared context current, notices what changed, prioritizes what deserves attention, and gives humans one place to review evidence and act.</p>
+          <div class="tags" style="margin-top:18px"><span class="tag" style="background:#172b4d;border-color:#344563;color:#c2cee0">Relationship Memory</span><span class="tag" style="background:#172b4d;border-color:#344563;color:#c2cee0">Signals</span><span class="tag" style="background:#172b4d;border-color:#344563;color:#c2cee0">Decision Intelligence</span><span class="tag" style="background:#172b4d;border-color:#344563;color:#c2cee0">Team Workspace</span></div>
+          <div class="thread-actions"><a class="primary-btn" href="products/thread/demo/index.html">Launch Thread →</a><a class="secondary-btn" href="products/thread/index.html">Explore product build</a></div>
+        </div>
+        <div class="thread-ui"><div class="thread-top"><b>Today</b><span>WORKING MVP</span></div><div class="thread-metrics"><div><b>4</b><small>OPEN ACTIONS</small></div><div><b>3</b><small>CHANGED</small></div><div><b>17</b><small>SLOTS REMAIN</small></div></div><div class="thread-row"><div class="avatar">MC</div><div><strong>Maya Chen</strong><small>Inbound reply changed the action</small></div><i>Review →</i></div><div class="thread-row"><div class="avatar">PN</div><div><strong>Priya Nair</strong><small>Identity conflict needs human review</small></div><i>Resolve →</i></div><div class="thread-row"><div class="avatar">SL</div><div><strong>Sarah Lim</strong><small>New project signal</small></div><i>Review →</i></div></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="method" id="approach">
+    <div class="wrap">
+      <div class="section-head"><div><div class="eyebrow">Working method</div><h2>Not “AI everywhere.” The right control for the right work.</h2></div><p>The common thread across the portfolio is separating stable rules, contextual AI assistance and human decision authority — then translating that operating model into something testable.</p></div>
+      <div class="method-grid"><div class="method-step"><b>01 Discover</b><span>Map the real operating workflow.</span></div><div class="method-step"><b>02 Diagnose</b><span>Find the structural failure, not just symptoms.</span></div><div class="method-step"><b>03 Redesign</b><span>Define the target operating model.</span></div><div class="method-step"><b>04 Govern</b><span>Separate deterministic, AI and human authority.</span></div><div class="method-step"><b>05 Prototype</b><span>Make the proposed workflow usable.</span></div><div class="method-step"><b>06 Evaluate</b><span>Measure system and decision quality.</span></div></div>
+      <div class="principles"><div class="principle"><b>Deterministic where possible.</b><p>Stable policy, state, validation, eligibility and calculations belong in explicit rules.</p></div><div class="principle"><b>AI where meaning is unstructured.</b><p>Classification, summarization, evidence review and drafting benefit from contextual models.</p></div><div class="principle"><b>Humans where judgement matters.</b><p>Exceptions, liability, identity, commercial decisions and external actions remain controlled.</p></div></div>
+    </div>
+  </section>
+
+  <div class="wrap"><footer><div class="footer-row"><span>Case studies are anonymized where appropriate. Public prototype data is synthetic.</span><span>© Zev Pan · AI Transformation Case Studies & Product Builds</span></div></footer></div>
 </main>
 </body>
 </html>
