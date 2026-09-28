@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thread — MVP 0</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="mark">T</div><div><strong>Thread</strong><small>Team Workspace</small></div></div>
+    <nav>
+      <button class="nav active" data-view="home">Home</button>
+      <button class="nav" data-view="work">My Work</button>
+      <button class="nav" data-view="people">People</button>
+      <button class="nav" data-view="signals">Signals</button>
+      <button class="nav" data-view="reconciliation">Reconciliation</button>
+      <button class="nav" data-view="audit">Audit</button>
+    </nav>
+    <div class="bottom"><span>SYNTHETIC DEMO DATA</span><button id="reset">Reset demo</button></div>
+  </aside>
+  <main>
+    <header><div><small>NORTHSTAR CONSULTING</small><h1 id="title">Today</h1></div><div id="capacity" class="pill"></div></header>
+    <section id="view"></section>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
