@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Travel Logistics Operations Control Tower — Interactive Demo</title>
+<meta name="description" content="Interactive synthetic prototype of an operations control tower for a redesigned travel-logistics operating model.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="demo-strip"><strong>Interactive case-study demo</strong><span>Synthetic operational data · real in-app state transitions</span><a href="../index.html">Back to case study</a></div>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="mark">O</div><div><strong>Ops Control Tower</strong><small>Travel Logistics</small></div></div>
+
+    <div class="nav-label">Operations</div>
+    <nav>
+      <button class="nav active" data-view="tower"><span class="nav-icon">⌂</span><span>Control Tower</span></button>
+      <button class="nav" data-view="orders"><span class="nav-icon">▤</span><span>Orders</span></button>
+      <button class="nav" data-view="dispatch"><span class="nav-icon">↗</span><span>Dispatch</span></button>
+      <button class="nav" data-view="exceptions"><span class="nav-icon">!</span><span>Exceptions</span></button>
+      <button class="nav" data-view="metrics"><span class="nav-icon">⌁</span><span>Metrics</span></button>
+    </nav>
+
+    <div class="nav-label">Featured walkthrough</div>
+    <div class="walkthrough">
+      <b>TRV-1048</b>
+      <p>Distributor booking → validation → supplier fallback → service event → recipient exception → AI support → human approval.</p>
+      <button onclick="openOrder('TRV-1048')">Open featured order</button>
+    </div>
+
+    <div class="bottom"><span>SYNTHETIC DEMO DATA</span><button id="reset">Reset demo</button></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb"><span class="workspace-dot"></span>Global Operations <span>/</span> Prototype</div>
+      <div class="top-actions"><div class="search">⌕ <span>Search orders</span><kbd>/</kbd></div><a class="top-link" href="../index.html">Case study ↗</a><div class="user">Z</div></div>
+    </div>
+
+    <header class="page-head">
+      <div><div class="eyebrow">ANONYMIZED TARGET OPERATING MODEL</div><h1 id="title">Operations Control Tower</h1><p id="subtitle">One view of today's workload, dispatch risk, exceptions and SLA exposure.</p></div>
+      <div class="mode">SYNTHETIC PROTOTYPE</div>
+    </header>
+
+    <section id="view"></section>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
