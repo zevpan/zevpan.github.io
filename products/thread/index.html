@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thread — Team Workspace | Zev Pan</title>
+<meta name="description" content="Thread is a self-initiated product build: a team workspace for relationship-driven work with persistent memory, governed decision support and human-controlled action.">
+<style>
+:root{--bg:#f7f9fc;--panel:#fff;--text:#172033;--muted:#667085;--line:#dfe5ec;--blue:#0c66e4;--blue2:#eaf2ff;--navy:#0f1d33;--green:#eaf7ef}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.55}a{color:inherit}
+.sitebar{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.sitebar-inner{max-width:1120px;margin:0 auto;padding:13px 24px;display:flex;justify-content:space-between;align-items:center}.brand{text-decoration:none;font-weight:800}.nav{display:flex;gap:16px;font-size:13px;color:var(--muted)}.nav a{text-decoration:none}
+main{max-width:1120px;margin:0 auto;padding:64px 24px 96px}.kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:800}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;padding:36px 0 54px}.hero h1{font-size:64px;line-height:.98;margin:12px 0 18px;letter-spacing:-.04em}.hero .lead{font-size:20px;color:#3f4a5a;max-width:700px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.btn{display:inline-block;text-decoration:none;padding:12px 16px;border-radius:9px;font-weight:800;font-size:14px;border:1px solid var(--line);background:#fff}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.product-shot{background:var(--navy);border-radius:20px;padding:14px;box-shadow:0 18px 50px rgba(16,24,40,.16)}.shot-inner{background:#fff;border-radius:13px;padding:18px}.shot-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.shot-title{font-weight:900}.pill{font-size:10px;background:var(--blue2);color:var(--blue);padding:5px 8px;border-radius:999px;font-weight:800}.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mini{border:1px solid var(--line);border-radius:10px;padding:10px}.mini b{display:block;font-size:18px}.mini span{font-size:10px;color:var(--muted)}.flow{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:11px;font-size:11px;color:#485466}.flow strong{color:var(--text)}
+section{padding:42px 0;border-top:1px solid var(--line)}h2{font-size:34px;line-height:1.1;margin:0 0 14px}.sub{color:var(--muted);max-width:780px}.framework{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.card h3{margin:0 0 8px;font-size:20px}.card p{margin:0;color:#4e5968;font-size:14px}.badge{display:inline-block;font-size:11px;font-weight:800;color:#356044;background:var(--green);padding:5px 8px;border-radius:999px;margin-bottom:10px}
+.arch{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:20px;font-weight:800;text-align:center}.arch span{display:inline-block;margin:6px 5px;padding:9px 11px;border-radius:9px;background:#f0f3f7}.note{background:var(--blue2);border:1px solid #c9dafa;border-radius:16px;padding:18px;margin-top:20px}.note p{margin:5px 0 0;color:#40516a}
+footer{border-top:1px solid var(--line);padding-top:28px;color:var(--muted);font-size:13px;margin-top:40px}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.hero h1{font-size:46px}.framework{grid-template-columns:1fr 1fr}}@media(max-width:600px){.framework{grid-template-columns:1fr}.nav{display:none}}
+</style>
+</head>
+<body>
+<header class="sitebar"><div class="sitebar-inner">
+<a class="brand" href="../../index.html">Zev Pan</a>
+<nav class="nav"><a href="../../index.html#case-studies">Case Studies</a><a href="../../index.html#product-builds">Product Builds</a><a href="demo/index.html">Launch Thread</a></nav>
+</div></header>
+<main>
+<section class="hero" style="border-top:0;padding-top:20px">
+<div>
+<div class="kicker">Product Build 04 · Working MVP</div>
+<h1>Thread</h1>
+<p class="lead"><strong>A Team Workspace for relationship-driven work.</strong> Thread keeps shared context current, notices what changed, and helps teams focus on the work that deserves human attention.</p>
+<div class="actions"><a class="btn primary" href="demo/index.html">Launch interactive demo →</a><a class="btn" href="#how-it-works">See how it works</a></div>
+</div>
+<div class="product-shot">
+<div class="shot-inner">
+<div class="shot-head"><div class="shot-title">Today</div><span class="pill">SYNTHETIC DEMO</span></div>
+<div class="mini-grid"><div class="mini"><b>4</b><span>open actions</span></div><div class="mini"><b>3</b><span>changed relationships</span></div><div class="mini"><b>1</b><span>reconciliation review</span></div></div>
+<div class="flow"><strong>Demo state change</strong><br>Follow-up scheduled → new reply received → Relationship Memory updated → stale action superseded → human review</div>
+</div>
+</div>
+</section>
+
+<section id="how-it-works">
+<div class="badge">SELF-INITIATED PRODUCT BUILD</div>
+<h2>Memory → Intelligence → Workspace → Human Action</h2>
+<p class="sub">Thread is not positioned as a CRM replacement or autonomous outreach bot. Existing CRM, email, messaging, meetings and spreadsheets can remain source systems. Thread acts as a shared context and decision workspace above them.</p>
+<div class="framework">
+<div class="card"><h3>Relationship Memory</h3><p>Persistent context across people, companies, conversations, commitments, previous actions, overrides and provenance.</p></div>
+<div class="card"><h3>Signals</h3><p>Detect meaningful changes such as replies, reconnect dates, new opportunity signals and ambiguous identity.</p></div>
+<div class="card"><h3>Decision Intelligence</h3><p>Combine deterministic rules, capacity constraints and AI interpretation to decide what deserves attention.</p></div>
+<div class="card"><h3>Team Workspace</h3><p>Give humans one shared surface for priority work, evidence, timelines, reconciliation, audit and action.</p></div>
+</div>
+</section>
+
+<section>
+<h2>The MVP is functional, not just a mockup.</h2>
+<p class="sub">The public demo uses synthetic data, but the state transitions are real within the application. A new event can change relationship state, invalidate an older recommendation, update the workspace and record the decision trail.</p>
+<div class="arch"><span>Source Events</span> → <span>Relationship Memory</span> → <span>Rules + AI Assistance</span> → <span>Team Workspace</span> → <span>Human Action</span> ↺</div>
+<div class="note"><strong>Cost discipline</strong><p>MVP 0 runs with no paid infrastructure. The next version is designed around Next.js + Supabase free tier, with AI calls added only where unstructured interpretation materially improves the workflow.</p></div>
+</section>
+
+<section>
+<h2>What you can test</h2>
+<div class="framework">
+<div class="card"><h3>Priority Work</h3><p>See what needs attention and why.</p></div>
+<div class="card"><h3>Relationship Detail</h3><p>Inspect the shared memory, timeline and current action.</p></div>
+<div class="card"><h3>Reconciliation</h3><p>Resolve ambiguous identity instead of silently merging records.</p></div>
+<div class="card"><h3>Audit</h3><p>See how state and recommendation changes were produced.</p></div>
+</div>
+<div class="actions"><a class="btn primary" href="demo/index.html">Launch Thread demo →</a></div>
+</section>
+
+<footer>Thread is a self-initiated product build. Public data and scenarios are synthetic. No production deployment or customer ROI is claimed.</footer>
+</main>
+</body>
+</html>
