@@ -109,6 +109,21 @@ tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}th{b
 footer{border-top:0;padding-top:34px;color:#7a869a}
 @media(max-width:760px){main{padding:46px 18px 76px}.sitebar-inner{padding:12px 18px}.nav{gap:10px}h1{font-size:39px}.lead{font-size:17px}h2{font-size:29px}.project-strip{grid-template-columns:1fr}.project-actions{margin-bottom:20px}section{padding:44px 0}}
 
+
+.evidence-band{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+.evidence-stat{background:#fff;border:1px solid var(--portfolio-line);border-radius:14px;padding:17px}
+.evidence-stat b{display:block;font-size:28px;line-height:1;color:var(--portfolio-ink2);letter-spacing:-.03em}
+.evidence-stat span{display:block;font-size:10px;color:#5e6c84;margin-top:7px;line-height:1.4}
+.evidence-stat small{display:block;font-size:8px;color:#8993a4;font-weight:850;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.evidence-note{background:#f7f8f9;border:1px solid var(--portfolio-line);border-radius:14px;padding:15px 17px;font-size:12px;color:#44546f}
+.evidence-note strong{color:var(--portfolio-ink2)}
+.evidence-map{display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr;gap:8px;align-items:stretch;margin-top:16px}
+.evidence-map .node{background:#fff;border:1px solid var(--portfolio-line);border-radius:13px;padding:15px}
+.evidence-map .node b{display:block;color:var(--portfolio-blue);font-size:9px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.evidence-map .node span{font-size:12px;color:#344563;line-height:1.45}
+.evidence-map .map-arrow{display:grid;place-items:center;color:#8993a4;font-weight:900}
+.public-safe{display:inline-flex;align-items:center;gap:6px;background:#dcfff1;color:#216e4e;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:850}
+@media(max-width:760px){.evidence-band{grid-template-columns:1fr 1fr}.evidence-map{grid-template-columns:1fr}.evidence-map .map-arrow{transform:rotate(90deg)}}
 </style>
 </head>
 <body>
@@ -120,7 +135,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <div class="hero">
 <div class="kicker">CASE STUDY 01 · INTERACTIVE</div>
 <h1>Global Travel Logistics Operations Transformation</h1>
-<p class="lead">From fragmented, manually coordinated fulfilment to a unified booking platform, integrated OMS/TMS, distributor APIs, automated dispatch, event-driven status updates and exception-led operations.</p>
+<p class="lead">From fragmented, manually coordinated fulfilment to a unified operating model — informed by analysis of <strong>10.5k+ unique 2026 historical orders</strong> and translated into an interactive Operations Control Tower.</p>
 <div class="meta">
 <span class="tag">Business Transformation</span>
 <span class="tag">Process Redesign</span>
@@ -146,6 +161,33 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <a class="back" href="../prospecting-operations/index.html">Next: Relationship Operations →</a>
 </div>
 <section>
+<div class="portfolio-kicker">Historical operational evidence · Aggregates only</div>
+<h2>Historical evidence behind the redesign</h2>
+<p>The redesign is now grounded in analysis of the 2026 operational tracker rather than process observation alone. Historical metrics below use service dates through <strong>29 Sep 2026</strong>; future pipeline is excluded. Individual customer, order and partner records remain private.</p>
+
+<div class="evidence-band">
+  <div class="evidence-stat"><small>Historical scale</small><b>10,524</b><span>unique historical order IDs analyzed</span></div>
+  <div class="evidence-stat"><small>Repeatability</small><b>87.4%</b><span>of historical rows fall into the three core service types</span></div>
+  <div class="evidence-stat"><small>Channel concentration</small><b>94.2%</b><span>of historical rows come through the top three booking channels</span></div>
+  <div class="evidence-stat"><small>Supplier concentration</small><b>71.3%</b><span>of historical rows are assigned across the top three supplier values</span></div>
+  <div class="evidence-stat"><small>Time pressure</small><b>35.9%</b><span>of ECWID-matched historical orders were booked within 72 hours of service</span></div>
+  <div class="evidence-stat"><small>QC footprint</small><b>64.0%</b><span>of unique historical orders appear in the next-day QC workflow</span></div>
+  <div class="evidence-stat"><small>Refund workflow</small><b>5.1%</b><span>of unique historical orders appear in the refund workflow</span></div>
+  <div class="evidence-stat"><small>Accommodation cases</small><b>5.0%</b><span>of unique historical orders appear in the dedicated accommodation workflow</span></div>
+</div>
+
+<div class="evidence-map">
+  <div class="node"><b>Observed evidence</b><span>Most transaction volume follows a small number of repeatable routes and concentrated channel / supplier relationships.</span></div>
+  <div class="map-arrow">→</div>
+  <div class="node"><b>Operational consequence</b><span>Routine work can be standardized, while time-sensitive, QC-heavy and exception cases need explicit controls.</span></div>
+  <div class="map-arrow">→</div>
+  <div class="node"><b>Target capability</b><span>Canonical order state, deterministic validation and routing, timer-driven QC, exception workspace and governed AI assistance.</span></div>
+</div>
+
+<div class="evidence-note" style="margin-top:16px"><strong>Evidence boundary.</strong> These aggregates support the operating-model design, but they do not prove post-redesign ROI, headcount savings, supplier quality rankings or an automation percentage. The public prototype continues to use synthetic records calibrated to the observed operating patterns. <span class="public-safe">PUBLIC-SAFE AGGREGATES</span></div>
+</section>
+
+<section>
 <h2>Transformation objective</h2>
 <p>Redesign the end-to-end travel-logistics operation so that orders from direct and distributor channels enter one controlled operating system, routine decisions and status updates are automated, suppliers execute against structured jobs, and CS / Operations focuses primarily on exceptions.</p>
 <div class="grid">
@@ -165,7 +207,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <div class="card">Exception-resolution time</div>
 <div class="card">SLA adherence and customer-update latency</div>
 </div>
-<p class="small">Baseline values remain TBD until measured from operational data.</p>
+<p class="small">Historical transaction structure, channel/supplier concentration, lead time, QC participation and refund-workflow participation are now measured. Manual handling time, ROI and post-redesign SLA improvement remain unmeasured and are not claimed.</p>
 </section>
 <section>
 <h2>Before — current operating model</h2>
@@ -228,6 +270,20 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <strong>No structured dispatch control loop</strong>
       Assignment, acceptance, non-response, fallback and service-day status do not run through one controlled workflow.
     </div>
+</div>
+<div class="grid3" style="margin-top:18px">
+<div class="card">
+<strong>Workbook as integration layer</strong>
+Orders, QC, refunds, accommodation-specific handling, reallocation and exception knowledge are maintained across separate operational surfaces rather than one event model.
+</div>
+<div class="card">
+<strong>Identity and taxonomy drift</strong>
+Duplicate order IDs, supplier aliases and free-text reason variants create avoidable reconciliation and reporting risk.
+</div>
+<div class="card">
+<strong>Workflow participation is measurable</strong>
+QC touches roughly 64% of unique historical orders, while refund and accommodation-specific workflows each touch about 5%.
+</div>
 </div>
 <div class="callout blue" style="margin-top:18px">
 <strong>Design implication</strong>
