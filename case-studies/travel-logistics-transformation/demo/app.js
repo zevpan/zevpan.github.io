@@ -47,7 +47,7 @@ audit:[
 ]
 };
 
-const KEY="travel-control-tower-v2";
+const KEY="travel-ops-workspace-v3";
 let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(SEED);
 const $=s=>document.querySelector(s),view=$("#view"),title=$("#title"),subtitle=$("#subtitle");
 
@@ -76,29 +76,66 @@ function render(name){
  ({tower,orders,dispatch,exceptions,metrics,evidence}[name]||tower)()
 }
 
+function workReason(o){
+ if(o.status==="EXCEPTION") return {tone:"risk",label:"Exception requires a decision",detail:"A service event cannot proceed safely without Operations review."};
+ if(o.validation.missingFlight) return {tone:"risk",label:"Required airport information is missing",detail:"Validation has blocked dispatch until the customer record is completed."};
+ if(o.dispatch==="REJECTED") return {tone:"risk",label:"Preferred supplier rejected the job",detail:"Fallback coverage is available and the booking is waiting for reassignment."};
+ if(o.dispatch==="ESCALATED") return {tone:"warn",label:"Supplier acknowledgement escalated",detail:"The booking is waiting for an Operations decision after the acknowledgement threshold."};
+ if(o.dispatch==="PENDING") return {tone:"warn",label:"Supplier has not acknowledged",detail:"The acknowledgement timer is approaching its threshold."};
+ if(o.dispatch==="NOT_SENT") return {tone:"normal",label:"Booking is ready for dispatch",detail:"Validation passed and an eligible supplier can now be assigned."};
+ if(o.status==="IN_SERVICE") return {tone:"normal",label:"Service is in progress",detail:"No intervention is required unless a new event creates an exception."};
+ return {tone:"normal",label:"Operational review",detail:"Review the booking state and take the next appropriate action."}
+}
+function workAction(o){
+ if(o.status==="EXCEPTION") return "Review exception";
+ if(o.validation.missingFlight) return o.requestedInfo?"Record customer information":"Request customer information";
+ if(o.dispatch==="REJECTED") return "Assign fallback supplier";
+ if(o.dispatch==="ESCALATED") return "Reassign supplier";
+ if(o.dispatch==="PENDING") return "Escalate or reassign";
+ if(o.dispatch==="NOT_SENT") return "Dispatch supplier";
+ if(o.status==="IN_SERVICE") return "Monitor service event";
+ return "Review booking"
+}
+function needsWork(o){
+ return o.status==="EXCEPTION"||o.validation.missingFlight||["NOT_SENT","PENDING","REJECTED","ESCALATED"].includes(o.dispatch)||o.owner==="Ops Queue"||o.owner==="CS Review"||o.owner==="Ops Escalation"
+}
+function workRow(o){
+ const r=workReason(o);
+ return '<div class="work-item '+r.tone+'" onclick="openOrder(\''+o.id+'\')">'+
+  '<div class="work-key"><b>'+o.id+'</b><span>'+o.market+' · '+o.service+'</span></div>'+
+  '<div class="work-copy"><b>'+r.label+'</b><span>'+r.detail+'</span></div>'+
+  '<div class="work-time"><b>'+(o.slaRisk?"SLA RISK":"TODAY")+'</b><span>'+o.date+' · '+o.time+'</span></div>'+
+  '<div class="work-next"><span>Next action</span><b>'+workAction(o)+'</b></div>'+
+  '<button class="work-cta" onclick="event.stopPropagation();openOrder(\''+o.id+'\')">Work item →</button>'+
+ '</div>'
+}
 function tower(){
- setHead("Operations Control Tower","One view of today's workload, dispatch risk, exceptions and SLA exposure.");
- const total=state.orders.length;
- const awaiting=state.orders.filter(o=>o.dispatch==="PENDING"||o.dispatch==="NOT_SENT").length;
- const ex=openExceptions().length;
- const risk=state.orders.filter(o=>o.slaRisk).length;
- const auto=state.orders.filter(o=>o.manualTouches===0).length;
+ setHead("My Work","Prioritized work that requires an operator decision or intervention.");
+ const items=state.orders.filter(needsWork).sort((a,b)=>(Number(b.slaRisk)-Number(a.slaRisk))||(["EXCEPTION","VALIDATION_REQUIRED","AWAITING_SUPPLIER","READY"].indexOf(a.status)-["EXCEPTION","VALIDATION_REQUIRED","AWAITING_SUPPLIER","READY"].indexOf(b.status)));
+ const supplierWait=items.filter(o=>["PENDING","REJECTED","ESCALATED"].includes(o.dispatch)).length;
+ const blocked=items.filter(o=>o.validation.missingFlight||o.status==="EXCEPTION").length;
+ const running=state.orders.filter(o=>!needsWork(o)&&o.status!=="COMPLETED").length;
+ const completed=state.orders.filter(o=>o.status==="COMPLETED").length;
  view.innerHTML=
- historicalCards()+
- '<div class="intro"><div><h2>Shift focus from monitoring every order to managing what needs intervention.</h2><p>The demo records are synthetic. The operating emphasis is calibrated to observed route concentration, time pressure, QC workload and supplier-routing patterns.</p></div><div class="demo-path"><b>Featured walkthrough:</b> open <strong>TRV-1048</strong>. Dispatch Partner A, simulate rejection, fall back to Partner B, record Customer Ready, create a recipient exception, generate AI support, then approve the action.</div></div>'+
- '<div class="split-label">Live synthetic demo state</div>'+
- '<div class="metrics">'+
-  '<div class="metric"><div class="metric-top"><b>'+total+'</b><span class="micro">synthetic</span></div><span>Orders in demo dataset</span></div>'+
-  '<div class="metric warn"><div class="metric-top"><b>'+awaiting+'</b><span class="micro">live</span></div><span>Dispatch attention</span></div>'+
-  '<div class="metric risk"><div class="metric-top"><b>'+risk+'</b><span class="micro">live</span></div><span>SLA risk</span></div>'+
-  '<div class="metric risk"><div class="metric-top"><b>'+ex+'</b><span class="micro">live</span></div><span>Open exceptions</span></div>'+
-  '<div class="metric"><div class="metric-top"><b>'+Math.round(auto/total*100)+'%</b><span class="micro">synthetic</span></div><span>Zero-touch demo orders</span></div>'+
- '</div>'+
- '<div class="layout"><div class="panel"><div class="panel-head"><h3>Operational queue</h3><span>Risk and intervention first</span></div><div class="panel-body">'+
- state.orders.filter(o=>o.status!=="COMPLETED").sort((a,b)=>(b.slaRisk-a.slaRisk)).map(queueRow).join("")+
- '</div></div><div class="panel"><div class="panel-head"><h3>What changed</h3><span>Latest events</span></div><div class="panel-body">'+
- state.signals.slice(0,5).map(s=>'<div class="signal"><div class="signal-top"><b>'+s.title+'</b><time>'+s.time+'</time></div><p>'+s.text+'</p></div>').join("")+
- '</div></div></div>'
+ '<div class="work-hero"><div><div class="work-count">'+items.length+' items need attention</div><h2>Work the exception, not the dashboard.</h2><p>Only bookings that need a decision, missing information, supplier intervention or exception handling enter this queue.</p></div><div class="work-summary">'+
+  '<div><b>'+items.filter(o=>o.slaRisk).length+'</b><span>SLA risk</span></div>'+
+  '<div><b>'+supplierWait+'</b><span>supplier attention</span></div>'+
+  '<div><b>'+blocked+'</b><span>blocked / exception</span></div>'+
+ '</div></div>'+
+ '<div class="workspace-grid"><div class="panel work-panel"><div class="panel-head"><div><h3>My work queue</h3><span>Highest intervention need first</span></div><span>'+items.length+' open</span></div><div class="work-list">'+
+ (items.length?items.map(workRow).join(""):'<div class="empty">Nothing currently requires operator intervention.</div>')+
+ '</div></div><div class="workspace-side">'+
+  '<div class="panel"><div class="panel-head"><h3>Shift state</h3><span>context, not the task</span></div><div class="shift-grid">'+
+   '<div class="shift-stat"><b>'+running+'</b><span>running automatically</span></div>'+
+   '<div class="shift-stat"><b>'+completed+'</b><span>completed</span></div>'+
+   '<div class="shift-stat"><b>'+state.orders.length+'</b><span>demo bookings</span></div>'+
+   '<div class="shift-stat"><b>'+openExceptions().length+'</b><span>open exceptions</span></div>'+
+  '</div></div>'+
+  '<div class="panel" style="margin-top:12px"><div class="panel-head"><h3>Recent operational changes</h3><span>event feed</span></div><div class="panel-body">'+
+  state.signals.slice(0,5).map(s=>'<div class="signal"><div class="signal-top"><b>'+s.title+'</b><time>'+s.time+'</time></div><p>'+s.text+'</p></div>').join("")+
+  '</div></div>'+
+ '</div></div>'+
+ '<div class="workspace-note"><b>Historical evidence is intentionally outside the work surface.</b> Route mix, channel concentration, lead time and QC coverage remain available under Historical Evidence without competing with the operator queue.</div>'
 }
 
 function evidence(){
@@ -184,12 +221,12 @@ function metrics(){
 
 function openOrder(id){
  const o=state.orders.find(x=>x.id===id);if(!o)return;
- setHead("Canonical Booking Record","One source of truth regardless of booking channel.");
+ setHead("Resolve Work Item","Decide, act, and move the operation forward.");
  const ex=state.exceptions.find(e=>e.orderId===o.id&&e.status!=="RESOLVED");
  view.innerHTML=
- '<div class="toolbar"><button class="back" onclick="render(\'tower\')">← Back to Control Tower</button><span class="demo-status">'+(o.id==="TRV-1048"?"Featured end-to-end walkthrough":"Synthetic order")+'</span></div>'+
+ '<div class="toolbar"><button class="back" onclick="render(\'tower\')">← Back to My Work</button><span class="demo-status">'+(o.id==="TRV-1048"?"Featured end-to-end walkthrough":"Synthetic order")+'</span></div>'+
  (o.demoMessage?'<div class="banner">'+o.demoMessage+'</div>':'')+
- '<div class="order-head"><div class="order-icon">↔</div><div><h2>'+o.id+'</h2><div class="meta">'+o.market+" · "+o.service+" · "+o.date+" "+o.time+'</div><div style="margin-top:7px">'+pill(o)+'</div></div><div class="actions">'+actionButtons(o,ex)+'</div></div>'+
+ '<div class="work-context"><div><small>WHY THIS NEEDS YOU</small><b>'+workReason(o).label+'</b><p>'+workReason(o).detail+'</p></div><div><small>NEXT MOVE</small><b>'+workAction(o)+'</b><p>Use the controls below; the event timeline and audit state update immediately.</p></div></div><div class="order-head"><div class="order-icon">↔</div><div><h2>'+o.id+'</h2><div class="meta">'+o.market+" · "+o.service+" · "+o.date+" "+o.time+'</div><div style="margin-top:7px">'+pill(o)+'</div></div><div class="actions">'+actionButtons(o,ex)+'</div></div>'+
  '<div class="detail-grid"><div>'+
  '<div class="card"><div class="card-title"><h3>Canonical order</h3><span>system of record</span></div><div class="field-grid">'+field("Source",o.source)+field("Source ID",o.sourceId)+field("Customer",o.customer)+field("Service",o.service)+field("Market",o.market)+field("Assigned supplier",o.supplier||"Unassigned")+field("Dispatch state",o.dispatch)+field("Owner",o.owner)+'</div></div>'+
  '<div class="card" style="margin-top:12px"><div class="card-title"><h3>Source → canonical mapping</h3><span>normalization</span></div><div class="mapping"><div class="mapping-col"><h4>'+o.source+' source payload</h4><p>external_order_id: '+o.sourceId+'</p><p>market: '+o.market+'</p><p>service_time: '+o.time+'</p><p>customer_name: '+o.customer+'</p></div><div class="map-arrow">→</div><div class="mapping-col"><h4>Canonical order</h4><p>order_id: '+o.id+'</p><p>market_code: '+o.market.toUpperCase().slice(0,3)+'</p><p>scheduled_at: '+o.date+' '+o.time+'</p><p>lifecycle_state: '+o.status+'</p></div></div></div>'+
@@ -219,7 +256,15 @@ function dispatchHtml(o){
  '</div>'
 }
 function actionButtons(o,ex){
- if(o.id!=="TRV-1048") return '<button class="btn" onclick="render(\'orders\')">View all orders</button>';
+ if(o.id==="TRV-1054"){
+  if(o.validation.missingFlight&&!o.requestedInfo) return '<button class="btn primary" onclick="requestCustomerInfo(\''+o.id+'\')">Request customer info</button>';
+  if(o.validation.missingFlight&&o.requestedInfo) return '<button class="btn success" onclick="markInfoReceived(\''+o.id+'\')">Record information received</button>';
+ }
+ if(o.id==="TRV-1051"){
+  if(o.dispatch==="PENDING") return '<button class="btn primary" onclick="escalateSupplier(\''+o.id+'\')">Escalate supplier</button><button class="btn" onclick="reassignSupplier(\''+o.id+'\')">Reassign now</button>';
+  if(o.dispatch==="ESCALATED") return '<button class="btn success" onclick="reassignSupplier(\''+o.id+'\')">Assign alternate supplier</button>';
+ }
+ if(o.id!=="TRV-1048") return '<button class="btn" onclick="render(\'tower\')">Back to queue</button>';
  if(o.validation.missingFlight) return '<button class="btn primary" onclick="restoreValidation()">Restore required info</button>';
  if(o.dispatch==="NOT_SENT") return '<button class="btn primary" onclick="dispatchA()">Dispatch Partner A</button><button class="btn danger" onclick="breakValidation()">Simulate missing flight</button>';
  if(o.dispatch==="PENDING") return '<button class="btn danger" onclick="rejectA()">Simulate rejection</button>';
@@ -231,6 +276,37 @@ function actionButtons(o,ex){
  if(o.exceptionResolved) return '<button class="btn" onclick="render(\'metrics\')">View resulting metrics</button>';
  return ''
 }
+function requestCustomerInfo(id){
+ const o=state.orders.find(x=>x.id===id);if(!o)return;
+ o.requestedInfo=true;o.owner="Customer Follow-up";o.demoMessage="Customer-information request logged. This work item remains open until the required airport details are received.";
+ o.events.unshift(["Now","Customer information requested","Missing itinerary detail"]);
+ state.signals.unshift({time:"Now",title:o.id+" waiting on customer",text:"Required airport information requested.",type:"warn"});
+ save();openOrder(id)
+}
+function markInfoReceived(id){
+ const o=state.orders.find(x=>x.id===id);if(!o)return;
+ o.validation.missingFlight=false;o.validation.run=true;o.validation.passed=true;o.dispatch="NOT_SENT";o.status="READY";o.owner="Ops Queue";o.slaRisk=false;
+ o.demoMessage="Required information recorded. Validation now passes and the booking has moved back into the dispatch queue.";
+ o.events.unshift(["Now","Required information received","Validation re-run and passed"]);
+ state.signals.unshift({time:"Now",title:o.id+" ready for dispatch",text:"Customer information received; validation passed.",type:"ok"});
+ save();openOrder(id)
+}
+function escalateSupplier(id){
+ const o=state.orders.find(x=>x.id===id);if(!o)return;
+ o.dispatch="ESCALATED";o.owner="Ops Escalation";o.manualTouches+=1;o.demoMessage="Supplier acknowledgement threshold reached. The booking is now explicitly owned by Operations.";
+ o.events.unshift(["Now","Supplier acknowledgement escalated","Operations intervention"]);
+ state.signals.unshift({time:"Now",title:o.id+" escalated",text:"Supplier acknowledgement exceeded threshold.",type:"risk"});
+ save();openOrder(id)
+}
+function reassignSupplier(id){
+ const o=state.orders.find(x=>x.id===id);if(!o)return;
+ o.supplier="Partner Alternate";o.dispatch="ACCEPTED";o.status="CONFIRMED";o.owner="Auto";o.slaRisk=false;
+ o.demoMessage="Alternate supplier assigned and accepted. The work item leaves the intervention queue.";
+ o.events.unshift(["Now","Alternate supplier accepted","Manual reassignment"]);
+ state.signals.unshift({time:"Now",title:o.id+" recovered",text:"Alternate supplier accepted; intervention closed.",type:"ok"});
+ save();openOrder(id)
+}
+
 function breakValidation(){
  const o=state.orders.find(x=>x.id==="TRV-1048");
  o.validation.missingFlight=true;o.validation.passed=false;o.status="VALIDATION_REQUIRED";o.dispatch="BLOCKED";o.owner="CS Review";o.manualTouches+=1;
