@@ -128,6 +128,16 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <a class="back" href="../../index.html">Portfolio home</a>
   <a class="back" href="../warehouse-flow-stock-accuracy/index.html">Next: Warehouse Decision Support →</a>
 </div>
+<section><h2>Evidence from the prospect database</h2>
+<p>We analyzed the supplied <em>AI Employee - Prospect Database</em> workbook by counting rows with a populated record ID. The page and demo use aggregates and field names only; they do not expose prospect identities, links, contact details or message content.</p>
+<table><thead><tr><th>Workbook tab</th><th>Records</th><th>Observed data</th></tr></thead><tbody>
+<tr><td>People Master</td><td>5,542</td><td>Relationship State and Next Action are blank throughout; one Do Not Contact flag is true.</td></tr>
+<tr><td>Follow-up Analysis</td><td>827</td><td>770 FOLLOW_UP; 57 NO_FOLLOW_UP.</td></tr>
+<tr><td>Action Queue</td><td>250</td><td>212 DONE; 36 CANCELLED; 2 SNOOZED. All are LINKEDIN_FOLLOW_UP.</td></tr>
+</tbody></table>
+<p>Follow-up Analysis records Decision, Reason, Confidence, Conversation State, Follow-up Priority, Follow-up Angle, Analyzed At and Model. Action Queue records Due Date, Priority, Agent, Action Type, rationale, suggested action and message, status, completion time and outcome.</p>
+<div class="callout blue"><strong>Evidence boundary</strong><p>This workbook snapshot contains action outcomes, not an active open queue. The interactive queue and state transitions are synthetic. The n8n workflow definition was not supplied, so its triggers and automation steps remain unverified.</p></div>
+</section>
 <section><h2>Transformation objective</h2>
 <p>Build a relationship-operations layer that converts fragmented network and interaction data into trustworthy state, governed eligibility, transparent priority and a continuously reconciled Action Queue.</p>
 <div class="grid"><div class="card"><strong>Start</strong>New relationship data arrives from professional-network exports, message history, invitation records, research inputs or manual records.</div><div class="card"><strong>End</strong>A human operator receives a current, evidence-backed and capacity-controlled next action with the correct person, relationship context, rationale and audit trail.</div></div>
