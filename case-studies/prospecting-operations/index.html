@@ -113,21 +113,29 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <div class="meta"><span class="tag">Process Intelligence</span><span class="tag">Workflow Orchestration</span><span class="tag">State Management</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Governance</span><span class="tag">Requirements & UAT</span></div>
 </div>
 <div class="demo-cta">
-  <div><strong>Interactive Relationship Operations Console</strong><p>Use synthetic relationship data to test state, eligibility, capacity allocation, identity reconciliation and stale-action supersession. The featured walkthrough shows a new inbound reply invalidating an older follow-up.</p></div>
-  <a class="demo-btn" href="demo/index.html">Launch live demo →</a>
+  <div><strong>Interactive Prospecting Workflow</strong><p>Follow the operating loop: import LinkedIn connections, invitations and message exports; run reconciliation; update managed relationship records; review recommended next actions; export the updated queue or records. The demo uses synthetic data and local rules.</p></div>
+  <a class="demo-btn" href="demo/index.html">Launch workflow demo →</a>
 </div>
 
 <div class="portfolio-kicker">Architecture · Governance · Working Prototype</div>
 <div class="project-strip">
-  <div class="project-item"><b>Relationship Memory</b><span>State + event model</span></div>
-  <div class="project-item"><b>Decision Layer</b><span>Eligibility · AI · capacity</span></div>
-  <div class="project-item"><b>Live Prototype</b><span>Action reconciliation console</span></div>
+  <div class="project-item"><b>AX Memory</b><span>Relationship context + history</span></div>
+  <div class="project-item"><b>AX Workspace</b><span>Import · run · review · export</span></div>
+  <div class="project-item"><b>Interactive demo</b><span>Synthetic end-to-end workflow</span></div>
 </div>
 <div class="project-actions">
   <a class="launch" href="demo/index.html">Launch interactive demo →</a>
   <a class="back" href="../../index.html">Portfolio home</a>
   <a class="back" href="../warehouse-flow-stock-accuracy/index.html">Next: Warehouse Decision Support →</a>
 </div>
+<section><h2>AX Memory and AX Workspace</h2>
+<div class="grid">
+  <div class="card"><strong>AX Memory · the context layer</strong>What the system should retain, update, trust, suppress, or ask about: canonical people, relationship history, source context, and prior decisions. In this case, the Google Sheet is the current operational record store. The demo models its People Master and Interaction Log; it is not connected to a separate AX Memory service.</div>
+  <div class="card"><strong>AX Workspace · the operating surface</strong>Where the operator imports LinkedIn connections, invitations, messages, and other exports; runs reconciliation; reviews and manages relationship records; evaluates evidence-backed next actions; records outcomes; and exports updated data.</div>
+</div>
+<div class="flow"><span class="step">Import source exports</span><span class="arrow">→</span><span class="step">Run the workflow</span><span class="arrow">→</span><span class="step">Update relationship memory</span><span class="arrow">→</span><span class="step">Review next actions</span><span class="arrow">→</span><span class="step">Record outcome / export</span></div>
+<p class="small">The demo represents this loop with synthetic records and browser-local rules. It does not execute the actual n8n workflow or connect to LinkedIn or the Google Sheet.</p>
+</section>
 <section><h2>Evidence from the prospect database</h2>
 <p>We analyzed the supplied <em>AI Employee - Prospect Database</em> workbook by counting rows with a populated record ID. The page and demo use aggregates and field names only; they do not expose prospect identities, links, contact details or message content.</p>
 <table><thead><tr><th>Workbook tab</th><th>Records</th><th>Observed data</th></tr></thead><tbody>
@@ -191,11 +199,11 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 </section>
 
 <section><h2>Interactive prototype</h2>
-<div class="callout good"><strong>The relationship-operations prototype is now live.</strong><p>The demo implements the core operating logic with synthetic data and real browser-state transitions: state → eligibility → priority → capacity → action → reconciliation.</p><a class="asset-link" href="demo/index.html">Launch interactive prototype →</a></div>
+<div class="callout good"><strong>The interactive workflow demo is ready.</strong><p>Process an export bundle, inspect the reconciliation run, review People Master and Interaction Log changes, then work through the resulting recommendations. This public demo uses synthetic records and browser-local rules; it does not run the actual n8n flow or connect to the Google Sheet.</p><a class="asset-link" href="demo/index.html">Launch interactive workflow →</a></div>
 <div class="grid3" style="margin-top:16px">
-  <div class="card"><strong>Featured walkthrough</strong>Open Maya Chen and ingest a new inbound reply. The prior follow-up is visibly moved to <code>SUPERSEDED</code> and replaced with a context-appropriate review action.</div>
+  <div class="card"><strong>Featured walkthrough</strong>Run the sample connection, invitation, and message exports. A new inbound reply updates the relationship record, supersedes a stale follow-up, and creates a review recommendation.</div>
   <div class="card"><strong>Fail-closed controls</strong>Explore Do Not Contact and unresolved identity cases to see deterministic eligibility block action generation.</div>
-  <div class="card"><strong>Capacity allocation</strong>The capacity view protects room for inbound replies and new accepts instead of filling the weekly ceiling with generic follow-up.</div>
+  <div class="card"><strong>Traceable flow</strong>Inspect run steps, source records, identity holds, updated relationships, action recommendations, and operator outcomes in the activity history.</div>
 </div>
 </section>
 
