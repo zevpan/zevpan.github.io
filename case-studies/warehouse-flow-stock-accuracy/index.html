@@ -46,10 +46,23 @@ tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}th{b
 footer{border-top:0;padding-top:34px;color:#7a869a}
 @media(max-width:760px){main{padding:46px 18px 76px}.sitebar-inner{padding:12px 18px}.nav{gap:10px}h1{font-size:39px}.lead{font-size:17px}h2{font-size:29px}.project-strip{grid-template-columns:1fr}.project-actions{margin-bottom:20px}section{padding:44px 0}}
 
+
+.evidence-band{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+.evidence-stat{background:#fff;border:1px solid var(--portfolio-line);border-radius:14px;padding:17px}
+.evidence-stat small{display:block;font-size:8px;color:#8993a4;font-weight:900;letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px}
+.evidence-stat b{display:block;font-size:27px;line-height:1;color:var(--portfolio-ink2);letter-spacing:-.03em}
+.evidence-stat span{display:block;font-size:10px;color:#5e6c84;margin-top:7px;line-height:1.4}
+.evidence-map{display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr;gap:8px;align-items:stretch;margin-top:16px}
+.evidence-map .node{background:#fff;border:1px solid var(--portfolio-line);border-radius:13px;padding:15px}
+.evidence-map .node b{display:block;color:var(--portfolio-blue);font-size:9px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.evidence-map .node span{font-size:12px;color:#344563;line-height:1.45}
+.evidence-map .map-arrow{display:grid;place-items:center;color:#8993a4;font-weight:900}
+.snapshot-note{background:#fff7d6;border:1px solid #f1d49a;border-radius:14px;padding:15px 17px;font-size:12px;color:#5e4a18}
+@media(max-width:760px){.evidence-band{grid-template-columns:1fr 1fr}.evidence-map{grid-template-columns:1fr}.evidence-map .map-arrow{transform:rotate(90deg)}}
 </style></head><body>
 <header class="sitebar"><div class="sitebar-inner"><a class="brand" href="../../index.html">Zev Pan</a><nav class="nav"><a href="../../index.html">All Case Studies</a><a href="prototype.html">Launch interactive demo</a><a href="../travel-logistics-transformation/index.html">Travel Logistics</a><a href="../prospecting-operations/index.html">Prospecting Operations</a></nav></div></header>
 <main>
-<div class="hero"><div class="kicker">CASE STUDY 03 · INTERACTIVE</div><h1>Warehouse Flow & Stock Accuracy Decision Support</h1><p class="lead">Connecting recorded warehouse data with physical operational context to identify what is worth checking, support human decisions, and measure what happens after the decision.</p><div class="meta"><span class="tag">Process Analysis</span><span class="tag">Warehouse Operations</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Support</span><span class="tag">PoV Design</span></div></div>
+<div class="hero"><div class="kicker">CASE STUDY 03 · INTERACTIVE</div><h1>Warehouse Flow & Stock Accuracy Decision Support</h1><p class="lead">Connecting recorded warehouse evidence with physical operational context — now informed by a six-month extract of <strong>135,957 warehouse-task rows</strong>, including <strong>39,536 PICK activities</strong> across 1,649 products.</p><div class="meta"><span class="tag">Process Analysis</span><span class="tag">Warehouse Operations</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Support</span><span class="tag">PoV Design</span></div></div>
 
 <div class="portfolio-kicker">Architecture · Governance · Working Prototype</div>
 <div class="project-strip">
@@ -68,9 +81,40 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 
 <section><h2>What remained to validate</h2><p>The discovery work deliberately separated known process facts from validation questions.</p><div class="grid2"><div class="card"><strong>Outbound / QC</strong>Exact GI → QC sequence and control point; how picking and QC exceptions are corrected and closed.</div><div class="card"><strong>Admin / Picking</strong>How work is assigned to pickers and which tracking-spreadsheet fields are actually used for planning and follow-up.</div><div class="card"><strong>Inventory Control</strong>Cycle-count selection logic and how variance moves from investigation to adjustment.</div><div class="card"><strong>Data & Decision</strong>Which timestamps can reliably measure outcomes and which decisions belong to the operator versus the principal / customer.</div></div><p class="small">These are validation items — not assumed problems.</p></section>
 
-<section><h2>High Runner MVP</h2><div class="grid3"><div class="card"><strong>46,117</strong> historical pick activities connected into the review flow.</div><div class="card"><strong>1,743</strong> qualifying SKUs with pick activity.</div><div class="card"><strong>100 → 5</strong> ranked High Runners narrowed to a smaller set of findings for human review.</div></div><div class="callout" style="margin-top:16px"><strong>The value is not the ranking itself.</strong> The MVP reduces the amount of evidence warehouse users must inspect and gives them a concrete place to start investigating.</div></section>
+<section>
+<div class="portfolio-kicker">Jan–Jun 2026 · Aggregate warehouse evidence</div>
+<h2>Six-month historical evidence</h2>
+<p>The High Runner design can now be tested against a six-month warehouse-task extract rather than volume assumptions alone. Public figures below are aggregate; product IDs, operators, warehouse orders, task IDs and exact bins remain private.</p>
 
-<section><h2>What a useful finding must explain</h2><div class="grid3"><div class="card"><strong>Why it caught attention</strong>Show the pattern that differs from comparable warehouse evidence.</div><div class="card"><strong>Where to look</strong>Point to the specific SKU, bin, location or control point.</div><div class="card"><strong>What to check</strong>Convert the signal into a concrete warehouse question.</div></div><p class="small">Worth checking does not mean something is wrong. The output is a specific check, not an automatic decision.</p></section>
+<div class="evidence-band">
+  <div class="evidence-stat"><small>Warehouse-task rows</small><b>135,957</b><span>across Jan–Jun 2026</span></div>
+  <div class="evidence-stat"><small>PICK activity</small><b>39,536</b><span>rows where Activity = PICK</span></div>
+  <div class="evidence-stat"><small>Picked products</small><b>1,649</b><span>distinct products in the six-month PICK population</span></div>
+  <div class="evidence-stat"><small>Top-100 concentration</small><b>55.3%</b><span>of all PICK activity comes from the Top 100 products</span></div>
+  <div class="evidence-stat"><small>Persistence</small><b>94 / 100</b><span>Top 100 products appear in all six months</span></div>
+  <div class="evidence-stat"><small>50% of activity</small><b>78</b><span>products account for half of all PICK activity</span></div>
+  <div class="evidence-stat"><small>80% of activity</small><b>309</b><span>products account for four-fifths of PICK activity</span></div>
+  <div class="evidence-stat"><small>Time-window effect</small><b>42% → 68%</b><span>median dominant-bin share: six-month aggregate vs monthly view</span></div>
+</div>
+
+<div class="evidence-map">
+  <div class="node"><b>Observed evidence</b><span>High-volume products are concentrated, but location concentration varies widely and can change over time.</span></div>
+  <div class="map-arrow">→</div>
+  <div class="node"><b>Decision implication</b><span>Volume and six-month dispersion alone can create noisy or misleading review candidates.</span></div>
+  <div class="map-arrow">→</div>
+  <div class="node"><b>Target capability</b><span>Combine pick frequency, location concentration and time-window stability before asking the warehouse a specific question.</span></div>
+</div>
+
+<div class="callout green" style="margin-top:16px"><strong>Key analytical lesson</strong><br>Some products look dispersed over six months because the dominant bin moved between periods; other products remain dispersed within individual months. The system should distinguish those patterns before consuming warehouse review capacity.</div>
+</section>
+
+<section><h2>PoV progress-review snapshot</h2>
+<div class="grid3"><div class="card"><strong>46,117</strong> pick activities reported in the later progress-review source.</div><div class="card"><strong>1,743</strong> qualifying SKUs reported in that source.</div><div class="card"><strong>100 → 5</strong> ranked High Runners narrowed to findings for human review.</div></div>
+<div class="snapshot-note" style="margin-top:16px"><strong>Source-snapshot boundary.</strong> The six-month Jan–Jun workbook independently yields 39,536 PICK rows and 1,649 distinct picked products. The 46,117 / 1,743 figures come from a separate PoV progress-review snapshot with a different extraction window and/or qualification definition. They are intentionally kept separate rather than silently reconciled.</div>
+<div class="callout" style="margin-top:16px"><strong>The value is not the ranking itself.</strong> The MVP reduces the amount of evidence warehouse users must inspect and gives them a concrete place to start investigating.</div>
+</section><div class="grid3"><div class="card"><strong>46,117</strong> historical pick activities connected into the review flow.</div><div class="card"><strong>1,743</strong> qualifying SKUs with pick activity.</div><div class="card"><strong>100 → 5</strong> ranked High Runners narrowed to a smaller set of findings for human review.</div></div><div class="callout" style="margin-top:16px"><strong>The value is not the ranking itself.</strong> The MVP reduces the amount of evidence warehouse users must inspect and gives them a concrete place to start investigating.</div></section>
+
+<section><h2>What a useful finding must explain</h2><div class="grid3"><div class="card"><strong>Why it caught attention</strong>Show the pattern that differs from comparable warehouse evidence.</div><div class="card"><strong>Where / when to look</strong>Point to the relevant SKU, location and period so relocation is not confused with simultaneous dispersion.</div><div class="card"><strong>What to check</strong>Convert the signal into a concrete warehouse question rather than an automatic conclusion.</div></div><p class="small">Worth checking does not mean something is wrong. The output is a specific check, not an automatic decision.</p></section>
 
 <section><h2>TO-BE decision model</h2><p>The target operating model connects evidence to a human review loop rather than replacing warehouse judgement.</p><div class="diagram"><img src="../../assets/warehouse-to-be-decision-flow.png" alt="Anonymized TO-BE evidence-based warehouse decision flow"></div><a class="btn" href="../../assets/warehouse-to-be-decision-flow.png">Open TO-BE diagram full size →</a></section>
 
@@ -82,7 +126,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 
 <section><h2>Measurement before value claims</h2><div class="callout amber"><strong>Select case → baseline → take action → measure result → prove value.</strong><br>Operational improvement is measured first. Business value is discussed after evidence exists.</div></section>
 
-<section><h2>Interactive prototype</h2><div class="callout green"><strong>Live interactive demo</strong><br>The warehouse decision workspace now supports a closed-loop synthetic walkthrough: review a High Runner finding, add warehouse context, record a human decision, track an action, record an outcome and capture the resulting learning.</div><p>The prototype also includes QC process validation and explicitly preserves unknowns instead of inventing the missing operating sequence.</p><a class="btn" href="prototype.html">Launch interactive prototype →</a></section>
+<section><h2>Interactive prototype</h2><div class="callout green"><strong>Live interactive demo</strong><br>The warehouse decision workspace now uses synthetic scenarios calibrated to the six-month evidence: a stable-location High Runner, a temporal-relocation pattern and a persistent-dispersion pattern. Each produces a different review question before human context is added.</div><p>The prototype also includes QC process validation and explicitly preserves unknowns instead of inventing the missing operating sequence.</p><a class="btn" href="prototype.html">Launch interactive prototype →</a></section>
 
 <footer>Anonymized case study based on real process-discovery and PoV work. Company, partner and customer identities are generalized. Public prototype identities are synthetic.</footer>
 </main></body></html>
