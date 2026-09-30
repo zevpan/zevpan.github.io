@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Travel Logistics Operations Control Tower — Interactive Demo</title>
-<meta name="description" content="Interactive synthetic prototype of an operations control tower for a redesigned travel-logistics operating model.">
+<title>Travel Logistics Operations Workspace — Interactive Demo</title>
+<meta name="description" content="Interactive synthetic operations workspace for triage, dispatch decisions, exception handling and human-controlled resolution.">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="demo-strip"><strong>Interactive case-study demo</strong><span>Synthetic order records · calibrated with aggregate evidence from 10.5k+ historical orders</span><a href="../index.html">Back to case study</a></div>
 <div class="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">O</div><div><strong>Ops Control Tower</strong><small>Travel Logistics</small></div></div>
+    <div class="brand"><div class="mark">O</div><div><strong>Ops Workspace</strong><small>Travel Logistics</small></div></div>
 
     <div class="nav-label">Operations</div>
     <nav>
-      <button class="nav active" data-view="tower"><span class="nav-icon">⌂</span><span>Control Tower</span></button>
+      <button class="nav active" data-view="tower"><span class="nav-icon">◫</span><span>My Work</span></button>
       <button class="nav" data-view="orders"><span class="nav-icon">▤</span><span>Orders</span></button>
       <button class="nav" data-view="dispatch"><span class="nav-icon">↗</span><span>Dispatch</span></button>
       <button class="nav" data-view="exceptions"><span class="nav-icon">!</span><span>Exceptions</span></button>
@@ -26,7 +26,7 @@
     <div class="nav-label">Featured walkthrough</div>
     <div class="walkthrough">
       <b>TRV-1048</b>
-      <p>Distributor booking → validation → supplier fallback → service event → recipient exception → AI support → human approval.</p>
+      <p>Resolve one booking from dispatch through supplier fallback, service execution, exception handling and human approval.</p>
       <button onclick="openOrder('TRV-1048')">Open featured order</button>
     </div>
 
@@ -35,12 +35,12 @@
 
   <main class="main">
     <div class="topbar">
-      <div class="crumb"><span class="workspace-dot"></span>Global Operations <span>/</span> Prototype</div>
+      <div class="crumb"><span class="workspace-dot"></span>Operations Workspace <span>/</span> Prototype</div>
       <div class="top-actions"><div class="search">⌕ <span>Search orders</span><kbd>/</kbd></div><a class="top-link" href="../index.html">Case study ↗</a><div class="user">Z</div></div>
     </div>
 
     <header class="page-head">
-      <div><div class="eyebrow">ANONYMIZED TARGET OPERATING MODEL</div><h1 id="title">Operations Control Tower</h1><p id="subtitle">One view of today's workload, dispatch risk, exceptions and SLA exposure.</p></div>
+      <div><div class="eyebrow">SYNTHETIC OPERATOR WORKSPACE</div><h1 id="title">My Work</h1><p id="subtitle">Prioritized work that requires an operator decision or intervention.</p></div>
       <div class="mode">SYNTHETIC DEMO · HISTORICALLY CALIBRATED</div>
     </header>
 
