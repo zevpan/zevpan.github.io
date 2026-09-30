@@ -1,5 +1,5 @@
 const SEED={
-capacity:{weekly:40,reservedInbound:10,reservedNewAccepts:8,plannedFollowups:17,usedInbound:5,usedNewAccepts:4,usedFollowups:14},
+capacity:{weekly:200,reservedInbound:10,reservedNewAccepts:8,plannedFollowups:17,usedInbound:5,usedNewAccepts:4,usedFollowups:14},
 people:[
 {id:"maya",name:"Maya Chen",title:"Head of Operations",company:"Arcadia Systems",initials:"MC",state:"OUTBOUND_LAST",label:"Outbound last",eligible:true,priority:"P1",why:"Follow-up due today",action:"Follow up",actionStatus:"OPEN",summary:"Maya previously discussed manual reconciliation across regional teams. A follow-up is due, but there has been no new interaction since the last outbound message.",memory:[["Priority","Reduce manual reconciliation"],["Known objection","Do not replace existing CRM"],["Commitment","Send integration approach"],["Stakeholder","VP Operations sponsors"]],timeline:[["12 Sep","Follow-up sent","Shared a workflow example."],["29 Aug","Discovery meeting","Discussed fragmented relationship context."],["18 Aug","Connected","Relationship entered the operating layer."]],evidence:["Latest interaction is outbound","Reconnect window is open","No DNC restriction","No newer inbound context"],history:[["FOLLOW_UP_MAYA","OPEN","Created from state + eligibility + capacity"]]},
 {id:"daniel",name:"Daniel Wong",title:"Commercial Director",company:"Northstar Freight",initials:"DW",state:"RECONNECT_DUE",label:"Reconnect due",eligible:true,priority:"P1",why:"Agreed reconnect date reached",action:"Reconnect",actionStatus:"OPEN",summary:"Daniel asked to reconnect after budget review. No newer interaction supersedes that commitment.",memory:[["Priority","Partner follow-up"],["Known objection","Budget timing"],["Commitment","Reconnect after September review"],["Stakeholder","Finance Director influences approval"]],timeline:[["Today","Reconnect date reached","Rule opened action."],["02 Sep","Snoozed","Daniel requested later follow-up."]],evidence:["Reconnect date reached","No newer inbound","No duplicate action"],history:[["RECONNECT_DANIEL","OPEN","Agreement date reached"]]},
@@ -14,7 +14,7 @@ audit:[
 ["09:00","Rules","reconnect.opened","Daniel Wong reconnect window opened"],
 ["08 Sep","Human","suppression.applied","Leo Goh set to Do Not Contact"]
 ]};
-const KEY="relationship-ops-demo-v1";let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(SEED);
+const KEY="relationship-ops-demo-v2";let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(SEED);
 const $=s=>document.querySelector(s),view=$("#view"),title=$("#title"),subtitle=$("#subtitle");
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function setHead(t,s){title.textContent=t;subtitle.textContent=s}
@@ -23,7 +23,7 @@ function usedCapacity(){const c=state.capacity;return c.usedInbound+c.usedNewAcc
 function updateCap(){const left=state.capacity.weekly-usedCapacity();$("#capacityPill").textContent=left+" of "+state.capacity.weekly+" weekly slots remain"}
 function queueRow(p){return '<div class="queue-row" onclick="openPerson(\''+p.id+'\')"><div class="avatar">'+p.initials+'</div><div><div class="name">'+p.name+'</div><div class="meta">'+p.title+" · "+p.company+'</div></div><div class="why">'+p.why+'</div><div class="action">'+p.action+'</div><div class="state-cell">'+pill(p)+'</div></div>'}
 function render(name){updateCap();document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.view===name));({queue,people,reconcile,capacity,audit}[name]||queue)()}
-function queue(){
+function oldQueue(){
  setHead("Action Queue","Current, eligible actions within limited human capacity.");
  const open=state.people.filter(p=>p.actionStatus==="OPEN").length,blocked=state.people.filter(p=>!p.eligible).length,sup=state.people.reduce((n,p)=>n+p.history.filter(h=>h[1]==="SUPERSEDED").length,0),left=state.capacity.weekly-usedCapacity();
  view.innerHTML='<div class="intro"><div><h2>State before priority. Eligibility before capacity.</h2><p>The queue only contains actions that survive identity, suppression, timing and duplicate-action controls.</p></div><div class="demo-path"><b>Featured walkthrough:</b> open <strong>Maya Chen</strong>, ingest a new reply, and watch the old follow-up become <strong>SUPERSEDED</strong> before a replacement action appears.</div></div>'+
@@ -71,7 +71,7 @@ function eligibilityHtml(p){
  ];
  return '<div class="eligibility">'+rows.map(r=>'<div class="elig-row"><div class="elig-icon '+(r[1]?"":"fail")+'">'+(r[1]?"✓":"!")+'</div><div><b>'+r[0]+'</b><p>'+(r[1]?"Pass":"Block / review")+'</p></div><span class="rule">'+r[2]+'</span></div>').join("")+'</div>'
 }
-function buttons(p){
+function oldButtons(p){
  if(p.id!=="maya") return '<button class="btn" onclick="render(\'people\')">View all</button>';
  if(!p.changed) return '<button class="btn primary" onclick="ingestReply()">Ingest new inbound reply</button>';
  return '<button class="btn" onclick="resetDemo()">Replay walkthrough</button>'
@@ -83,7 +83,7 @@ function ingestReply(){
  p.timeline.unshift(["Just now","Inbound reply","Asked whether the system can sit beside the existing CRM."]);
  p.evidence=["New inbound interaction is newer than the scheduled follow-up","Relationship state recomputed to Active conversation","Old follow-up no longer matches current context","Human review required before any new outbound action"];
  p.history[0][1]="SUPERSEDED";p.history[0][2]="Invalidated by newer inbound interaction";p.history.unshift(["REVIEW_MAYA_REPLY","OPEN","Replacement action created from reconciled state"]);
- state.capacity.usedInbound+=1;
+ // Ingestion does not consume a human communication slot.
  state.audit.unshift(["Now","Rules","action.superseded","FOLLOW_UP_MAYA invalidated by newer inbound interaction"]);
  state.audit.unshift(["Now","State","relationship.recomputed","Maya Chen → ACTIVE_CONVERSATION"]);
  state.audit.unshift(["Now","System","interaction.ingested","New inbound reply linked to Maya Chen"]);
@@ -96,3 +96,31 @@ function resetDemo(){localStorage.removeItem(KEY);location.reload()}
 document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>render(b.dataset.view));
 $("#reset").onclick=resetDemo;
 render("queue");
+
+function sourceEvidence(){setHead("Demo scope","Synthetic records · local browser simulation");view.innerHTML='<div class="panel evidence-source"><h2>Try an operator shift</h2><p>Review a task, edit a draft, record completion, snooze or cancel an action. Simulate a new reply to see the older follow-up superseded.</p><p>All identities, messages and work items are synthetic. Actions affect this browser only. No messages are sent and no production workflow is connected.</p></div>';}
+function queue(){
+ setHead("Work queue","Choose a task, review its context, and record what happened.");
+ const active=state.people.filter(p=>p.actionStatus==="OPEN");
+ view.innerHTML=`<div class="toolbar"><span>${active.length} tasks need attention · ${state.people.filter(p=>p.actionStatus==="SNOOZED").length} snoozed</span><button class="btn" onclick="sourceEvidence()">Demo scope</button></div><div class="panel"><div class="panel-head"><h3>Ready for review</h3><span>SIMULATED WORK · no messages sent</span></div><div class="panel-body">${active.length?active.map(queueRow).join(""):'<div class="empty">All current tasks handled. Review snoozed work or reset the demo.</div>'}</div></div><div class="panel" style="margin-top:16px"><div class="panel-head"><h3>Waiting and restricted</h3></div><div class="panel-body">${state.people.filter(p=>p.actionStatus!=="OPEN").map(queueRow).join("")}</div></div>`;
+}
+function buttons(p){
+ let b=p.id==="maya"&&!p.changed?'<button class="btn" onclick="ingestReply()">Simulate inbound reply</button>':'';
+ if(p.eligible&&p.actionStatus==="OPEN") b+='<button class="btn primary" onclick="reviewTask(\''+p.id+'\')">Review action</button>';
+ if(p.actionStatus==="SNOOZED") b+='<button class="btn" onclick="restoreTask(\''+p.id+'\')">Resume task</button>';
+ return b;
+}
+function reviewTask(id){
+ openPerson(id);const p=state.people.find(x=>x.id===id);
+ view.insertAdjacentHTML('afterbegin',`<section class="task-review"><h2>${p.action}</h2><p>${p.why}. Review context before taking an external action.</p><label for="draft">Message draft · synthetic example</label><textarea id="draft" rows="4">${p.changed?'Thanks for your reply. I can share how the workflow would fit alongside your current CRM. Would that be useful?':'Hi '+p.name.split(' ')[0]+', following up on our earlier conversation. Is this still useful to revisit?'}</textarea><label for="outcome">Outcome / operator note</label><input id="outcome" placeholder="Record the result or reason"><div class="actions"><button class="btn primary" onclick="finishTask('${id}','DONE')">Record completion</button><button class="btn" onclick="finishTask('${id}','SNOOZED')">Snooze 7 days</button><button class="btn" onclick="finishTask('${id}','CANCELLED')">Cancel action</button></div><p class="small">These controls update this browser only. Recording completion does not send a message.</p></section>`);
+}
+function finishTask(id,status){
+ const p=state.people.find(x=>x.id===id),note=document.querySelector('#outcome').value.trim().replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ if(!note){document.querySelector('#outcome').setCustomValidity('Add an outcome or reason.');document.querySelector('#outcome').reportValidity();return;}
+ if(status==='DONE'&&usedCapacity()>=state.capacity.weekly){alert('Weekly ceiling reached. Snooze or cancel this task.');return;}
+ p.actionStatus=status;p.why=status==='SNOOZED'?'Snoozed until '+new Date(Date.now()+7*86400000).toLocaleDateString():status==='DONE'?'Completion recorded':'Cancelled by operator';
+ p.history.unshift([p.id.toUpperCase()+'_ACTION',status,note]);
+ if(status==='DONE'){if(p.changed)state.capacity.usedInbound++;else state.capacity.usedFollowups++;}
+ state.audit.unshift([new Date().toLocaleTimeString(),'Human','action.'+status.toLowerCase(),p.name+' · '+note]);save();render('queue');
+}
+function restoreTask(id){const p=state.people.find(x=>x.id===id);p.actionStatus='OPEN';p.why='Resumed by operator';state.audit.unshift(['Now','Human','action.resumed',p.name]);save();render('queue');}
+render('queue');
