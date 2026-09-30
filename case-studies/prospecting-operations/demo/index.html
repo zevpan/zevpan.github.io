@@ -3,47 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Prospecting Operations Console — Interactive Demo</title>
-<meta name="description" content="Interactive synthetic prototype for relationship-state management, capacity-aware prioritization and action reconciliation.">
-<link rel="stylesheet" href="styles.css?v=a63c8b670a78741b">
+<title>Prospecting Operations Workspace — Interactive Demo</title>
+<meta name="description" content="An interactive workflow demo for importing relationship data, reconciling records, and reviewing next actions.">
+<link rel="stylesheet" href="styles.css?v=workflow-4">
 </head>
 <body>
-<div class="demo-strip"><strong>Interactive case-study demo</strong><span>Synthetic relationship data · deterministic rules + simulated AI support</span><a href="../index.html">Back to case study</a></div>
+<div class="demo-strip"><strong>Interactive case-study demo</strong><span>Synthetic scenario · local CSV preview · no messages sent</span><a href="../index.html">Back to case study</a></div>
 <div class="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">R</div><div><strong>Relationship Ops</strong><small>Decision Console</small></div></div>
-
-    <div class="nav-label">Workspace</div>
-    <nav>
-      <button class="nav active" data-view="queue"><span class="nav-icon">⌂</span><span>Action Queue</span></button>
-      <button class="nav" data-view="people"><span class="nav-icon">◎</span><span>Relationships</span></button>
-      <button class="nav" data-view="reconcile"><span class="nav-icon">↻</span><span>Reconciliation</span></button>
-      <button class="nav" data-view="capacity"><span class="nav-icon">◫</span><span>Capacity</span></button>
-      <button class="nav" data-view="audit"><span class="nav-icon">≡</span><span>Audit</span></button>
+    <div class="brand"><div class="mark">AX</div><div><strong>AX Workspace</strong><small>Prospecting Operations</small></div></div>
+    <div class="nav-label">Operations</div>
+    <nav aria-label="Prospecting workspace">
+      <button class="nav active" data-view="workspace"><span class="nav-icon">⌂</span><span>Workspace</span></button>
+      <button class="nav" data-view="imports"><span class="nav-icon">⇧</span><span>Imports</span></button>
+      <button class="nav" data-view="runs"><span class="nav-icon">↻</span><span>Flow runs</span></button>
+      <button class="nav" data-view="people"><span class="nav-icon">◎</span><span>People Master</span></button>
+      <button class="nav" data-view="actions"><span class="nav-icon">✓</span><span>Next actions</span></button>
+      <button class="nav" data-view="evidence"><span class="nav-icon">≡</span><span>Workbook evidence</span></button>
+      <button class="nav" data-view="audit"><span class="nav-icon">⌁</span><span>Activity log</span></button>
     </nav>
-
-    <div class="nav-label">Featured walkthrough</div>
-    <div class="walkthrough">
-      <b>Maya Chen</b>
-      <p>Start with an open follow-up, ingest a new inbound reply, watch the old action become stale, recompute state, then review the replacement action.</p>
-      <button onclick="openPerson('maya')">Open featured relationship</button>
-    </div>
-
-    <div class="bottom"><span>SYNTHETIC DEMO DATA</span><button id="reset">Reset demo</button></div>
+    <div class="bottom"><span>DEMO SESSION · RESETS ON REFRESH</span><button id="reset">Reset demo session</button></div>
   </aside>
-
   <main class="main">
     <div class="topbar">
-      <div class="crumb"><span class="workspace-dot"></span>Relationship Operations <span>/</span> Prototype</div>
-      <div class="top-actions"><div class="search">⌕ <span>Search people</span><kbd>/</kbd></div><a class="top-link" href="../index.html">Case study ↗</a><div class="user">Z</div></div>
+      <div class="crumb"><span class="workspace-dot"></span>AX Workspace <span>/</span> Prospecting Operations</div>
+      <div class="top-actions"><label class="search"><span>⌕</span><input id="globalSearch" type="search" placeholder="Search People Master" aria-label="Search People Master"><kbd>/</kbd></label><a class="top-link" href="../index.html">Case study ↗</a><div class="user" aria-label="Demo operator">Z</div></div>
     </div>
-
     <header class="page-head">
-      <div><div class="eyebrow">ANONYMIZED TARGET OPERATING MODEL</div><h1 id="title">Action Queue</h1><p id="subtitle">Current, eligible actions within limited human capacity.</p></div>
-      <div id="capacityPill" class="mode"></div>
+      <div><div class="eyebrow">AI-ASSISTED PROSPECTING OPERATIONS</div><h1 id="title">Prospecting workspace</h1><p id="subtitle">Move exported data through reconciliation, relationship records, and next actions.</p></div>
+      <div id="capacityPill" class="mode">Sample data · no messages sent</div>
     </header>
-
-    <section id="view"></section>
+    <section id="view" aria-live="polite"></section>
   </main>
 </div>
 <script src="app.js"></script>
