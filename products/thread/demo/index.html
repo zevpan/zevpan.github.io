@@ -5,24 +5,25 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Thread — AX Memory + AX Workspace</title>
 <meta name="description" content="A synthetic, browser-local demo of Thread's operational context and team workflow.">
-<link rel="stylesheet" href="styles.css?v=thread-ops-2">
+<link rel="stylesheet" href="styles.css?v=thread-integrations-1">
 </head>
 <body>
 <div class="demo-strip"><strong>SYNTHETIC DEMO DATA</strong><span>Working local demo · no live integrations or notifications</span><a href="../index.html">About Thread</a></div>
 <div class="shell">
   <aside class="sidebar" aria-label="Thread workspace">
     <a class="brand" href="#today"><span class="mark" aria-hidden="true">T</span><span><strong>Thread</strong><small>AX Workspace</small></span></a>
-    <div class="nav-label">Workspace</div>
+    <div class="nav-label">Workspace &amp; tools</div>
     <nav class="main-nav" aria-label="Main navigation">
       <button class="nav active" data-view="today"><span class="nav-icon" aria-hidden="true">⌂</span><span>Today</span></button>
       <button class="nav" data-view="work"><span class="nav-icon" aria-hidden="true">✓</span><span>My Work</span></button>
       <button class="nav" data-view="context"><span class="nav-icon" aria-hidden="true">▤</span><span>Context</span></button>
       <button class="nav" data-view="history"><span class="nav-icon" aria-hidden="true">↺</span><span>History</span></button>
+      <button class="nav" data-view="integrations"><span class="nav-icon" aria-hidden="true">⧉</span><span>Integrations</span></button>
     </nav>
     <div class="sidebar-card">
-      <b>Try the workflow</b>
-      <p>Open the Crestline rate record, add the sample source, review the evidence, then record a decision.</p>
-      <span>Every item is synthetic and saved in this browser only.</span>
+      <b>Try the connected workflow</b>
+      <p>Open Integrations, connect the simulated Outlook and Sheets cards, then run a sample sync into AX Memory.</p>
+      <span>Connections and data are simulated in this browser.</span>
     </div>
     <div class="sidebar-bottom"><span>SAVED IN THIS BROWSER ONLY</span><button id="reset" type="button">Reset demo</button></div>
   </aside>
@@ -38,12 +39,12 @@
     <div id="storage-banner" class="storage-banner" role="status"></div>
     <div id="app-message" class="app-message" role="status" aria-live="polite"></div>
     <header class="page-head">
-      <div><div class="eyebrow">AX WORKSPACE · LOCAL DEMO</div><h1 id="title">Today</h1><p id="subtitle">Operational context that needs a decision or follow-up.</p></div>
+      <div><div class="eyebrow" id="page-eyebrow">AX WORKSPACE · LOCAL DEMO</div><h1 id="title">Today</h1><p id="subtitle">Operational context that needs a decision or follow-up.</p></div>
       <div id="page-meta" class="page-meta"></div>
     </header>
     <section id="view" aria-live="polite" aria-label="Workspace content"></section>
   </main>
 </div>
-<script src="app.js?v=thread-ops-1" defer></script>
+<script src="app.js?v=thread-integrations-1" defer></script>
 </body>
 </html>

@@ -11,11 +11,60 @@
   const SAMPLE_DATE = "2026-09-29";
   const SAMPLE_BODY = "Crestline Logistics has issued a revised rate schedule effective 01 Nov 2026. Standard transfer: $47.00. Priority transfer: $75.00. Fuel surcharge removed. Written confirmation required within 14 days. [SYNTHETIC DEMO CONTENT — not a real document]";
 
+  const CONNECTOR_STORAGE_KEY = "thread-connectors-demo-v1";
+  const DEFAULT_DEMO_CONNECTIONS = ["microsoft-outlook", "google-sheets", "netsuite"];
+  const INTEGRATION_APPS = [
+    { id: "microsoft-outlook", name: "Microsoft Outlook", category: "Communication", icon: "O", color: "#1769aa", description: "Email threads, attachments, and calendar context", data: ["Email", "Calendar"] },
+    { id: "gmail", name: "Gmail", category: "Communication", icon: "G", color: "#c74440", description: "Mail conversations and attached documents", data: ["Email", "Attachments"] },
+    { id: "microsoft-teams", name: "Microsoft Teams", category: "Communication", icon: "T", color: "#5558af", description: "Team conversations, meeting notes, and shared files", data: ["Messages", "Meetings"] },
+    { id: "slack", name: "Slack", category: "Communication", icon: "S", color: "#611f69", description: "Channel conversations and operational updates", data: ["Messages", "Events"] },
+    { id: "zoom", name: "Zoom", category: "Communication", icon: "Z", color: "#2d8cff", description: "Meeting records and follow-up context", data: ["Meetings", "Notes"] },
+    { id: "google-calendar", name: "Google Calendar", category: "Communication", icon: "C", color: "#4285f4", description: "Meeting schedules and event changes", data: ["Events", "Dates"] },
+    { id: "drive", name: "Google Drive", category: "Documents & knowledge", icon: "D", color: "#1a8f55", description: "Shared documents and team folders", data: ["Files", "Folders"] },
+    { id: "google-sheets", name: "Google Sheets", category: "Documents & knowledge", icon: "GS", color: "#188038", description: "Structured spreadsheets and changing values", data: ["Sheets", "Rows"] },
+    { id: "google-docs", name: "Google Docs", category: "Documents & knowledge", icon: "GD", color: "#4285f4", description: "Policies, working documents, and approvals", data: ["Documents", "Comments"] },
+    { id: "sharepoint", name: "Microsoft SharePoint", category: "Documents & knowledge", icon: "SP", color: "#087e8b", description: "Team sites, files, and internal knowledge", data: ["Files", "Lists"] },
+    { id: "onedrive", name: "OneDrive", category: "Documents & knowledge", icon: "OD", color: "#1673c9", description: "Personal and shared work files", data: ["Files", "Folders"] },
+    { id: "notion", name: "Notion", category: "Documents & knowledge", icon: "N", color: "#252525", description: "Team knowledge pages and databases", data: ["Pages", "Databases"] },
+    { id: "box", name: "Box", category: "Documents & knowledge", icon: "B", color: "#1769aa", description: "Governed files and shared content", data: ["Files", "Folders"] },
+    { id: "dropbox", name: "Dropbox", category: "Documents & knowledge", icon: "DB", color: "#0061ff", description: "Shared files and team folders", data: ["Files", "Folders"] },
+    { id: "jira", name: "Jira", category: "Projects & IT", icon: "J", color: "#1868db", description: "Issues, project status, and delivery work", data: ["Issues", "Projects"] },
+    { id: "asana", name: "Asana", category: "Projects & IT", icon: "A", color: "#f06a6a", description: "Tasks, owners, and project milestones", data: ["Tasks", "Projects"] },
+    { id: "linear", name: "Linear", category: "Projects & IT", icon: "L", color: "#5e6ad2", description: "Issues, cycles, and engineering follow-up", data: ["Issues", "Cycles"] },
+    { id: "monday", name: "monday.com", category: "Projects & IT", icon: "M", color: "#6c4ce3", description: "Boards, work items, and ownership", data: ["Boards", "Tasks"] },
+    { id: "trello", name: "Trello", category: "Projects & IT", icon: "Tr", color: "#0969da", description: "Cards, checklists, and team boards", data: ["Cards", "Boards"] },
+    { id: "clickup", name: "ClickUp", category: "Projects & IT", icon: "CU", color: "#7b68ee", description: "Tasks, status changes, and project context", data: ["Tasks", "Projects"] },
+    { id: "servicenow", name: "ServiceNow", category: "Projects & IT", icon: "SN", color: "#62d84e", description: "Service requests, incidents, and changes", data: ["Tickets", "Incidents"] },
+    { id: "netsuite", name: "Oracle NetSuite", category: "Finance & ERP", icon: "NS", color: "#52657a", description: "Purchasing, finance, inventory, and supplier records", data: ["Finance", "Inventory"] },
+    { id: "sap", name: "SAP S/4HANA", category: "Finance & ERP", icon: "SAP", color: "#0878a4", description: "Enterprise finance, procurement, and inventory", data: ["ERP", "Inventory"] },
+    { id: "quickbooks", name: "QuickBooks Online", category: "Finance & ERP", icon: "QB", color: "#2ca01c", description: "Accounting records, bills, and supplier payments", data: ["Accounting", "Bills"] },
+    { id: "xero", name: "Xero", category: "Finance & ERP", icon: "X", color: "#13b5ea", description: "Accounting activity and financial records", data: ["Accounting", "Invoices"] },
+    { id: "oracle-fusion", name: "Oracle Fusion Cloud", category: "Finance & ERP", icon: "OF", color: "#c74634", description: "Enterprise finance and business operations", data: ["ERP", "Finance"] },
+    { id: "sage-intacct", name: "Sage Intacct", category: "Finance & ERP", icon: "SI", color: "#00a376", description: "Financial records and multi-entity reporting", data: ["Accounting", "Reports"] },
+    { id: "workday", name: "Workday", category: "Finance & ERP", icon: "W", color: "#f5a623", description: "People, finance, and planning records", data: ["People", "Finance"] },
+    { id: "salesforce", name: "Salesforce", category: "CRM & Support", icon: "SF", color: "#1798c1", description: "Customer accounts, cases, and service context", data: ["Accounts", "Cases"] },
+    { id: "hubspot", name: "HubSpot", category: "CRM & Support", icon: "H", color: "#ff7a59", description: "Customer records and service activity", data: ["Contacts", "Tickets"] },
+    { id: "zendesk", name: "Zendesk", category: "CRM & Support", icon: "Z", color: "#17494d", description: "Support tickets and customer conversations", data: ["Tickets", "Comments"] },
+    { id: "intercom", name: "Intercom", category: "CRM & Support", icon: "I", color: "#286efa", description: "Customer conversations and support cases", data: ["Messages", "Cases"] },
+    { id: "freshdesk", name: "Freshdesk", category: "CRM & Support", icon: "F", color: "#24a148", description: "Service tickets and support queues", data: ["Tickets", "Queues"] },
+    { id: "zoho-crm", name: "Zoho CRM", category: "CRM & Support", icon: "ZC", color: "#e64b3c", description: "Customer records and service follow-up", data: ["Accounts", "Tasks"] },
+    { id: "snowflake", name: "Snowflake", category: "Data & Operations", icon: "SF", color: "#29b5e8", description: "Warehouse data and governed reporting", data: ["Tables", "Reports"] },
+    { id: "postgresql", name: "PostgreSQL", category: "Data & Operations", icon: "PG", color: "#336791", description: "Operational database records", data: ["Tables", "Records"] },
+    { id: "bigquery", name: "Google BigQuery", category: "Data & Operations", icon: "BQ", color: "#4285f4", description: "Analytics tables and operational datasets", data: ["Tables", "Queries"] },
+    { id: "airtable", name: "Airtable", category: "Data & Operations", icon: "AT", color: "#fc5c63", description: "Flexible team databases and work queues", data: ["Bases", "Records"] },
+    { id: "shopify", name: "Shopify", category: "Data & Operations", icon: "SH", color: "#96bf48", description: "Orders, products, and fulfillment status", data: ["Orders", "Inventory"] },
+    { id: "dynamics365", name: "Microsoft Dynamics 365", category: "Data & Operations", icon: "D3", color: "#0052cc", description: "Business applications and operational records", data: ["Records", "Workflows"] },
+    { id: "amazon-s3", name: "Amazon S3", category: "Data & Operations", icon: "S3", color: "#ec7211", description: "Files and data exports from internal systems", data: ["Files", "Exports"] },
+    { id: "rest-api", name: "REST API / HTTP", category: "Data & Operations", icon: "API", color: "#44546f", description: "Custom API access for long-tail business tools", data: ["API", "Custom"] },
+    { id: "webhooks", name: "Webhooks", category: "Data & Operations", icon: "WH", color: "#5e4db2", description: "Event delivery from internal and external systems", data: ["Events", "Custom"] }
+  ];
+
   const $ = (selector, root = document) => root.querySelector(selector);
   const view = $("#view");
   const title = $("#title");
   const subtitle = $("#subtitle");
   const pageMeta = $("#page-meta");
+  const pageEyebrow = $("#page-eyebrow");
   const searchInput = $("#search");
   const storageBanner = $("#storage-banner");
   const appMessage = $("#app-message");
@@ -248,6 +297,34 @@
   const storage = createStorage();
   let state = storage.data;
 
+  function readDemoConnections() {
+    try {
+      const raw = window.localStorage.getItem(CONNECTOR_STORAGE_KEY);
+      if (raw === null) return new Set(DEFAULT_DEMO_CONNECTIONS);
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return new Set(DEFAULT_DEMO_CONNECTIONS);
+      const validIds = new Set(INTEGRATION_APPS.map((app) => app.id));
+      return new Set(parsed.filter((id) => validIds.has(id)));
+    } catch (_error) {
+      return new Set(DEFAULT_DEMO_CONNECTIONS);
+    }
+  }
+
+  let demoConnections = readDemoConnections();
+
+  function saveDemoConnections() {
+    try {
+      window.localStorage.setItem(CONNECTOR_STORAGE_KEY, JSON.stringify([...demoConnections]));
+    } catch (_error) {
+      showMessage("Connection state could not be saved. The demo simulation remains in this browser session only.");
+    }
+  }
+
+  function resetDemoConnections() {
+    demoConnections = new Set(DEFAULT_DEMO_CONNECTIONS);
+    try { window.localStorage.removeItem(CONNECTOR_STORAGE_KEY); } catch (_error) { /* Keep the in-memory demo reset. */ }
+  }
+
   const transient = {
     sourceForm: new Set(),
     taskForm: new Set(),
@@ -312,6 +389,36 @@
     });
   }
 
+  function attachCrestlineSampleProposals(record, source) {
+    if (!record || record.id !== CRESTLINE_ID) return;
+    if (!record.uncertainties.some((item) => item.id === "written-confirmation")) {
+      record.uncertainties.push({ id: "written-confirmation", label: "Written confirmation", note: "The synthetic rate card requests written confirmation within 14 days. A follow-up is assigned locally; the demo does not send a response.", status: "open", blocksStatus: false });
+    }
+    const proposalSpecs = [
+      { factId: "standard-rate", factLabel: "Standard transfer rate", category: "Rate", proposedValue: "$47.00", excerpt: "Standard transfer: $47.00." },
+      { factId: "priority-rate", factLabel: "Priority transfer rate", category: "Rate", proposedValue: "$75.00", excerpt: "Priority transfer: $75.00." },
+      { factId: "fuel-surcharge", factLabel: "Fuel surcharge", category: "Condition", proposedValue: "Removed", excerpt: "Fuel surcharge removed." }
+    ];
+    proposalSpecs.forEach((spec) => {
+      const currentFact = factById(record, spec.factId);
+      record.proposals.unshift({
+        id: `proposal-${Date.now()}-${spec.factId}`,
+        ...spec,
+        sourceId: source.id,
+        currentValue: currentFact ? currentFact.value : "No current value recorded",
+        currentSourceId: currentFact ? currentFact.sourceId : "",
+        status: "pending",
+        createdAt: source.createdAt,
+        reviewedAt: "",
+        reviewNote: "",
+        correctionValue: "",
+        prewritten: true
+      });
+    });
+    source.supportsFactIds = proposalSpecs.map((spec) => spec.factId);
+    addHistory(record, "Conflict surfaced", "Finance costing model references $42.00 / $68.00. The new Crestline rate card states $47.00 / $75.00. Human review is required before a decision.", "Thread demo");
+  }
+
   function statusFor(record) {
     if (record.decisions.length) return "Decision recorded";
     if (record.proposals.some((proposal) => proposal.status === "pending" || proposal.status === "unsure")) return "Needs review";
@@ -365,10 +472,11 @@
     return Number.isNaN(date.getTime()) ? Number.MAX_SAFE_INTEGER : date.getTime();
   }
 
-  function setPage(heading, description, meta = "") {
+  function setPage(heading, description, meta = "", eyebrow = "AX WORKSPACE · LOCAL DEMO") {
     title.textContent = heading;
     subtitle.textContent = description;
     pageMeta.textContent = meta;
+    if (pageEyebrow) pageEyebrow.textContent = eyebrow;
   }
 
   function setNav(activeView) {
@@ -581,6 +689,173 @@
     view.replaceChildren(node("div", { className: "context-list" }, state.records.map(recordCard)), node("p", { className: "footer-note" }, "In this MVP, AX Memory is browser-local. Production sharing and team permissions require a real backend."));
   }
 
+
+  function simulateIntegrationSync(recordId, requiredApps, source, summary) {
+    if (!requiredApps.every((appId) => demoConnections.has(appId))) {
+      showMessage("Connect the required demo apps first. No external account connection is available in this prototype.");
+      return;
+    }
+    const record = recordById(recordId);
+    if (!record) return;
+    if (sourceById(record, source.id)) {
+      searchInput.value = "";
+      showMessage("This sample sync is already in AX Memory. Opening its context record.");
+      goToRecord(recordId);
+      return;
+    }
+    record.sources.unshift(source);
+    if (recordId === CRESTLINE_ID) attachCrestlineSampleProposals(record, source);
+    addHistory(record, "Source added", `${source.title} was added to AX Memory by the simulated connector workflow.`, "Demo connector");
+    addHistory(record, "Integration sync", summary, "Demo connector");
+    saveState();
+    searchInput.value = "";
+    showMessage("Simulated sync complete. Source evidence and review work were added locally; no external account or live system was contacted.");
+    goToRecord(recordId);
+  }
+
+  function runCrestlineIntegrationSync() {
+    simulateIntegrationSync(CRESTLINE_ID, ["microsoft-outlook", "google-sheets"], {
+      id: "source-demo-connectors-crestline",
+      type: "Simulated Outlook + Sheets sync",
+      title: "Outlook rate-card email synced — Crestline Logistics, 29 Sep 2026",
+      date: SAMPLE_DATE,
+      body: SAMPLE_BODY,
+      supportsFactIds: [],
+      createdAt: nowIso(),
+      createdBy: "Demo connector flow",
+      sample: true
+    }, "Microsoft Outlook supplied the revised rate-card email and Google Sheets supplied the existing finance baseline. Thread linked the new source to three proposed fact changes for human review.");
+  }
+
+  function runInventoryIntegrationSync() {
+    simulateIntegrationSync("bin-location-7c-variance", ["netsuite", "google-sheets"], {
+      id: "source-demo-connectors-bin7c",
+      type: "Simulated NetSuite + Sheets sync",
+      title: "NetSuite + cycle-count sync — Bin Location 7C, 30 Sep 2026",
+      date: "2026-09-30",
+      body: "NetSuite on-hand quantity: 360 units.\nWarehouse cycle count: 315 units.\nDifference: 45 units (12.5%).\nCause has not been verified.\n[SYNTHETIC DEMO CONTENT — no live inventory system was accessed]",
+      supportsFactIds: ["system-quantity", "physical-count", "quantity-difference"],
+      createdAt: nowIso(),
+      createdBy: "Demo connector flow",
+      sample: true
+    }, "NetSuite and a cycle-count spreadsheet were represented as connected sources. The simulated sync preserved the 360-versus-315 discrepancy and left the cause unverified for human investigation.");
+  }
+
+  function renderIntegrationCard(app, refreshCatalog) {
+    const connected = demoConnections.has(app.id);
+    const card = node("article", { className: "connector-card" },
+      node("div", { className: "connector-card-top" },
+        node("span", { className: "connector-icon", style: `background:${app.color}` }, app.icon),
+        node("div", { className: "connector-ident" }, node("h3", {}, app.name), node("small", {}, app.category))
+      ),
+      node("span", { className: `connector-state${connected ? " is-connected" : ""}` }, connected ? "Connected in demo" : "Available in concept"),
+      node("p", { className: "connector-description" }, app.description),
+      node("div", { className: "connector-scope" }, app.data.map((item) => node("span", {}, item))),
+      button(connected ? "Disconnect demo" : "Connect in demo", () => {
+        if (connected) demoConnections.delete(app.id);
+        else demoConnections.add(app.id);
+        saveDemoConnections();
+        showMessage(`${app.name} is marked ${connected ? "not connected" : "connected"} in this local simulation. No account or data was accessed.`);
+        refreshCatalog();
+      }, connected ? "btn" : "btn primary")
+    );
+    return card;
+  }
+
+  function renderIntegrations() {
+    setPage("Integration library", "Browse the work systems Thread is designed to bring into shared, source-linked context.", `${INTEGRATION_APPS.length} representative examples · 1,000+ target`, "INTEGRATION ECOSYSTEM · LOCAL SIMULATION");
+    const connectedValue = node("b", {}, String(demoConnections.size));
+    const summaryMetrics = node("div", { className: "metrics" },
+      metric("1,000+", "Ecosystem target · roadmap"),
+      metric(INTEGRATION_APPS.length, "Representative app cards shown"),
+      node("div", { className: "metric" }, connectedValue, node("span", {}, "Simulated connections"))
+    );
+
+    const hero = node("section", { className: "integration-hero" },
+      node("div", { className: "eyebrow" }, "INTEGRATION ECOSYSTEM · CLICKABLE SIMULATION"),
+      node("h2", {}, "One context layer across the apps teams already use."),
+      node("p", {}, "Explore a representative catalog across communication, documents, work management, finance, customer support, data, and operations. Connect sample apps, then run a workflow that brings source evidence into AX Memory and routes it to AX Workspace."),
+      node("div", { className: "integration-proof" },
+        node("span", {}, `${INTEGRATION_APPS.length} representative apps shown`),
+        node("span", {}, "6 work categories"),
+        node("span", {}, "No live account access")
+      )
+    );
+    const flow = node("section", { className: "integration-flow" },
+      node("div", {}, node("h3", {}, "What happens after a source changes"), node("p", {}, "The connector brings evidence in. Thread preserves where it came from and gives the team a reviewable next step.")),
+      node("div", { className: "integration-flow-row" },
+        node("div", { className: "integration-flow-node" }, node("b", {}, "Connected apps"), node("small", {}, "Read / receive")),
+        node("span", { className: "integration-flow-arrow", "aria-hidden": "true" }, "→"),
+        node("div", { className: "integration-flow-node" }, node("b", {}, "AX Memory"), node("small", {}, "Source + history")),
+        node("span", { className: "integration-flow-arrow", "aria-hidden": "true" }, "→"),
+        node("div", { className: "integration-flow-node" }, node("b", {}, "AX Workspace"), node("small", {}, "Review + follow-up"))
+      )
+    );
+    const overview = node("div", { className: "integration-overview" }, hero, flow);
+
+    const crestlineDone = !!sourceById(recordById(CRESTLINE_ID), "source-demo-connectors-crestline");
+    const inventoryRecord = recordById("bin-location-7c-variance");
+    const inventoryDone = !!sourceById(inventoryRecord, "source-demo-connectors-bin7c");
+    const crestlineRun = button("", runCrestlineIntegrationSync, "btn primary");
+    const inventoryRun = button("", runInventoryIntegrationSync, "btn primary");
+    const crestlineScenario = node("article", { className: "integration-scenario" },
+      node("h3", {}, "Supplier rate change · Operations + Finance"),
+      node("p", {}, "An updated rate-card email meets the older finance model. Thread shows the source conflict and prepares three facts for human review."),
+      node("div", { className: "source-pair" }, node("span", {}, "Microsoft Outlook · supplier email"), node("b", { "aria-hidden": "true" }, "+"), node("span", {}, "Google Sheets · finance baseline")),
+      crestlineRun
+    );
+    const inventoryScenario = node("article", { className: "integration-scenario" },
+      node("h3", {}, "Stock variance · Warehouse + Finance"),
+      node("p", {}, "An inventory balance and a cycle-count sheet disagree. Thread preserves both values and keeps the cause unverified until a person investigates."),
+      node("div", { className: "source-pair" }, node("span", {}, "Oracle NetSuite · system quantity"), node("b", { "aria-hidden": "true" }, "+"), node("span", {}, "Google Sheets · cycle count")),
+      inventoryRun
+    );
+    const scenarios = node("div", { className: "integration-scenarios" }, crestlineScenario, inventoryScenario);
+
+    const search = node("input", { id: "integration-search", type: "search", placeholder: `Search ${INTEGRATION_APPS.length} representative apps`, autocomplete: "off", "aria-label": "Search representative integrations" });
+    const category = node("select", { id: "integration-category", "aria-label": "Filter integrations by category" }, [
+      node("option", { value: "all" }, "All categories"),
+      ...[...new Set(INTEGRATION_APPS.map((app) => app.category))].map((item) => node("option", { value: item }, item))
+    ]);
+    const status = node("select", { id: "integration-status", "aria-label": "Filter integrations by demo status" }, [
+      node("option", { value: "all" }, "All demo states"),
+      node("option", { value: "connected" }, "Connected in demo"),
+      node("option", { value: "available" }, "Not connected")
+    ]);
+    const results = node("div", { className: "integration-results", role: "status" });
+    const grid = node("div", { className: "connector-grid", "aria-label": "Representative integration examples" });
+    const controls = node("div", { className: "integration-controls" }, search, category, status, results);
+    const catalog = panel("Browse representative integrations", `The target ecosystem is 1,000+ apps. These ${INTEGRATION_APPS.length} named cards make the concept tangible; search and filters operate on this sample catalog.`, node("div", {}, controls, grid));
+    const disclosure = node("p", { className: "integration-disclosure" }, "Prototype boundary: all connector states and sample syncs are simulated and saved only in this browser. No credentials are requested, no external API is called, and no live information is read or written. The 1,000+ figure is a product target, not a count of connectors implemented in this demo.");
+
+    function fillCatalog() {
+      const query = search.value.trim().toLowerCase();
+      const chosenCategory = category.value;
+      const chosenStatus = status.value;
+      const filtered = INTEGRATION_APPS.filter((app) => {
+        const matchesQuery = `${app.name} ${app.category} ${app.description} ${app.data.join(" ")}`.toLowerCase().includes(query);
+        const matchesCategory = chosenCategory === "all" || app.category === chosenCategory;
+        const connected = demoConnections.has(app.id);
+        const matchesStatus = chosenStatus === "all" || (chosenStatus === "connected" ? connected : !connected);
+        return matchesQuery && matchesCategory && matchesStatus;
+      });
+      results.textContent = `${filtered.length} of ${INTEGRATION_APPS.length} representative apps shown`;
+      grid.replaceChildren(...(filtered.length ? filtered.map((app) => renderIntegrationCard(app, fillCatalog)) : [emptyState("No sample integrations match.", "Try another app name or category.")]));
+      connectedValue.textContent = String(demoConnections.size);
+      const crestlineReady = ["microsoft-outlook", "google-sheets"].every((id) => demoConnections.has(id));
+      const inventoryReady = ["netsuite", "google-sheets"].every((id) => demoConnections.has(id));
+      crestlineRun.disabled = !crestlineReady;
+      inventoryRun.disabled = !inventoryReady;
+      crestlineRun.textContent = crestlineDone ? "Open the synced rate review →" : crestlineReady ? "Run simulated sync → open review" : "Connect Outlook + Sheets first";
+      inventoryRun.textContent = inventoryDone ? "Open the synced variance review →" : inventoryReady ? "Run simulated sync → open review" : "Connect NetSuite + Sheets first";
+    }
+    search.addEventListener("input", fillCatalog);
+    category.addEventListener("change", fillCatalog);
+    status.addEventListener("change", fillCatalog);
+    fillCatalog();
+    view.replaceChildren(summaryMetrics, overview, scenarios, catalog, disclosure);
+  }
+
   function sourceLabel(record, sourceId) {
     const source = sourceById(record, sourceId);
     return source ? source.title : "Source not available";
@@ -601,10 +876,12 @@
       onKeyup: () => captureSelection(source.id)
     }, source.body);
     return node("article", { className: "source-card", id: `source-${source.id}` },
-      node("div", { className: "card-top" }, node("div", {}, node("h4", {}, source.title), node("div", { className: "card-meta" }, node("span", {}, source.type), node("span", {}, dateLabel(source.date)))), node("span", { className: "type-pill" }, source.sample ? "Synthetic sample" : "Synthetic source")),
+      node("div", { className: "card-top" }, node("div", {}, node("h4", {}, source.title), node("div", { className: "card-meta" }, node("span", {}, source.type), node("span", {}, dateLabel(source.date)))), node("span", { className: "type-pill" }, source.type.startsWith("Simulated") ? "Connector simulation" : source.sample ? "Synthetic sample" : "Synthetic source")),
       node("p", {}, `Added by ${source.createdBy} · ${timestampLabel(source.createdAt)}`),
       sourceText,
-      node("div", { className: "helper" }, "Select text in this source if you want to create a manual proposal. No automated extraction runs for manually added sources.")
+      node("div", { className: "helper" }, source.type.startsWith("Simulated")
+        ? "This source came from a local connector simulation. No external data was fetched; any suggested facts are pre-written for this demo."
+        : "Select text in this source if you want to create a manual proposal. No automated extraction runs for manually added sources.")
     );
   }
 
@@ -681,34 +958,7 @@
       };
       record.sources.unshift(source);
       addHistory(record, "Source added", `${source.title} was added to ${record.title} by ${CURRENT_USER}.`);
-      if (isSample && record.id === CRESTLINE_ID) {
-        if (!record.uncertainties.some((item) => item.id === "written-confirmation")) {
-          record.uncertainties.push({ id: "written-confirmation", label: "Written confirmation", note: "The synthetic rate card requests written confirmation within 14 days. A follow-up is assigned locally; the demo does not send a response.", status: "open", blocksStatus: false });
-        }
-        const proposalSpecs = [
-          { factId: "standard-rate", factLabel: "Standard transfer rate", category: "Rate", proposedValue: "$47.00", excerpt: "Standard transfer: $47.00." },
-          { factId: "priority-rate", factLabel: "Priority transfer rate", category: "Rate", proposedValue: "$75.00", excerpt: "Priority transfer: $75.00." },
-          { factId: "fuel-surcharge", factLabel: "Fuel surcharge", category: "Condition", proposedValue: "Removed", excerpt: "Fuel surcharge removed." }
-        ];
-        proposalSpecs.forEach((spec) => {
-          const currentFact = factById(record, spec.factId);
-          record.proposals.unshift({
-            id: `proposal-${Date.now()}-${spec.factId}`,
-            ...spec,
-            sourceId: source.id,
-            currentValue: currentFact ? currentFact.value : "No current value recorded",
-            currentSourceId: currentFact ? currentFact.sourceId : "",
-            status: "pending",
-            createdAt: source.createdAt,
-            reviewedAt: "",
-            reviewNote: "",
-            correctionValue: "",
-            prewritten: true
-          });
-        });
-        source.supportsFactIds = proposalSpecs.map((spec) => spec.factId);
-        addHistory(record, "Conflict surfaced", "Finance costing model references $42.00 / $68.00. The new Crestline rate card states $47.00 / $75.00. Human review is required before a decision.");
-      }
+      if (isSample && record.id === CRESTLINE_ID) attachCrestlineSampleProposals(record, source);
       transient.sourceForm.delete(record.id);
       saveState();
       if (source.type === "Local demo event") {
@@ -1202,7 +1452,7 @@
     renderStorageBanner();
     const hash = window.location.hash.replace(/^#/, "") || "today";
     const match = hash.match(/^record\/(.+)$/);
-    const routeView = match ? "context" : (hash === "work" || hash === "context" || hash === "history" ? hash : "today");
+    const routeView = match ? "context" : (["work", "context", "history", "integrations"].includes(hash) ? hash : "today");
     setNav(routeView);
     const query = searchInput.value.trim();
     if (query) {
@@ -1223,6 +1473,7 @@
     if (routeView === "work") renderWork();
     else if (routeView === "context") renderContext();
     else if (routeView === "history") renderHistory();
+    else if (routeView === "integrations") renderIntegrations();
     else renderToday();
   }
 
@@ -1231,6 +1482,7 @@
   });
   $("#reset").addEventListener("click", () => {
     storage.reset();
+    resetDemoConnections();
     state = makeSeed();
     Object.values(transient).forEach((value) => { if (value instanceof Set) value.clear(); });
     transient.selectedText = Object.create(null);
@@ -1238,7 +1490,7 @@
     clearMessage();
     saveState();
     go("#today");
-    showMessage("Demo reset to the clean synthetic seed state.");
+    showMessage("Demo reset to clean synthetic data and the starting simulated connections.");
   });
   searchInput.addEventListener("input", renderApp);
   searchInput.addEventListener("keydown", (event) => {
