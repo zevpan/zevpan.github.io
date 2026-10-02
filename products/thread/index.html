@@ -1,181 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Thread — Team Workspace | Zev Pan</title>
-<meta name="description" content="Thread is a working product build: a team workspace that keeps relationship context current, detects meaningful change, and helps teams act with evidence.">
+<title>Thread — AX Memory + AX Workspace | Zev Pan</title>
+<meta name="description" content="Thread is a synthetic MVP showing how operations and finance teams can review source-backed context, record decisions, and follow up on work.">
 <style>
-:root{
-  --ink:#172b4d;--ink2:#0f1f3d;--muted:#5e6c84;--line:#dfe1e6;--soft:#f7f8f9;
-  --blue:#0c66e4;--blue-dark:#0055cc;--blue-soft:#e9f2ff;--purple:#6554c0;
-  --green:#216e4e;--green-soft:#dcfff1;--yellow:#974f0c;--yellow-soft:#fff7d6;
-  --white:#fff;--shadow:0 22px 60px rgba(9,30,66,.14)
-}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;line-height:1.5}a{color:inherit}
-.promo{background:var(--ink2);color:#fff;text-align:center;padding:9px 18px;font-size:12px;font-weight:700;letter-spacing:.01em}
-.promo span{opacity:.72;font-weight:500;margin-left:8px}
-.sitebar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(9,30,66,.13)}
-.navwrap{max-width:1220px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:28px}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;font-size:20px}.logo-mark{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;box-shadow:0 6px 16px rgba(12,102,228,.24)}
-.navlinks{display:flex;gap:22px;font-size:13px;color:var(--muted);font-weight:650}.navlinks a{text-decoration:none}.navlinks a:hover{color:var(--ink)}
-.nav-actions{margin-left:auto;display:flex;gap:10px;align-items:center}.ghost,.primary{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:800}.ghost{border:1px solid var(--line);background:#fff}.primary{background:var(--blue);color:#fff;border:1px solid var(--blue)}.primary:hover{background:var(--blue-dark)}
-main{overflow:hidden}.wrap{max-width:1220px;margin:0 auto;padding:0 24px}
-.hero{padding:92px 0 54px;text-align:center}.eyebrow{display:inline-flex;align-items:center;gap:7px;color:var(--blue);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue)}
-.hero h1{font-size:72px;line-height:.98;letter-spacing:-.055em;max-width:980px;margin:18px auto 24px;color:var(--ink2)}.hero h1 em{font-style:normal;color:var(--blue)}
-.lead{font-size:21px;line-height:1.55;color:#42526e;max-width:830px;margin:0 auto}.hero-actions{display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap}.hero-note{margin-top:13px;font-size:11px;color:#7a869a}
-.browser{max-width:1100px;margin:54px auto 0;background:#091e42;border-radius:20px;padding:12px;box-shadow:var(--shadow);transform:perspective(1400px) rotateX(1.2deg)}.browser-top{height:34px;display:flex;align-items:center;padding:0 8px;gap:6px}.dot{width:9px;height:9px;border-radius:50%;background:#526581}.browser-address{height:20px;margin-left:8px;flex:1;max-width:410px;background:#172b4d;border-radius:6px;color:#9fb0c6;font-size:9px;display:flex;align-items:center;padding:0 10px}
-.product-ui{background:#f7f8f9;border-radius:11px;min-height:560px;display:grid;grid-template-columns:178px 1fr;text-align:left;overflow:hidden}.mini-side{background:#fff;border-right:1px solid var(--line);padding:18px 12px}.mini-brand{font-weight:900;color:var(--ink2);margin-bottom:20px}.mini-nav{display:grid;gap:5px}.mini-nav span{font-size:10px;padding:8px 9px;border-radius:7px;color:#5e6c84}.mini-nav .active{background:var(--blue-soft);color:var(--blue);font-weight:800}.mini-main{padding:25px}.mini-top{display:flex;justify-content:space-between;align-items:start}.mini-top h3{font-size:26px;margin:2px 0 5px}.mini-sub{font-size:10px;color:#6b778c}.demo-badge{font-size:9px;font-weight:900;color:#44546f;background:#eef0f3;border:1px solid #d8dce2;border-radius:999px;padding:5px 8px}
-.mini-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:17px 0}.mini-metric{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px}.mini-metric b{font-size:19px}.mini-metric small{display:block;color:#7a869a;font-size:8px;margin-top:2px}.mini-layout{display:grid;grid-template-columns:1.35fr .65fr;gap:10px}.mini-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}.mini-card h4{font-size:10px;margin:0 0 9px}.mini-row{display:grid;grid-template-columns:25px 1fr 92px;align-items:center;gap:7px;padding:8px 0;border-top:1px solid #ebecf0}.mini-row:first-of-type{border-top:0}.mini-avatar{width:24px;height:24px;border-radius:7px;background:#deebff;color:#0747a6;display:grid;place-items:center;font-size:8px;font-weight:900}.mini-name{font-size:9px;font-weight:800}.mini-meta{font-size:7px;color:#7a869a}.mini-action{font-size:7px;color:var(--blue);font-weight:800}.mini-signal{padding:8px 0;border-top:1px solid #ebecf0}.mini-signal:first-of-type{border-top:0}.mini-signal b{font-size:8px}.mini-signal p{font-size:7px;color:#6b778c;margin:2px 0}
-.proof{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:24px 0;margin-top:72px}.proof-inner{display:flex;justify-content:center;gap:34px;align-items:center;flex-wrap:wrap;color:#5e6c84;font-size:13px;font-weight:800}.proof-label{font-weight:600;color:#8993a4}
-section{padding:96px 0}.section-head{max-width:800px}.section-head.center{text-align:center;margin:0 auto}.section-head h2{font-size:48px;line-height:1.05;letter-spacing:-.035em;margin:12px 0 18px;color:var(--ink2)}.section-head p{font-size:18px;color:#5e6c84;margin:0}
-.cap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}.cap{border:1px solid var(--line);border-radius:16px;padding:24px;background:#fff;min-height:230px;transition:.18s}.cap:hover{transform:translateY(-3px);box-shadow:0 16px 35px rgba(9,30,66,.08)}.cap-icon{width:40px;height:40px;border-radius:11px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;font-weight:900;margin-bottom:20px}.cap h3{font-size:20px;margin:0 0 8px}.cap p{font-size:14px;color:#5e6c84;margin:0}
-.dark{background:var(--ink2);color:#fff}.dark .section-head h2,.dark .section-head p{color:#fff}.dark .section-head p{opacity:.72}.context-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:38px}.context-stack{display:grid;gap:12px}.context-card{border:1px solid #344563;background:#172b4d;border-radius:14px;padding:18px}.context-card small{display:block;color:#9fb0c6;font-size:10px;text-transform:uppercase;font-weight:800;letter-spacing:.08em}.context-card b{display:block;font-size:18px;margin-top:5px}.context-card p{font-size:13px;color:#b7c3d3;margin:5px 0 0}.context-quote{font-size:34px;line-height:1.18;font-weight:850;letter-spacing:-.03em}.context-quote span{color:#85b8ff}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:30px 0 18px}.tab{border:1px solid var(--line);background:#fff;color:#44546f;border-radius:999px;padding:9px 13px;font-weight:800;font-size:12px;cursor:pointer}.tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.usecase-panel{background:var(--soft);border-radius:18px;padding:32px;display:grid;grid-template-columns:.9fr 1.1fr;gap:30px;align-items:center}.usecase-panel h3{font-size:32px;margin:0 0 10px}.usecase-panel p{color:#5e6c84}.bullet-list{display:grid;gap:10px;margin-top:20px}.bullet{display:flex;gap:10px;font-size:13px;color:#42526e}.check{width:20px;height:20px;border-radius:50%;background:#dcfff1;color:#216e4e;display:grid;place-items:center;font-size:11px;font-weight:900;flex:0 0 auto}.usecase-screen{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}.screen-line{display:flex;justify-content:space-between;gap:15px;padding:11px 0;border-top:1px solid #ebecf0;font-size:11px}.screen-line:first-of-type{border-top:0}.screen-tag{font-size:9px;font-weight:800;background:var(--blue-soft);color:var(--blue);padding:4px 7px;border-radius:999px;white-space:nowrap}
-.governance{display:grid;grid-template-columns:1fr 1fr;gap:38px;align-items:center}.gov-box{background:#f7f8f9;border:1px solid var(--line);border-radius:18px;padding:25px}.gov-row{display:grid;grid-template-columns:128px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line)}.gov-row:first-child{border-top:0}.gov-row b{font-size:13px}.gov-row p{margin:0;font-size:13px;color:#5e6c84}
-.build-story{background:linear-gradient(135deg,#deebff,#fff 62%);border:1px solid #b3d4ff;border-radius:22px;padding:42px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center}.build-story h2{font-size:38px;line-height:1.08;margin:0 0 10px}.build-story p{color:#42526e;max-width:760px}.story-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-footer{border-top:1px solid var(--line);padding:34px 0 50px;color:#6b778c;font-size:12px}.footer-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-@media(max-width:960px){.hero h1{font-size:58px}.cap-grid{grid-template-columns:1fr 1fr}.context-grid,.governance,.usecase-panel{grid-template-columns:1fr}.product-ui{grid-template-columns:145px 1fr}.mini-metrics{grid-template-columns:1fr 1fr}}
-@media(max-width:680px){.promo span,.navlinks{display:none}.navwrap{padding:12px 16px}.ghost{display:none}.wrap{padding:0 18px}.hero{padding-top:66px}.hero h1{font-size:44px}.lead{font-size:18px}.browser{margin-top:38px}.product-ui{grid-template-columns:1fr;min-height:auto}.mini-side{display:none}.mini-main{padding:16px}.mini-layout{grid-template-columns:1fr}.cap-grid{grid-template-columns:1fr}.section-head h2{font-size:38px}.context-quote{font-size:28px}.build-story{grid-template-columns:1fr;padding:28px}}
+:root{--ink:#172b4d;--dark:#0f1f3d;--muted:#5e6c84;--line:#dfe1e6;--soft:#f7f8fa;--blue:#0c66e4;--blue-soft:#e9f2ff;--green:#216e4e;--green-soft:#dcfff1;--amber:#674100;--amber-soft:#fff7d6;--shadow:0 18px 44px rgba(9,30,66,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}button,a{outline-offset:3px}a:focus-visible,button:focus-visible{outline:3px solid #85b8ff}
+.notice{padding:10px 18px;background:#fff7d6;color:#604400;text-align:center;border-bottom:1px solid #f0d98c;font-size:12px;font-weight:750}.bar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.nav{max-width:1160px;margin:auto;padding:12px 24px;display:flex;align-items:center;gap:28px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--dark);font-weight:900;font-size:18px}.mark{width:34px;height:34px;display:grid;place-items:center;background:var(--blue);color:#fff;border-radius:10px}.links{display:flex;gap:22px;color:var(--muted);font-size:12px;font-weight:750}.links a{text-decoration:none}.actions{margin-left:auto;display:flex;gap:9px;align-items:center}.button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-size:12px;font-weight:850;background:white}.button.primary{color:#fff;background:var(--blue);border-color:var(--blue)}.wrap{max-width:1160px;margin:auto;padding:0 24px}.hero{padding:76px 0 54px}.eyebrow{color:var(--blue);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:48px;align-items:center}.hero h1{max-width:700px;margin:13px 0;font-size:54px;letter-spacing:-.045em;line-height:1.04;color:var(--dark)}.hero p{max-width:720px;color:#42526e;font-size:17px}.hero .actions{margin:24px 0 0}.hero-visual{padding:20px;border-radius:18px;background:linear-gradient(145deg,#0f1f3d,#20395e);box-shadow:var(--shadow);color:#fff}.visual-head{display:flex;justify-content:space-between;gap:10px;align-items:start}.visual-head strong{font-size:16px}.badge{padding:5px 8px;background:#e9f2ff;color:#0747a6;border-radius:999px;font-size:9px;font-weight:900;white-space:nowrap}.visual-copy{font-size:11px;color:#c3d0e1;margin:6px 0 15px}.work-items{display:grid;gap:8px}.work-item{background:#fff;color:var(--ink);border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:11px 12px}.work-item b{display:block;font-size:11px}.work-item span{display:block;margin-top:3px;color:var(--muted);font-size:9px}.workflow{margin-top:30px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.step{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px}.step b{display:block;color:var(--blue);font-size:9px;text-transform:uppercase;letter-spacing:.06em}.step span{display:block;margin-top:5px;color:#44546f;font-size:10px}.section{padding:68px 0;border-top:1px solid var(--line)}.section-head{max-width:760px;margin-bottom:28px}.section h2{color:var(--dark);font-size:34px;letter-spacing:-.03em;line-height:1.12;margin:9px 0}.section-head p{color:var(--muted);font-size:15px;margin:10px 0}.pillars{display:grid;grid-template-columns:1fr 1fr;gap:14px}.pillar{border:1px solid var(--line);border-radius:15px;padding:22px;background:#fff}.pillar .letter{width:34px;height:34px;border-radius:10px;background:var(--blue-soft);color:#0747a6;display:grid;place-items:center;font-weight:900}.pillar h3{color:var(--dark);font-size:20px;margin:14px 0 7px}.pillar p{color:var(--muted);font-size:13px;margin:0}.list{margin:14px 0 0;padding:0 0 0 18px;color:#44546f;font-size:12px}.list li{margin:7px 0}.teams{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.team{padding:15px;border:1px solid var(--line);border-radius:12px}.team b{display:block;color:var(--dark);font-size:12px}.team span{display:block;color:var(--muted);font-size:10px;margin-top:4px}.scenarios{display:grid;grid-template-columns:1fr 1fr;gap:14px}.scenario{padding:19px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.scenario small{color:var(--blue);font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:9px}.scenario h3{font-size:17px;margin:8px 0}.scenario p{font-size:12px;color:var(--muted);margin:0}.scenario ul{padding-left:18px;color:#44546f;font-size:11px}.control-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.control{border:1px solid var(--line);border-radius:13px;padding:17px}.control h3{font-size:14px;margin:0 0 6px;color:var(--dark)}.control p{font-size:11px;color:var(--muted);margin:0}.boundary{margin-top:16px;border:1px solid #f0d98c;background:var(--amber-soft);color:var(--amber);padding:14px;border-radius:10px;font-size:11px;line-height:1.55}.build{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:26px;background:var(--dark);border-radius:18px;color:#fff}.build h2{color:#fff;font-size:25px;margin:5px 0}.build p{color:#c3d0e1;font-size:12px;max-width:680px;margin:5px 0}.build .actions{flex:none}.build .button{white-space:nowrap}.build .button:not(.primary){color:#fff;background:#172b4d;border-color:#344563}footer{border-top:1px solid var(--line);margin-top:65px;padding:24px 0 38px;color:var(--muted);font-size:10px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media(max-width:850px){.hero-grid{grid-template-columns:1fr}.workflow{grid-template-columns:repeat(3,1fr)}.teams{grid-template-columns:repeat(2,1fr)}.build{align-items:flex-start;flex-direction:column}.build .actions{margin-left:0}}
+@media(max-width:620px){.notice{font-size:11px}.nav{padding:10px 16px}.links{display:none}.wrap{padding:0 18px}.hero{padding:55px 0 38px}.hero h1{font-size:39px}.hero p{font-size:15px}.hero-visual{padding:15px}.workflow{grid-template-columns:1fr 1fr}.section{padding:50px 0}.section h2{font-size:29px}.pillars,.scenarios,.control-grid{grid-template-columns:1fr}.teams{grid-template-columns:1fr 1fr}.build{padding:20px}.build .actions{flex-wrap:wrap}.build .button{white-space:normal}footer{display:block}footer span{display:block;margin:5px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<div class="promo">Thread is a working interactive product build <span>Built with synthetic data, real state transitions, and a low-cost deployment path.</span></div>
-<header class="sitebar">
-  <div class="navwrap">
-    <a class="logo" href="./index.html"><span class="logo-mark">T</span>Thread</a>
-    <nav class="navlinks"><a href="#product">Product</a><a href="#teams">For teams</a><a href="#control">Human control</a><a href="#build">Build story</a></nav>
-    <div class="nav-actions"><a class="ghost" href="../../index.html">Zev Pan portfolio</a><a class="primary" href="demo/index.html">Launch demo</a></div>
-  </div>
+<div class="notice">Working MVP with synthetic data. State is saved in this browser only.</div>
+<header class="bar">
+  <nav class="nav" aria-label="Main navigation">
+    <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true">T</span>Thread</a>
+    <div class="links"><a href="#memory">AX Memory</a><a href="#workspace">AX Workspace</a><a href="#boundaries">Boundaries</a></div>
+    <div class="actions"><a class="button" href="../../index.html">Portfolio</a><a class="button primary" href="demo/index.html">Launch demo →</a></div>
+  </nav>
 </header>
-
 <main>
   <div class="wrap">
-    <section class="hero" id="product">
-      <div class="eyebrow">Product Build 04 · Working MVP</div>
-      <h1>Your team shouldn’t have to <em>remember everything.</em></h1>
-      <p class="lead">Thread keeps the context behind important relationships, notices what changed, and shows your team what deserves attention next — without replacing the systems you already use.</p>
-      <div class="hero-actions">
-        <a class="primary" href="demo/index.html">Launch interactive demo →</a>
-        <a class="ghost" href="#how-it-works">See how Thread works</a>
-      </div>
-      <div class="hero-note">Synthetic data · Interactive state changes · Human-controlled actions</div>
-
-      <div class="browser">
-        <div class="browser-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="browser-address">thread / northstar-consulting / today</div></div>
-        <div class="product-ui">
-          <aside class="mini-side">
-            <div class="mini-brand">Thread</div>
-            <div class="mini-nav"><span class="active">Today</span><span>My Work</span><span>People</span><span>Signals</span><span>Reconciliation</span><span>Audit</span></div>
-          </aside>
-          <div class="mini-main">
-            <div class="mini-top"><div><div class="mini-sub">NORTHSTAR CONSULTING</div><h3>Today</h3><div class="mini-sub">Shared context, prioritized for human attention.</div></div><span class="demo-badge">SYNTHETIC DEMO</span></div>
-            <div class="mini-metrics"><div class="mini-metric"><b>4</b><small>OPEN ACTIONS</small></div><div class="mini-metric"><b>3</b><small>CHANGED</small></div><div class="mini-metric"><b>1</b><small>RECONCILIATION</small></div><div class="mini-metric"><b>17</b><small>SLOTS REMAIN</small></div></div>
-            <div class="mini-layout">
-              <div class="mini-card"><h4>Priority work</h4>
-                <div class="mini-row"><div class="mini-avatar">MC</div><div><div class="mini-name">Maya Chen</div><div class="mini-meta">Arcadia Systems · New reply</div></div><div class="mini-action">Review reply →</div></div>
-                <div class="mini-row"><div class="mini-avatar">DW</div><div><div class="mini-name">Daniel Wong</div><div class="mini-meta">Northstar Freight · Reconnect due</div></div><div class="mini-action">Reconnect →</div></div>
-                <div class="mini-row"><div class="mini-avatar">SL</div><div><div class="mini-name">Sarah Lim</div><div class="mini-meta">Vector Labs · Buying signal</div></div><div class="mini-action">Review →</div></div>
-              </div>
-              <div class="mini-card"><h4>What changed</h4><div class="mini-signal"><b>Maya Chen</b><p>Inbound reply invalidated the previous follow-up.</p></div><div class="mini-signal"><b>Priya Nair</b><p>Identity conflict requires human review.</p></div><div class="mini-signal"><b>Sarah Lim</b><p>New project signal detected.</p></div></div>
-            </div>
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Product Build · Static MVP</div>
+          <h1>Operational context that stays attached to the work.</h1>
+          <p>Thread is a product concept for Operations, Finance, and Warehouse teams. AX Memory organizes source-backed context and decisions. AX Workspace gives people a place to review evidence, make decisions, and track what happens next.</p>
+          <div class="actions"><a class="button primary" href="demo/index.html">Explore the working demo →</a><a class="button" href="#how-it-works">See the workflow</a></div>
+        </div>
+        <div class="hero-visual" aria-label="Example operational work requiring human review">
+          <div class="visual-head"><strong>Today · Needs a decision</strong><span class="badge">SYNTHETIC DEMO</span></div>
+          <div class="visual-copy">A source changes the context. People review the evidence and own the decision.</div>
+          <div class="work-items">
+            <div class="work-item"><b>Crestline Logistics · Q4 transfer rates</b><span>Finance model: $42 / $68 · New card: $47 / $75 · Decision pending</span></div>
+            <div class="work-item"><b>Bin Location 7C · September count</b><span>System: 360 units · Count: 315 units · Cause unverified</span></div>
           </div>
         </div>
       </div>
-    </section>
-  </div>
-
-  <div class="proof"><div class="wrap"><div class="proof-inner"><span class="proof-label">Designed for relationship-driven teams</span><span>Sales</span><span>Partnerships</span><span>Customer Success</span><span>Account Management</span></div></div></div>
-
-  <div class="wrap">
-    <section id="how-it-works">
-      <div class="section-head center">
-        <div class="eyebrow">One shared thread of context</div>
-        <h2>Memory → Intelligence → Workspace → Human Action</h2>
-        <p>Thread is a team workspace above your systems of record. It keeps the human context that usually gets scattered across inboxes, CRMs, meetings, spreadsheets, and individual memory.</p>
-      </div>
-      <div class="cap-grid">
-        <div class="cap"><div class="cap-icon">M</div><h3>Relationship Memory</h3><p>Persistent context across people, companies, conversations, commitments, previous decisions, overrides, and provenance.</p></div>
-        <div class="cap"><div class="cap-icon">S</div><h3>Signals</h3><p>Notice replies, reconnect dates, project signals, stale recommendations, and identity conflicts as the underlying relationship changes.</p></div>
-        <div class="cap"><div class="cap-icon">I</div><h3>Decision Intelligence</h3><p>Use deterministic rules for policy and state, then AI where unstructured interpretation genuinely helps.</p></div>
-        <div class="cap"><div class="cap-icon">W</div><h3>Team Workspace</h3><p>Bring priority work, evidence, timelines, reconciliation, capacity, and audit into one human decision surface.</p></div>
-      </div>
-    </section>
-  </div>
-
-  <section class="dark">
-    <div class="wrap">
-      <div class="section-head"><div class="eyebrow" style="color:#85b8ff">Context that compounds</div><h2>The next decision should start with what your team already knows.</h2><p>Thread turns each interaction into durable shared context, so the next person — or the next AI-assisted workflow — does not have to reconstruct the story from scratch.</p></div>
-      <div class="context-grid">
-        <div class="context-stack">
-          <div class="context-card"><small>Known priority</small><b>Reduce manual reconciliation</b><p>Captured from prior discovery and retained as durable context.</p></div>
-          <div class="context-card"><small>Known objection</small><b>Do not replace the existing CRM</b><p>Available when the next reply arrives or a teammate takes over.</p></div>
-          <div class="context-card"><small>New event</small><b>Inbound reply received</b><p>Old follow-up is superseded instead of blindly executed.</p></div>
-        </div>
-        <div class="context-quote">“Every relationship has a thread. <span>Thread keeps it intact.</span>”</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="wrap">
-    <section id="teams">
-      <div class="section-head"><div class="eyebrow">One workspace, different teams</div><h2>Shared memory. Different work.</h2><p>The same context layer can support different relationship-driven teams without turning Thread into another generic CRM.</p></div>
-      <div class="tabs">
-        <button class="tab active" data-team="sales">Sales</button>
-        <button class="tab" data-team="partnerships">Partnerships</button>
-        <button class="tab" data-team="cs">Customer Success</button>
-        <button class="tab" data-team="am">Account Management</button>
-      </div>
-      <div class="usecase-panel">
-        <div><h3 id="teamTitle">Know what changed before you follow up.</h3><p id="teamCopy">Thread preserves discovery context, objections, commitments, and buying signals — then updates the action queue when new events make old recommendations stale.</p><div class="bullet-list" id="teamBullets"></div></div>
-        <div class="usecase-screen"><div class="screen-line"><b>Priority work</b><span class="screen-tag">WHY NOW</span></div><div id="teamRows"></div></div>
+      <div class="workflow" aria-label="Thread workflow">
+        <div class="step"><b>01 · Source</b><span>Add a synthetic note or local event.</span></div>
+        <div class="step"><b>02 · Compare</b><span>See the source excerpt beside current context.</span></div>
+        <div class="step"><b>03 · Review</b><span>Accept, correct, reject, or defer a proposal.</span></div>
+        <div class="step"><b>04 · Decide</b><span>Record an immutable decision with a note.</span></div>
+        <div class="step"><b>05 · Follow up</b><span>Assign work, complete it, and keep the history.</span></div>
       </div>
     </section>
 
-    <section id="control">
-      <div class="governance">
-        <div class="section-head"><div class="eyebrow">Human control by design</div><h2>AI proposes. Policy constrains. Humans decide.</h2><p>Thread does not make high-risk external relationship decisions invisibly. The architecture separates stable business logic from AI interpretation and from human authority.</p><div class="hero-actions" style="justify-content:flex-start"><a class="primary" href="demo/index.html">Try the state-transition demo →</a></div></div>
-        <div class="gov-box">
-          <div class="gov-row"><b>Deterministic</b><p>Identity keys, chronology, suppression, cooldowns, eligibility, capacity, state transitions, and supersession.</p></div>
-          <div class="gov-row"><b>AI-assisted</b><p>Message interpretation, relationship briefs, contextual rationale, and response drafting with evidence.</p></div>
-          <div class="gov-row"><b>Human authority</b><p>External communication, ambiguous identity, sensitive overrides, opportunity qualification, and commercial judgement.</p></div>
-        </div>
+    <section class="section" id="memory">
+      <div class="section-head"><div class="eyebrow">AX Memory</div><h2>The governed knowledge layer.</h2><p>AX Memory is the product model for persistent team context: what the team currently knows, where it came from, what changed, and what remains uncertain. The records in this MVP are synthetic and local to one browser; team-wide shared memory would require a backend.</p></div>
+      <div class="pillars">
+        <article class="pillar"><div class="letter" aria-hidden="true">M</div><h3>Source-linked facts</h3><p>Each current value points back to its source and keeps the earlier value when a person reviews a change.</p><ul class="list"><li>Provenance and confirmation details</li><li>Conflicts shown side by side</li><li>Unverified items stay visible until resolved</li></ul></article>
+        <article class="pillar"><div class="letter" aria-hidden="true">H</div><h3>Decision history</h3><p>Decisions are appended with the person, time, and optional rationale. A later decision can supersede an earlier entry without erasing it.</p><ul class="list"><li>Readable source and review history</li><li>Open tasks tied to a context record</li><li>Browser-local persistence in this MVP</li></ul></article>
       </div>
     </section>
 
-    <section id="build">
-      <div class="build-story">
-        <div>
-          <div class="eyebrow">From transformation thinking to working software</div>
-          <h2>Built like a buyer demo, not a static portfolio mockup.</h2>
-          <p>Thread is a self-initiated product build using synthetic data and real product behavior. The current MVP runs at effectively zero infrastructure cost. It grew from the workflow and decision problems explored in the prospecting-operations case study.</p>
-          <div class="story-links"><a class="primary" href="demo/index.html">Launch Thread</a><a class="ghost" href="../../case-studies/prospecting-operations/index.html">See the precursor case study</a></div>
-        </div>
-        <div class="demo-badge" style="font-size:11px;padding:8px 11px">WORKING MVP</div>
+    <section class="section" id="workspace">
+      <div class="section-head"><div class="eyebrow">AX Workspace</div><h2>The surface where people review, decide, and act.</h2><p>AX Workspace turns context into a concrete human workflow. Thread does not make consequential decisions or contact anyone on a person’s behalf.</p></div>
+      <div class="pillars">
+        <article class="pillar"><div class="letter" aria-hidden="true">W</div><h3>Four working views</h3><p>Today prioritizes decisions and due work. My Work filters tasks by a demo team member. Context holds the records. History shows readable changes.</p></article>
+        <article class="pillar"><div class="letter" aria-hidden="true">↔</div><h3>Review before changing context</h3><p>Pre-written sample proposals are clearly identified. People can accept, correct, reject, or mark a proposal “Not sure yet.” Context updates only after review.</p></article>
+      </div>
+      <div class="teams" aria-label="Teams represented in the synthetic demo">
+        <div class="team"><b>Operations</b><span>Review incoming operational context</span></div>
+        <div class="team"><b>Finance</b><span>Check costing and adjustment impacts</span></div>
+        <div class="team"><b>Warehouse</b><span>Investigate physical and system differences</span></div>
+        <div class="team"><b>Project teams</b><span>Keep decisions and follow-up connected</span></div>
       </div>
     </section>
 
-    <footer><div class="footer-row"><span>Thread is a self-initiated product build by Zev Pan.</span><span>Public scenarios and data are synthetic. No production deployment or customer ROI is claimed.</span></div></footer>
+    <section class="section" id="how-it-works">
+      <div class="section-head"><div class="eyebrow">Synthetic scenarios</div><h2>Two operational records show the workflow.</h2><p>Every company, location, amount, and record in the public demo is invented for this example and independent of the prospecting case study.</p></div>
+      <div class="scenarios">
+        <article class="scenario"><small>Operations + Finance</small><h3>Crestline Logistics · Q4 Transfer Rate Update</h3><p>A finance model lists the previous rates while a revised rate card proposes changes effective 01 Nov 2026. The demo asks a person to compare the evidence and record a decision.</p><ul><li>Source dated 29 Sep; written confirmation requested within 14 days</li><li>Internal review due 05 Oct; supplier response task due 12 Oct</li><li>Finance update task is due 30 Oct, before the effective date</li></ul></article>
+        <article class="scenario"><small>Warehouse + Finance</small><h3>Bin Location 7C · September Stock Count Variance</h3><p>The synthetic system quantity is 360 units and the physical count is 315. The cause is unverified; a finance adjustment should wait for the investigation result.</p><ul><li>45 unit difference, or 12.5% of system quantity</li><li>Receiving and movement records need a human check</li><li>No finance notification or adjustment is made by the demo</li></ul></article>
+      </div>
+    </section>
+
+    <section class="section" id="boundaries">
+      <div class="section-head"><div class="eyebrow">Human control and MVP limits</div><h2>Clear boundaries between the product idea and this demo.</h2><p>This page describes the intended AX Memory and AX Workspace model. The current static build demonstrates local state changes only.</p></div>
+      <div class="control-grid">
+        <article class="control"><h3>People decide</h3><p>Thread surfaces evidence and options. The person decides whether to accept, correct, reject, defer, or record a decision.</p></article>
+        <article class="control"><h3>No AI is running</h3><p>The sample proposals are pre-written for this demo. Manually added sources do not trigger automated extraction.</p></article>
+        <article class="control"><h3>No external actions</h3><p>The demo does not send messages, contact suppliers, update files, sync a team workspace, or deliver notifications.</p></article>
+      </div>
+      <div class="boundary"><strong>Working MVP with synthetic data. State is saved in this browser only.</strong> There is no backend, multi-user state, real-time sync, authentication or permissions, server-side audit, live source connector, notification delivery, or running AI in this demo.</div>
+    </section>
+
+    <section class="section" style="border-bottom:0;padding-bottom:35px">
+      <div class="build">
+        <div><div class="eyebrow" style="color:#9ec5ff">Try AX Workspace</div><h2>Review the source. Make the decision. Track the work.</h2><p>The demo starts with two synthetic operational context records and a task assigned to Zev. Reset returns the browser to the clean seed state.</p></div>
+        <div class="actions"><a class="button primary" href="demo/index.html">Launch Thread demo →</a></div>
+      </div>
+    </section>
+    <footer><span>Thread is a product build by Zev Pan. Public scenarios and data are synthetic.</span><span><a href="../../index.html">Back to portfolio</a></span></footer>
   </div>
 </main>
-
-<script>
-const useCases={
- sales:{title:"Know what changed before you follow up.",copy:"Thread preserves discovery context, objections, commitments, and buying signals — then updates the action queue when new events make old recommendations stale.",bullets:["Carry discovery context across handoffs","Supersede stale follow-ups when a prospect replies","Keep suppression and cooldown rules deterministic"],rows:[["Maya Chen","Inbound reply","Review latest reply"],["Daniel Wong","Reconnect date reached","Reconnect"],["Sarah Lim","New project signal","Review opportunity"]]},
- partnerships:{title:"Keep long-cycle partner context from disappearing.",copy:"Partnership work often spans months, stakeholders, proposals, and changing priorities. Thread keeps the relationship memory intact even when ownership changes.",bullets:["Retain commitments and stakeholder context","Surface agreed reconnect dates","Make ownership changes less destructive"],rows:[["Meridian Commerce","Quarterly touchpoint","Prepare update"],["Atlas Partners","New stakeholder","Review relationship"],["BridgeWorks","Proposal reopened","Reassess next step"]]},
- cs:{title:"Give every handoff the customer story, not just the ticket.",copy:"Thread can preserve commitments, risks, stakeholder context, and prior decisions across customer-success handoffs without replacing the service system.",bullets:["Keep customer commitments visible","Surface relationship risk signals","Preserve reasoning behind prior decisions"],rows:[["Vector Labs","Escalation risk","Review context"],["Northwind","Renewal signal","Prepare handoff"],["Sora Systems","Stakeholder change","Update memory"]]},
- am:{title:"See account context before the next meeting.",copy:"Account teams can use Thread as the decision surface above CRM and communication tools: what changed, why it matters, and what needs a human decision.",bullets:["Unify account context across sources","Prioritize meaningful change over activity volume","Expose evidence behind recommendations"],rows:[["Arcadia Systems","Executive reply","Review"],["Helix Advisory","Identity conflict","Resolve"],["Nova Group","Commitment due","Prepare update"]]}
-};
-function renderUseCase(key){
- const u=useCases[key];
- document.getElementById("teamTitle").textContent=u.title;
- document.getElementById("teamCopy").textContent=u.copy;
- document.getElementById("teamBullets").innerHTML=u.bullets.map(x=>'<div class="bullet"><span class="check">✓</span><span>'+x+'</span></div>').join('');
- document.getElementById("teamRows").innerHTML=u.rows.map(r=>'<div class="screen-line"><span><b>'+r[0]+'</b><br><span style="color:#7a869a">'+r[1]+'</span></span><span class="screen-tag">'+r[2]+'</span></div>').join('');
-}
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderUseCase(b.dataset.team)}));
-renderUseCase("sales");
-</script>
 </body>
 </html>

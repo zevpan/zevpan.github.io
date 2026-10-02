@@ -3,53 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Thread — Interactive Team Workspace Demo</title>
-<meta name="description" content="Interactive synthetic demo of Thread, a team workspace for relationship-driven work.">
-<link rel="stylesheet" href="styles.css">
+<title>Thread — AX Memory + AX Workspace</title>
+<meta name="description" content="A synthetic, browser-local demo of Thread's operational context and team workflow.">
+<link rel="stylesheet" href="styles.css?v=thread-ops-1">
 </head>
 <body>
-<div class="demo-strip"><strong>Interactive portfolio demo</strong><span>Synthetic data · real in-app state transitions</span><a href="https://zevpan.github.io/products/thread/">About Thread</a></div>
+<div class="demo-strip"><strong>SYNTHETIC DEMO DATA</strong><span>Working local demo · no live integrations or notifications</span><a href="../index.html">About Thread</a></div>
 <div class="shell">
-  <aside class="sidebar">
-    <div class="brand"><div class="mark">T</div><div><strong>Thread</strong><small>Team Workspace</small></div></div>
-
+  <aside class="sidebar" aria-label="Thread workspace">
+    <a class="brand" href="#today"><span class="mark" aria-hidden="true">T</span><span><strong>Thread</strong><small>AX Workspace</small></span></a>
     <div class="nav-label">Workspace</div>
-    <nav>
-      <button class="nav active" data-view="home"><span class="nav-icon">⌂</span><span>Today</span></button>
-      <button class="nav" data-view="work"><span class="nav-icon">✓</span><span>My Work</span></button>
-      <button class="nav" data-view="people"><span class="nav-icon">◎</span><span>People</span></button>
+    <nav class="main-nav" aria-label="Main navigation">
+      <button class="nav active" data-view="today"><span class="nav-icon" aria-hidden="true">⌂</span><span>Today</span></button>
+      <button class="nav" data-view="work"><span class="nav-icon" aria-hidden="true">✓</span><span>My Work</span></button>
+      <button class="nav" data-view="context"><span class="nav-icon" aria-hidden="true">▤</span><span>Context</span></button>
+      <button class="nav" data-view="history"><span class="nav-icon" aria-hidden="true">↺</span><span>History</span></button>
     </nav>
-
-    <div class="nav-label">Intelligence</div>
-    <nav>
-      <button class="nav" data-view="signals"><span class="nav-icon">⌁</span><span>Signals</span></button>
-      <button class="nav" data-view="reconciliation"><span class="nav-icon">↻</span><span>Reconciliation</span></button>
-      <button class="nav" data-view="audit"><span class="nav-icon">≡</span><span>Audit</span></button>
-    </nav>
-
     <div class="sidebar-card">
-      <b>Demo path</b>
-      <p>Open Maya Chen and simulate a new inbound reply.</p>
-      <span>Watch Thread supersede the stale follow-up.</span>
+      <b>Try the workflow</b>
+      <p>Open the Crestline rate record, add the sample source, review the evidence, then record a decision.</p>
+      <span>Every item is synthetic and saved in this browser only.</span>
     </div>
-
-    <div class="bottom"><span>SYNTHETIC DEMO DATA</span><button id="reset">Reset demo</button></div>
+    <div class="sidebar-bottom"><span>SAVED IN THIS BROWSER ONLY</span><button id="reset" type="button">Reset demo</button></div>
   </aside>
-
   <main class="main">
     <div class="topbar">
-      <div class="crumb"><span class="workspace-dot"></span>Northstar Consulting <span>/</span> Thread</div>
-      <div class="top-actions"><div class="search">⌕ <span>Search workspace</span><kbd>/</kbd></div><a class="top-link" href="https://zevpan.github.io/products/thread/">Product page ↗</a><div class="user">Z</div></div>
+      <div class="crumb"><span class="workspace-dot" aria-hidden="true"></span><span>Operations workspace</span><span class="slash">/</span><span>Thread</span></div>
+      <div class="top-actions">
+        <label class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><span class="sr-only">Search context records and tasks</span><input id="search" type="search" placeholder="Search context and tasks" autocomplete="off"><kbd>/</kbd></label>
+        <a class="top-link" href="../index.html">Product page ↗</a>
+        <span class="user-badge" aria-label="Current demo user Zev"><span class="user-avatar" aria-hidden="true">Z</span><span>Zev <small>Demo user</small></span></span>
+      </div>
     </div>
-
+    <div id="storage-banner" class="storage-banner" role="status"></div>
+    <div id="app-message" class="app-message" role="status" aria-live="polite"></div>
     <header class="page-head">
-      <div><div class="eyebrow">TEAM WORKSPACE</div><h1 id="title">Today</h1><p id="subtitle">Shared context, prioritized for human attention.</p></div>
-      <div id="capacity" class="capacity"></div>
+      <div><div class="eyebrow">AX WORKSPACE · LOCAL DEMO</div><h1 id="title">Today</h1><p id="subtitle">Operational context that needs a decision or follow-up.</p></div>
+      <div id="page-meta" class="page-meta"></div>
     </header>
-
-    <section id="view"></section>
+    <section id="view" aria-live="polite" aria-label="Workspace content"></section>
   </main>
 </div>
-<script src="app.js"></script>
+<script src="app.js?v=thread-ops-1" defer></script>
 </body>
 </html>
