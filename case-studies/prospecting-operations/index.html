@@ -1,278 +1,205 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
 <title>AI Sales CRM | Zev Pan</title>
-<meta name="description" content="An AI transformation case study on relationship-state management, capacity-aware prioritization, human-in-the-loop AI and action reconciliation.">
-<link rel="stylesheet" href="../../shared/intent-model.css?v=1">
+<meta name="description" content="Zev Pan's AI Sales CRM case study. A governed sales workspace for RFQs, deterministic pricing, quotations, proposals and manager visibility.">
 <style>
-:root{--bg:#f7f7f5;--panel:#fff;--text:#171717;--muted:#666;--line:#deded8;--soft:#efefeb;--warn:#fff4d6;--good:#e9f7ef;--blue:#edf4ff;--violet:#f1edff}
+:root{--ink:#172b4d;--ink2:#102440;--muted:#5f6f88;--line:#dfe5ee;--blue:#1769e0;--blue-soft:#edf4ff;--green:#176b5b;--green-soft:#e9f7f2;--amber:#8a590d;--amber-soft:#fff6e3;--bg:#f7f9fc;--white:#fff}
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
-.sitebar{border-bottom:1px solid var(--line);background:rgba(247,247,245,.94);position:sticky;top:0;z-index:10;backdrop-filter:blur(8px)}
-.sitebar-inner{max-width:1080px;margin:0 auto;padding:13px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.brand{text-decoration:none;color:var(--text);font-weight:800}
-.nav{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-.nav a{text-decoration:none;color:inherit}.nav a:hover{color:var(--text)}
-main{max-width:1080px;margin:0 auto;padding:56px 24px 96px}
-.hero{padding:42px 0 28px;border-bottom:1px solid var(--line)}
-.kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
-h1{font-size:48px;line-height:1.08;margin:12px 0 16px;max-width:920px}
-h2{font-size:29px;margin:0 0 16px}
-h3{font-size:19px;margin:24px 0 8px}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit}
+.sitebar{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(14px)}
+.sitebar-inner{max-width:1220px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-size:14px;font-weight:900;text-decoration:none;color:var(--ink2)}
+.nav{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.nav a{font-size:11px;font-weight:750;color:var(--muted);text-decoration:none}
+.nav a:hover{color:var(--blue)}
+main{max-width:1220px;margin:0 auto;padding:55px 24px 92px}
+.hero{position:relative;overflow:hidden;padding:30px 0 31px;border-bottom:1px solid var(--line)}
+.kicker,.eyebrow{color:var(--blue);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+h1{max-width:900px;margin:12px 0 13px;color:var(--ink2);font-size:clamp(38px,5.2vw,62px);line-height:1.02;letter-spacing:-.055em}
+h2{margin:0 0 12px;color:var(--ink2);font-size:clamp(25px,3vw,35px);line-height:1.12;letter-spacing:-.04em}
+h3{margin:0 0 7px;color:var(--ink2);font-size:15px;line-height:1.3}
 p{margin:8px 0 14px}
-.lead{font-size:20px;color:#383838;max-width:900px}
-.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
-.tag{background:var(--soft);border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-size:13px}
-section{padding:34px 0;border-bottom:1px solid var(--line)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-.card strong{display:block;margin-bottom:6px}
-.callout{padding:18px;border-radius:12px;background:var(--warn);border:1px solid #ead59a}
-.callout.good{background:var(--good);border-color:#bcdcc8}
-.callout.blue{background:var(--blue);border-color:#cbdcf4}
-.callout.violet{background:var(--violet);border-color:#d9d0f8}
-.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px}
-.step{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px}
-.operating-loop{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0 0;padding:0;list-style:none}
-.operating-loop li{margin:0;background:#f7f8f9;border:1px solid var(--portfolio-line);border-radius:12px;padding:13px;min-width:0;line-height:1.45;font-size:13px;font-weight:750;color:#44546f}
-.operating-loop li span{display:block;margin-bottom:5px;color:var(--portfolio-blue);font-size:10px;letter-spacing:.06em;font-weight:900}
-.arrow{color:#888;font-weight:700}
-ul{margin:8px 0 0 20px;padding:0}
-li{margin:5px 0}
-.small{font-size:13px;color:var(--muted)}
-table{width:100%;border-collapse:collapse;margin-top:12px;background:#fff}
-th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px;font-size:14px}
-th{background:var(--soft)}
-code{background:var(--soft);padding:2px 5px;border-radius:5px}
-.blueprint{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;overflow:auto}
-.blueprint img{display:block;width:100%;height:auto;min-width:780px}
-.linkrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.btn{display:inline-block;text-decoration:none;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px}
-.btn:hover{background:var(--soft)}
-footer{padding-top:30px;color:var(--muted);font-size:13px}
-@media(max-width:760px){h1{font-size:36px}.grid,.grid3{grid-template-columns:1fr}.sitebar-inner{align-items:flex-start}.blueprint img{min-width:980px}}
-
-.diagram-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
-.diagram-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
-.diagram-card img{display:block;width:100%;height:auto}
-.asset-link{display:inline-block;margin-top:10px;text-decoration:none;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px}.demo-cta{margin-top:24px;background:linear-gradient(135deg,#eef5ff,#fff);border:1px solid #bfd7ff;border-radius:16px;padding:20px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}.demo-cta strong{display:block;font-size:18px;margin-bottom:5px}.demo-cta p{margin:0;color:#4b5563;font-size:14px}.demo-btn{display:inline-block;text-decoration:none;background:#0c66e4;color:#fff;border-radius:9px;padding:11px 15px;font-weight:800;font-size:13px;white-space:nowrap}@media(max-width:760px){.demo-cta{grid-template-columns:1fr}}
-@media(max-width:760px){.diagram-grid{grid-template-columns:1fr}}
-
-
-/* Portfolio-wide presentation pass */
-:root{--portfolio-ink:#172b4d;--portfolio-ink2:#0f1f3d;--portfolio-muted:#5e6c84;--portfolio-line:#dfe1e6;--portfolio-blue:#0c66e4;--portfolio-blue-soft:#e9f2ff;--portfolio-bg:#fff}
-body{background:#fff;color:var(--portfolio-ink)}
-.sitebar{background:rgba(255,255,255,.94);border-bottom:1px solid rgba(9,30,66,.12);backdrop-filter:blur(14px)}
-.sitebar-inner{max-width:1160px;padding:14px 24px;align-items:center}
-.brand{color:var(--portfolio-ink2);font-weight:900}
-.nav{font-size:12px;color:var(--portfolio-muted);font-weight:700;align-items:center}
-.nav a{padding:6px 0}
-main{max-width:1160px;padding:72px 24px 100px}
-.hero{padding:54px 0 34px;border-bottom:0}
-.kicker{color:var(--portfolio-blue);font-size:11px;font-weight:900;letter-spacing:.11em}
-h1{font-size:54px;line-height:1.02;letter-spacing:-.045em;color:var(--portfolio-ink2);max-width:980px;margin-top:15px}
-h2{font-size:34px;line-height:1.08;letter-spacing:-.025em;color:var(--portfolio-ink2)}
-h3{color:var(--portfolio-ink2)}
-.lead{font-size:19px;line-height:1.6;color:#42526e;max-width:900px}
-.meta{gap:7px;margin-top:22px}.tag{background:#f7f8f9;border-color:var(--portfolio-line);color:#44546f;font-size:11px;font-weight:700;padding:5px 8px}
-section{padding:58px 0;border-bottom:1px solid var(--portfolio-line)}
-.card,.layer,.diagram,.blueprint,.diagram-card{border-color:var(--portfolio-line);border-radius:16px}
-.card{box-shadow:0 1px 0 rgba(9,30,66,.02);padding:20px}
-.callout{border-radius:14px}
-table{border-radius:12px;overflow:hidden;border-collapse:separate;border-spacing:0;border:1px solid var(--portfolio-line)}
-th,td{border:0;border-bottom:1px solid var(--portfolio-line);border-right:1px solid var(--portfolio-line)}
-tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}th{background:#f7f8f9;color:#44546f}
-.demo-cta{background:linear-gradient(135deg,#e9f2ff,#fff);border-color:#b3d4ff;border-radius:18px;padding:22px;margin-top:28px}
-.demo-btn{background:var(--portfolio-blue);border-radius:8px;box-shadow:0 7px 18px rgba(12,102,228,.18)}
-.demo-btn:hover{background:#0055cc}
-.asset-link,.btn{border-color:var(--portfolio-line);border-radius:8px}
-.project-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 16px;padding:12px;background:#f7f8f9;border:1px solid var(--portfolio-line);border-radius:17px}
-.project-strip .project-item{background:#fff;border:1px solid var(--portfolio-line);border-radius:12px;padding:13px 14px;min-height:72px}
-.project-strip b{display:block;font-size:10px;color:var(--portfolio-blue);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-.project-strip span{font-size:12px;color:#44546f;font-weight:700}
-.project-actions{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 34px}
-.project-actions a{display:inline-flex;align-items:center;text-decoration:none;border-radius:8px;padding:9px 12px;font-size:11px;font-weight:850}
-.project-actions .launch{background:var(--portfolio-blue);color:#fff;border:1px solid var(--portfolio-blue)}
-.project-actions .back{background:#fff;border:1px solid var(--portfolio-line);color:#44546f}
-.portfolio-kicker{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--portfolio-blue);font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
-.portfolio-kicker:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--portfolio-blue)}
-footer{border-top:0;padding-top:34px;color:#7a869a}
-@media(max-width:760px){main{padding:46px 18px 76px}.sitebar-inner{padding:12px 18px}.nav{gap:10px}h1{font-size:39px}.lead{font-size:17px}h2{font-size:29px}.project-strip{grid-template-columns:1fr}.project-actions{margin-bottom:20px}section{padding:44px 0}}
-@media(max-width:980px){.operating-loop{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:520px){.operating-loop{grid-template-columns:1fr 1fr}}
-
-
-@media (min-width: 1440px) { .sitebar-inner, main { max-width: clamp(1160px, 80vw, 1440px); } }
+.lead{max-width:860px;color:#445570;font-size:19px;line-height:1.55}
+.positioning{max-width:800px;margin-top:17px;padding-left:13px;border-left:3px solid var(--blue);font-weight:750;font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:22px}
+.tag{padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#51617a;font-size:10px;font-weight:750}
+.cta-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:20px;margin:25px 0 20px;padding:22px 23px;border:1px solid #bed6f6;border-radius:17px;background:linear-gradient(115deg,#eaf3ff,#f7faff 55%,#fff)}
+.cta-card h2{margin:3px 0 8px;font-size:22px}
+.cta-card p{max-width:780px;margin:0;color:#4c5c74;font-size:12px}
+.primary-link,.secondary-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;border-radius:8px;padding:9px 13px;font-size:11px;font-weight:850;text-decoration:none}
+.primary-link{background:var(--blue);color:#fff;box-shadow:0 6px 16px rgba(23,105,224,.16)}
+.primary-link:hover{background:#0d54b7}
+.secondary-link{border:1px solid var(--line);background:#fff;color:var(--ink)}
+section{padding:48px 0;border-bottom:1px solid var(--line)}
+.section-lead{max-width:830px;color:var(--muted);font-size:14px}
+.two-col,.three-col{display:grid;gap:12px}
+.two-col{grid-template-columns:repeat(2,minmax(0,1fr))}
+.three-col{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{min-width:0;padding:17px;border:1px solid var(--line);border-radius:13px;background:var(--white);box-shadow:0 3px 12px rgba(20,41,74,.035)}
+.card p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.55}
+.card .eyebrow{display:block;margin-bottom:7px;font-size:9px}
+.quote-command{margin-top:17px;padding:18px 19px;border:1px solid #d5e3f4;border-radius:13px;background:#fff;color:#30435f;font-size:13px;line-height:1.7}
+.quote-command p{margin:0}
+.operation-loop{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin:20px 0 0;padding:0;list-style:none}
+.operation-loop li{min-height:140px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:#4f6078;font-size:11px;line-height:1.5}
+.operation-loop b{display:block;margin:7px 0 4px;color:var(--ink2);font-size:12px}
+.step-no{color:var(--blue);font-size:9px;font-weight:900;letter-spacing:.12em}
+.flow-strip{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:15px}
+.flow-chip{padding:8px 10px;border:1px solid #dce6f4;border-radius:8px;background:#fff;color:#40516b;font-size:10px;font-weight:750}
+.flow-arrow{color:#8190a5;font-size:14px;font-weight:900}
+.transformation-table{width:100%;margin-top:18px;border:1px solid var(--line);border-radius:12px;border-spacing:0;overflow:hidden;background:#fff}
+.transformation-table th,.transformation-table td{width:50%;padding:13px 15px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:12px;line-height:1.5}
+.transformation-table th{background:#f0f4fa;color:#435570;font-size:10px;text-transform:uppercase;letter-spacing:.07em}
+.transformation-table tr:last-child td{border-bottom:0}
+.transformation-table td:first-child{color:#68778c}
+.transformation-table td:last-child{color:var(--ink);font-weight:650}
+.control-list{display:grid;gap:8px;margin:16px 0 0;padding:0;list-style:none}
+.control-list li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:9px;align-items:start;padding:9px 0;border-top:1px solid #edf0f4;color:#52627a;font-size:12px}
+.control-list li:first-child{border-top:0}
+.control-mark{width:20px;height:20px;display:grid;place-items:center;border-radius:50%;background:var(--green-soft);color:var(--green);font-size:10px;font-weight:900}
+.capability-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}
+.capability{padding:14px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.capability b{display:block;font-size:11px}
+.capability span{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.5}
+.boundary{padding:16px 18px;border:1px solid #efd6a5;border-radius:12px;background:var(--amber-soft);color:#604b27}
+.boundary b{display:block;margin-bottom:5px;font-size:12px}
+.boundary p{margin:0;color:#6b5836;font-size:11px;line-height:1.6}
+.link-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+footer{padding-top:28px;color:#718096;font-size:10px}
+@media(max-width:960px){.operation-loop{grid-template-columns:repeat(3,minmax(0,1fr))}.capability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.sitebar-inner{align-items:flex-start;flex-direction:column;gap:8px;padding:11px 17px}.nav{gap:12px}main{padding:35px 17px 68px}.hero{padding-top:22px}h1{font-size:39px}.lead{font-size:16px}.cta-card{grid-template-columns:1fr;padding:18px}.two-col,.three-col{grid-template-columns:1fr}.operation-loop{grid-template-columns:1fr 1fr}.operation-loop li{min-height:0}.capability-grid{grid-template-columns:1fr}.transformation-table th,.transformation-table td{padding:10px 8px;font-size:10px}.transformation-table th{font-size:8px}section{padding:38px 0}}
+@media(max-width:440px){.operation-loop{grid-template-columns:1fr}.nav{gap:9px}.nav a{font-size:10px}}
 </style>
 </head>
 <body>
 <header class="sitebar"><div class="sitebar-inner">
-<a class="brand" href="../../index.html">Zev Pan</a>
-<nav class="nav"><a href="../../index.html">All Case Studies</a><a href="demo/index.html">Launch interactive demo</a><a href="../travel-logistics-transformation/index.html">Logistics OMS</a></nav>
+  <a class="brand" href="../../index.html">Zev Pan</a>
+  <nav class="nav" aria-label="Portfolio">
+    <a href="../../index.html">All case studies</a>
+    <a href="demo/index.html">Launch interactive demo</a>
+    <a href="../travel-logistics-transformation/index.html">Logistics OMS</a>
+  </nav>
 </div></header>
 <main>
-<div class="hero">
-<div class="kicker">CASE STUDY 02 · INTERACTIVE</div>
-<h1>AI Sales CRM</h1>
-<p class="lead">Redesigning a fragmented relationship workflow into a governed operating layer that maintains relationship state, identifies the next best actions, allocates limited human capacity, and uses AI for interpretation while keeping external communication human-controlled.</p>
-<div class="meta"><span class="tag">Process Intelligence</span><span class="tag">Workflow Orchestration</span><span class="tag">State Management</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Governance</span><span class="tag">Requirements & UAT</span></div>
-</div>
-<div class="demo-cta">
-  <div><strong>Interactive AI Sales CRM</strong><p>Follow the operating loop: import LinkedIn connections, invitations and message exports; run reconciliation; update managed relationship records; review recommended next actions; export the updated queue or records. The demo uses browser-local seed data and deterministic rules.</p></div>
-  <a class="demo-btn" href="demo/index.html">Launch workflow demo →</a>
-</div>
+  <header class="hero">
+    <div class="kicker">Case study 02 · Product and process transformation</div>
+    <h1>AI Sales CRM</h1>
+    <p class="lead"><strong>Less admin. More selling.</strong> An agent-powered sales workspace designed to carry customer work from conversation through RFQ, governed pricing, quotation and proposal.</p>
+    <p class="positioning">I redesign messy work into governed operating systems. Here, the sales process is organised around customer outcomes, commercial rules and clear human decisions.</p>
+    <div class="tags"><span class="tag">Business Analysis</span><span class="tag">Process Improvement</span><span class="tag">AI Implementation</span><span class="tag">Data Modelling</span><span class="tag">Commercial Governance</span><span class="tag">Human Approval</span><span class="tag">Product UX</span></div>
+  </header>
 
-<div class="portfolio-kicker">Architecture · Governance · Working Prototype</div>
-<div class="project-strip">
-  <div class="project-item"><b>Zev’s contribution</b><span>Designed reconciliation, relationship state, AI gates, and safe next-action rules.</span></div>
-  <div class="project-item"><b>System</b><span>Browser-local workflow for import, review, queue management, and export.</span></div>
-  <div class="project-item"><b>Demonstrates</b><span>Data modelling · orchestration · deterministic controls · AI governance.</span></div>
-</div>
-<div class="project-actions">
-  <a class="launch" href="demo/index.html">Launch interactive demo →</a>
-  <a class="back" href="../../index.html">Portfolio home</a>
-  <a class="back" href="../warehouse-flow-stock-accuracy/index.html">Next: Warehouse Management System →</a>
-</div>
-<section class="intent-model" aria-label="AI Sales CRM intent-to-outcome model">
-  <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Reconcile identity and relationship state before recommending outreach.</h2><p>New exports, prior interactions, suppression rules, and human follow-up capacity belong in one reviewable work cycle. Agents can reconcile and prepare; people own ambiguous identity and relationship choices.</p></div>
-  <div class="intent-case-command"><small>EXAMPLE COMMAND</small><blockquote>“Reconcile the latest connection and invitation exports, then show me which actions need review.”</blockquote></div>
-  <div class="intent-case-grid">
-    <article class="intent-case-card"><small>Agent plan</small><strong>Import · resolve · prioritize</strong><span>Import Agent reads the export schema; Identity Agent matches stable profile identifiers and holds ambiguity; Relationship Analyst uses interaction context; Queue Agent refreshes work.</span></article>
-    <article class="intent-case-card"><small>Tools + data</small><strong>Work with current systems</strong><span>LinkedIn export files, Google Sheets People Master and Interaction Log, n8n workflow state, and a browser-local action queue in this public demo.</span></article>
-    <article class="intent-case-card"><small>Bounded execution</small><strong>Preserve source and record state</strong><span>Reconcile Connections and Invitations, append new events, deduplicate known identities, and retain older interaction history when a newer Messages export is absent.</span></article>
-    <article class="intent-case-card"><small>Human review</small><strong>Resolve ambiguity and choose outreach</strong><span>Hold conflicting identity matches. A person chooses whether to reconnect, ask for role insight, request a referral, or skip. Messages are never sent automatically.</span></article>
+  <div class="cta-card">
+    <div><span class="eyebrow">FLAGSHIP EXPERIENCE</span><h2>Turn a customer conversation into a quote and proposal.</h2><p>Paste an incomplete request, inspect the matched product and saved pricing rules, revise a quote, request manager approval, prepare a proposal, and switch to the team view. All steps operate on linked browser-local records.</p></div>
+    <a class="primary-link" href="demo/index.html">Open AI Sales CRM <span aria-hidden="true">→</span></a>
   </div>
-  <div class="intent-case-note"><strong>Returned outcome:</strong> reconciled People Master state, an exception list, and prioritized next actions. The prepared run keeps older message history when the latest imported batch has no Messages file.</div>
-</section>
-<section><h2>AX Memory and AX Workspace</h2>
-<div class="grid">
-  <div class="card"><strong>AX Memory · the context layer</strong>What the system should retain, update, trust, suppress, or ask about: canonical people, relationship history, source context, and prior decisions. In this case, the Google Sheet is the current operational record store. The demo models its People Master and Interaction Log; it is not connected to a separate AX Memory service.</div>
-  <div class="card"><strong>AX Workspace · the operating surface</strong>Where the operator imports LinkedIn connections, invitations, messages, and other exports; runs reconciliation; reviews and manages relationship records; evaluates evidence-backed next actions; records outcomes; and exports updated data.</div>
-</div>
-<div class="flow"><span class="step">Import source exports</span><span class="arrow">→</span><span class="step">Run the workflow</span><span class="arrow">→</span><span class="step">Update relationship memory</span><span class="arrow">→</span><span class="step">Review next actions</span><span class="arrow">→</span><span class="step">Record outcome / export</span></div>
-<p class="small">The demo represents this loop with invented records and browser-local rules. It does not execute the actual n8n workflow or connect to LinkedIn or the Google Sheet.</p>
-</section>
-<section><h2>Evidence and public-data boundary</h2>
-<p>The process model addresses fragmented identity, interaction history, relationship state, suppression rules, and follow-up capacity. Public case materials do not reproduce operational workbook counts, source records, contact identities, profile links, or message content.</p>
-<table><thead><tr><th>Record class</th><th>Purpose in the workflow</th><th>Public demo treatment</th></tr></thead><tbody>
-<tr><td>People Master</td><td>Maintain canonical identity, network state, relationship state, and next action.</td><td>Invented profiles and companies only.</td></tr>
-<tr><td>Interaction history</td><td>Inform relationship readiness and preserve useful context across source refreshes.</td><td>Short summaries; no message text.</td></tr>
-<tr><td>Action Queue</td><td>Represent eligibility, due work, capacity, suppression, and review outcomes.</td><td>Local actions with no external outreach.</td></tr>
-</tbody></table>
-<div class="callout blue"><strong>Evidence boundary</strong><p>The interactive queue and state transitions use generated records. The demo does not execute the actual n8n workflow or connect to LinkedIn or the Google Sheet. No private export or derived aggregate is included.</p></div>
-</section>
-<section><h2>Transformation objective</h2>
-<p>Build a relationship-operations layer that converts fragmented network and interaction data into trustworthy state, governed eligibility, transparent priority and a continuously reconciled Action Queue.</p>
-<div class="grid"><div class="card"><strong>Start</strong>New relationship data arrives from professional-network exports, message history, invitation records, research inputs or manual records.</div><div class="card"><strong>End</strong>A human operator receives a current, evidence-backed and capacity-controlled next action with the correct person, relationship context, rationale and audit trail.</div></div>
-</section>
 
-<section><h2>Why the current workflow breaks down</h2>
-<div class="grid3">
-<div class="card"><strong>Fragmented relationship data</strong>Identity, network status, interaction history and account context arrive from different sources and must be reconciled.</div>
-<div class="card"><strong>State cannot be inferred from connection status</strong>A connection can be new, unanswered, active, nurture, reconnect-later, an opportunity, closed or suppressed.</div>
-<div class="card"><strong>Human capacity is scarce</strong>Thousands of records can compete for a finite weekly attention ceiling. The problem is allocation, not maximum send volume.</div>
-<div class="card"><strong>Actions become stale</strong>A new reply can invalidate a follow-up that was correct when the queue was generated.</div>
-<div class="card"><strong>Spreadsheet operations hit scale limits</strong>Full-dataset scans and repeated joins become increasingly fragile as interaction history grows.</div>
-<div class="card"><strong>AI needs governance</strong>Semantic interpretation is useful only when recommendations are evidence-backed, bounded by policy and auditable.</div>
-</div></section>
+  <div class="three-col">
+    <article class="card"><span class="eyebrow">THE BUSINESS PROBLEM</span><h3>Sales work fragments after the meeting.</h3><p>People retell the same customer need in CRM, product checks, pricing requests, quote files, proposal drafts and management reports.</p></article>
+    <article class="card"><span class="eyebrow">THE OPERATING CHANGE</span><h3>Administrative execution follows the conversation.</h3><p>Structured records, catalog facts, price rules and document versions stay linked to the customer and opportunity.</p></article>
+    <article class="card"><span class="eyebrow">THE HUMAN ROLE</span><h3>People keep the relationship and commercial judgement.</h3><p>Salespeople handle negotiation and customer commitments. Managers decide commercial exceptions.</p></article>
+  </div>
 
-<section><h2>Current operating model</h2>
-<ol class="operating-loop" aria-label="Current workflow steps"><li><span>01 · SOURCE</span>LinkedIn + other exports</li><li><span>02 · ORCHESTRATE</span>n8n workflow</li><li><span>03 · MANAGE</span>Google Sheet: People Master + Action Queue</li><li><span>04 · RECOMMEND</span>AI-assisted next-action analysis</li><li><span>05 · REVIEW</span>Human review / export</li></ol>
-<div class="callout" style="margin-top:18px"><strong>Diagnosis</strong> The core problem is not message generation. It is maintaining a trustworthy relationship state and continuously deciding which human action is justified under limited capacity.</div></section>
+  <section>
+    <span class="eyebrow">CURRENT STATE TO FUTURE STATE</span>
+    <h2>Shift effort from data handling to customer judgement.</h2>
+    <p class="section-lead">The transformation connects work that is often split across messages, spreadsheets, CRM updates and approval threads.</p>
+    <table class="transformation-table">
+      <thead><tr><th>Current sales work</th><th>Target operating model</th></tr></thead>
+      <tbody>
+        <tr><td>Retype meeting notes and customer requirements into separate systems.</td><td>Capture notes once, retain the original text, extract a structured RFQ and link it to the account.</td></tr>
+        <tr><td>Ask colleagues to check stock, price, discount rules and delivery timing.</td><td>Retrieve catalog and policy records, show source age and uncertainty, surface missing confirmation.</td></tr>
+        <tr><td>Build quote totals manually and look up approval rules.</td><td>Calculate totals, discounts, tax assumptions, gross margin and markup with deterministic rules.</td></tr>
+        <tr><td>Prepare a proposal from a separate document and copy quote values by hand.</td><td>Assemble a proposal from the linked requirements and quote version, then flag when the quote changes.</td></tr>
+        <tr><td>Write a second activity report for management.</td><td>Derive team visibility from pipeline, RFQ, quote, approval and interaction records.</td></tr>
+      </tbody>
+    </table>
+  </section>
 
-<section><h2>Target operating model</h2>
-<div class="flow"><span class="step">Ingest</span><span class="arrow">→</span><span class="step">Resolve identity</span><span class="arrow">→</span><span class="step">Update relationship memory</span><span class="arrow">→</span><span class="step">Eligibility gate</span><span class="arrow">→</span><span class="step">AI interpretation</span><span class="arrow">→</span><span class="step">Priority + capacity</span><span class="arrow">→</span><span class="step">Action Queue</span><span class="arrow">→</span><span class="step">Human decision</span><span class="arrow">→</span><span class="step">Reconcile</span></div>
-<div class="grid3" style="margin-top:18px">
-<div class="card"><strong>Relationship Memory</strong>Persistent canonical context across Person, Account, Interaction, Network Event, Relationship State, Action, Override and Audit Event.</div>
-<div class="card"><strong>State & eligibility engine</strong>Deterministic control of network state, DNC, cooldowns, reconnect timing, open-action conflict and policy gates.</div>
-<div class="card"><strong>AI relationship analysis</strong>Interpret message meaning, reconnect intent, opportunity signals, nurture / closure and relationship history.</div>
-<div class="card"><strong>Capacity-aware prioritization</strong>Treat the weekly ceiling as a resource constraint with protected capacity for emerging work.</div>
-<div class="card"><strong>AI Sales CRM Workspace</strong>The human-facing decision surface combines the live Action Queue, relationship detail, interaction timeline, AI evidence, reconciliation and capacity context.</div>
-<div class="card"><strong>Reconciliation loop</strong>Every meaningful new event can recompute state and invalidate an older recommendation.</div>
-</div></section>
+  <section>
+    <span class="eyebrow">THE INFORMATION DUMP TO PROPOSAL WORKFLOW</span>
+    <h2>Describe the outcome. Inspect completed work. Decide what needs a person.</h2>
+    <p class="section-lead">The flagship flow starts with natural-language notes. It does not force a long form before the system can begin.</p>
+    <div class="quote-command"><p>“Acme Technologies needs 120 units of Product X next month. They currently pay around $430 per unit and we discussed $410 for the full quantity. They want implementation support and a two-year maintenance agreement. Check availability, prepare the quotation and put together a proposal.”</p></div>
+    <ol class="operation-loop">
+      <li><span class="step-no">01 · STRUCTURE</span><b>Understand the request</b>Identify the account, product, quantity, target price, competitor reference, delivery window and service needs.</li>
+      <li><span class="step-no">02 · VALIDATE</span><b>Check company context</b>Match the catalog, inspect cost and discount rules, show inventory freshness and flag unconfirmed capacity.</li>
+      <li><span class="step-no">03 · CALCULATE</span><b>Prepare a governed quote</b>Compute totals, tax estimate, gross margin and markup. Hold prices that cross policy limits.</li>
+      <li><span class="step-no">04 · GENERATE</span><b>Prepare the proposal</b>Use customer requirements, catalog facts and the linked quote version. Keep cost and margin out of the client document.</li>
+      <li><span class="step-no">05 · REVIEW</span><b>Return only decisions</b>Show exceptions, open assumptions, customer next steps and a manager view built from the same records.</li>
+    </ol>
+    <div class="flow-strip" aria-label="Sales workflow stages"><span class="flow-chip">Customer notes</span><span class="flow-arrow">→</span><span class="flow-chip">Structured RFQ</span><span class="flow-arrow">→</span><span class="flow-chip">Validated quotation</span><span class="flow-arrow">→</span><span class="flow-chip">Proposal draft</span><span class="flow-arrow">→</span><span class="flow-chip">Human decision</span></div>
+  </section>
 
-<section>
-<h2>Visual process architecture</h2>
-<p>The case is easier to understand as three connected visual layers: the current fragmented operating flow, the target relationship-operations architecture, and the control boundary between deterministic automation, AI assistance and human authority.</p>
+  <section>
+    <span class="eyebrow">COMMERCIAL RULES AND HUMAN CONTROL</span>
+    <h2>AI interprets context. Deterministic rules calculate the deal.</h2>
+    <div class="two-col">
+      <article class="card">
+        <h3>Pricing that can be inspected</h3>
+        <p>Quote calculations use saved catalog costs, list prices, per-product margin floors, maximum discounts, account currency and example tax rules.</p>
+        <ul class="control-list">
+          <li><span class="control-mark">✓</span><span>Gross margin is calculated as profit divided by selling price.</span></li>
+          <li><span class="control-mark">✓</span><span>Markup is calculated as profit divided by cost.</span></li>
+          <li><span class="control-mark">✓</span><span>Quote revisions preserve earlier lines and totals.</span></li>
+          <li><span class="control-mark">✓</span><span>Policy exceptions are held for the Sales Manager.</span></li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Customer documents with clear boundaries</h3>
+        <p>Quotation and proposal previews are built from saved application state and can be downloaded as HTML, then printed or saved as PDF.</p>
+        <ul class="control-list">
+          <li><span class="control-mark">✓</span><span>Confidential internal costs and margins are excluded from customer documents.</span></li>
+          <li><span class="control-mark">✓</span><span>Draft documents are watermarked until review and approval conditions are met.</span></li>
+          <li><span class="control-mark">✓</span><span>Availability snapshots and delivery assumptions remain visible.</span></li>
+          <li><span class="control-mark">✓</span><span>Document versions refer to a specific quotation version.</span></li>
+        </ul>
+      </article>
+    </div>
+  </section>
 
-<h3>1. AS-IS relationship operations flow</h3>
-<div class="blueprint"><img src="../../assets/prospecting-as-is-relationship-operations.png" alt="AS-IS relationship operations flow"></div>
-<a class="asset-link" href="../../assets/prospecting-as-is-relationship-operations.png">Open full-size AS-IS map →</a>
+  <section>
+    <span class="eyebrow">WHAT I DESIGNED AND BUILT</span>
+    <h2>A connected operating surface, not another contact list.</h2>
+    <div class="capability-grid">
+      <article class="capability"><b>Natural-language RFQ workbench</b><span>Progressive extraction of account, product, quantity, delivery and commercial context.</span></article>
+      <article class="capability"><b>Catalog and pricing engine</b><span>Physical product, subscription and service records with explicit source freshness.</span></article>
+      <article class="capability"><b>Versioned quotation workflow</b><span>Editable lines, deterministic totals, margin checks, approval holds and downloadable documents.</span></article>
+      <article class="capability"><b>Proposal generation adapter</b><span>Native proposal drafting from customer facts, catalog records and the selected quotation.</span></article>
+      <article class="capability"><b>CRM event timeline</b><span>Customer notes, RFQs, quote changes, approval decisions and proposals appear together.</span></article>
+      <article class="capability"><b>Role-aware manager view</b><span>Team pipeline and workload are derived from operational records rather than a separate report.</span></article>
+    </div>
+    <div class="capability-grid">
+      <article class="capability"><b>Business Analysis and requirements</b><span>Model current work, exceptions, roles, data and review boundaries.</span></article>
+      <article class="capability"><b>Workflow automation</b><span>Coordinate intake, catalog lookup, pricing, quote creation and CRM updates.</span></article>
+      <article class="capability"><b>AI governance</b><span>Keep calculations deterministic, show uncertainty and hold consequential decisions for people.</span></article>
+    </div>
+  </section>
 
-<h3>2. TO-BE relationship operations architecture</h3>
-<div class="blueprint"><img src="../../assets/prospecting-to-be-relationship-operations.png" alt="TO-BE relationship operations architecture"></div>
-<a class="asset-link" href="../../assets/prospecting-to-be-relationship-operations.png">Open full-size TO-BE architecture →</a>
+  <section>
+    <span class="eyebrow">IMPLEMENTATION EVIDENCE</span>
+    <h2>Three scenarios share one application state.</h2>
+    <div class="three-col">
+      <article class="card"><span class="eyebrow">CUSTOMER REQUEST</span><h3>Notes to RFQ, quote and proposal</h3><p>Extract the request, calculate with saved rules, record assumptions, create a quote version and prepare a linked proposal.</p></article>
+      <article class="card"><span class="eyebrow">COMMERCIAL EXCEPTION</span><h3>Hold, request approval, record decision</h3><p>Try a below-floor price, inspect the exception as a manager, approve or reject it and keep the decision on the quote timeline.</p></article>
+      <article class="card"><span class="eyebrow">DAILY SALES ADMIN</span><h3>Complete routine review and surface attention</h3><p>Review current operational records, refresh the manager view and separate completed work from approvals, customer actions and blockers.</p></article>
+    </div>
+  </section>
 
-<h3>3. Human / Automation / AI blueprint</h3>
-<div class="blueprint"><img src="../../assets/prospecting-human-automation-ai-blueprint.png" alt="Human Automation and AI blueprint for relationship operations"></div>
-<a class="asset-link" href="../../assets/prospecting-human-automation-ai-blueprint.png">Open full-size control blueprint →</a>
+  <section>
+    <span class="eyebrow">PROTOTYPE BOUNDARY</span>
+    <h2>Clear about what runs locally.</h2>
+    <div class="boundary"><b>Interactive portfolio prototype</b><p>Records, account data, costs, availability and company policies are example data stored in this browser. The intake uses a local extraction adapter. No live CRM, ERP, inventory, email, Business WhatsApp, external language model, Gamma or n8n connection is configured. The role switch demonstrates different views and is not production authentication. No customer message is sent. This prototype demonstrates my product and process design work and does not claim a real employer deployment.</p></div>
+    <div class="link-row"><a class="primary-link" href="demo/index.html">Try the interactive workspace <span aria-hidden="true">→</span></a><a class="secondary-link" href="../../index.html">Back to portfolio</a><a class="secondary-link" href="../warehouse-flow-stock-accuracy/index.html">Next: Warehouse Management System</a></div>
+  </section>
 
-<h3>4. Executive transformation overview</h3>
-<p>Here is a one-page summary of current state, transformation layers, target state, governance controls and migration roadmap.</p>
-<div class="blueprint"><img src="../../assets/prospecting-operations-blueprint.svg" alt="Executive AI Transformation Blueprint for the AI Sales CRM"></div>
-<a class="asset-link" href="../../assets/prospecting-operations-blueprint.svg">Open executive blueprint →</a>
-</section>
-
-<section><h2>Interactive prototype</h2>
-<div class="callout good"><strong>The interactive workflow demo is ready.</strong><p>Process an export bundle, inspect the reconciliation run, review People Master and Interaction Log changes, then work through the resulting recommendations. This public demo uses invented records and browser-local rules; it does not run the actual n8n flow or connect to the Google Sheet.</p><a class="asset-link" href="demo/index.html">Launch interactive workflow →</a></div>
-<div class="grid3" style="margin-top:16px">
-  <div class="card"><strong>Featured walkthrough</strong>Run the sample connection, invitation, and message exports. A new inbound reply updates the relationship record, supersedes a stale follow-up, and creates a review recommendation.</div>
-  <div class="card"><strong>Fail-closed controls</strong>Explore Do Not Contact and unresolved identity cases to see deterministic eligibility block action generation.</div>
-  <div class="card"><strong>Traceable flow</strong>Inspect run steps, source records, identity holds, updated relationships, action recommendations, and operator outcomes in the activity history.</div>
-</div>
-</section>
-
-<section><h2>Human vs Automation vs AI</h2>
-<table><thead><tr><th>Work</th><th>Primary owner</th><th>Examples</th></tr></thead><tbody>
-<tr><td>Stable structured logic</td><td><strong>Deterministic automation</strong></td><td>Identity keys, deduplication, chronology, DNC, cooldowns, capacity arithmetic, action supersession.</td></tr>
-<tr><td>Unstructured relationship meaning</td><td><strong>AI</strong></td><td>Reconnect intent, message meaning, opportunity signals, relationship summary, next-action suggestion.</td></tr>
-<tr><td>External relationship decisions</td><td><strong>Human</strong></td><td>Sending outreach, resolving ambiguity, opportunity qualification, commercial judgement and sensitive overrides.</td></tr>
-</tbody></table>
-<div class="callout blue" style="margin-top:16px"><strong>Control rule</strong> AI produces evidence + confidence + proposal. Deterministic policy decides what is allowed. Human authority remains over external communication.</div></section>
-
-<section><h2>State before priority</h2>
-<p>The design intentionally separates relationship context from action eligibility.</p>
-<div class="grid"><div class="card"><strong>Relationship states</strong><ul><li>No interaction history</li><li>Outbound last / Inbound last</li><li>Active conversation</li><li>Reconnect later</li><li>Opportunity</li><li>Nurture</li><li>Do Not Contact</li><li>Closed</li></ul></div>
-<div class="card"><strong>Eligibility controls</strong><ul><li>DNC and follow-up blocks</li><li>Identity resolution</li><li>Cooldowns</li><li>Reconnect timing</li><li>Existing open actions</li><li>Newer inbound context</li><li>Active opportunity handling</li></ul></div></div>
-<div class="callout good" style="margin-top:16px"><strong>Design principle</strong> State → Eligibility → Priority → Capacity Allocation → Action. AI does not rank prohibited actions first and filter them afterward.</div></section>
-
-<section><h2>Capacity-aware prioritization</h2>
-<p>The weekly follow-up ceiling is a maximum, not a target. The system therefore treats operator capacity as a portfolio-allocation problem.</p>
-<div class="grid"><div class="card"><strong>Protected capacity</strong>Reserve room for inbound replies, newly accepted connections and emergent high-priority cases instead of filling the whole week with generic follow-up.</div><div class="card"><strong>Transparent ranking</strong>Expose priority tier, reason codes, relationship signals and capacity bucket rather than relying on an unexplained black-box score.</div></div></section>
-
-<section><h2>Selected requirements</h2>
-<div class="grid3">
-<div class="card"><strong>Identity quality first</strong>Stable Person IDs, source lineage, deduplication, alias history and a review queue for ambiguous matches.</div>
-<div class="card"><strong>Evidence-backed AI</strong>Semantic recommendations must return structured output, confidence and supporting interaction IDs.</div>
-<div class="card"><strong>Stale-action control</strong>Newer interactions trigger reconciliation and can move an older action to <code>SUPERSEDED</code>.</div>
-<div class="card"><strong>Fail-closed suppression</strong>DNC and explicit blocks take precedence over AI, ranking and prior actions.</div>
-<div class="card"><strong>Idempotent workflows</strong>Repeated source imports or reconciliation retries must not duplicate people, interactions or actions.</div>
-<div class="card"><strong>Decision provenance</strong>Historical actions retain the state, eligibility, ranking, capacity and AI evidence that justified them.</div>
-</div></section>
-
-<section><h2>AI evaluation & governance</h2>
-<div class="grid"><div class="card"><strong>Evaluation by task</strong><ul><li>Relationship-state agreement</li><li>Reconnect-timing extraction accuracy</li><li>Evidence-link correctness</li><li>Unsupported-claim rate</li><li>Human override / dismissal rate</li></ul></div>
-<div class="card"><strong>Release path</strong><ul><li>Offline evaluation</li><li>Shadow mode</li><li>Assisted production</li><li>Selective low-risk auto-application</li></ul></div></div></section>
-
-<section><h2>Migration roadmap</h2>
-<table><thead><tr><th>Phase</th><th>Focus</th><th>Outcome</th></tr></thead><tbody>
-<tr><td>1</td><td>Stabilize current workflow</td><td>Strict IDs, incremental reads, batching and append-oriented interaction history.</td></tr>
-<tr><td>2</td><td>Relational data layer</td><td>Canonical operational entities replace full-sheet scans as system complexity grows.</td></tr>
-<tr><td>3</td><td>Decision services</td><td>State, eligibility, AI analysis and capacity allocation become explicit services.</td></tr>
-<tr><td>4</td><td>Operations console</td><td>Action Queue, relationship history, reconciliation and overrides in one control surface.</td></tr>
-<tr><td>5</td><td>Integrations & intelligence</td><td>Additional connectors, observability, evaluation and continuous improvement.</td></tr>
-</tbody></table></section>
-
-<section><h2>How value would be measured</h2>
-<div class="grid3"><div class="card"><strong>Data quality</strong>Matched interactions, duplicate rate, reconciliation backlog and source freshness.</div><div class="card"><strong>Queue quality</strong>Stale-action rate, supersession, dismissal, backlog age and duplicate prevention.</div><div class="card"><strong>Capacity</strong>Reserved vs consumed capacity and high-priority cases left unallocated.</div><div class="card"><strong>AI quality</strong>Classification agreement, evidence accuracy, unsupported claims and human overrides.</div><div class="card"><strong>Workflow reliability</strong>Run success, processing latency, retries and resource failures.</div><div class="card"><strong>Relationship outcomes</strong>Meaningful replies, meetings / opportunity progression, reconnect conversion and opt-outs.</div></div>
-<p class="small">The measurement model intentionally separates system health, decision quality, operating efficiency and business outcomes so activity volume is not mistaken for value.</p></section>
-
-<section><h2>Architecture decision</h2><div class="callout violet"><strong>Build a relationship-operations system, not an autonomous outreach agent.</strong><p>The system should remove repeated reconciliation, state reconstruction and prioritization work while concentrating human effort on genuine conversations, relationship judgement and commercial decisions.</p></div></section>
-
-<footer>Anonymized transformation case study based on a real operating workflow. Public examples use generalized sources and invented identities; private prospect and message data is excluded.</footer>
+  <footer>AI Sales CRM · Product and process transformation by Zev Pan.</footer>
 </main>
 </body>
 </html>
