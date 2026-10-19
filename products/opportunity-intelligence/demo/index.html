@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f8fa">
+  <title>Focusline — Opportunity workspace</title>
+  <meta name="description" content="A synthetic, browser-local opportunity intelligence workspace for job seekers.">
+  <link rel="stylesheet" href="styles.css?v=focusline-1">
+</head>
+<body>
+  <div class="demo-ribbon"><span class="demo-dot" aria-hidden="true"></span><strong>SYNTHETIC DEMO</strong><span>Sample jobs and people · saves in this browser · no live AI or external actions</span><a href="../index.html">Product case study</a></div>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Focusline workspace">
+      <a class="brand" href="../index.html" aria-label="Focusline product page"><span class="brand-mark" aria-hidden="true">F</span><span><strong>Focusline</strong><small>Opportunity workspace</small></span></a>
+      <div class="side-caption">YOUR SEARCH</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-item is-active" type="button" data-view="inbox"><span class="nav-glyph" aria-hidden="true">▤</span><span>Priority inbox</span><span class="nav-count" id="inbox-count">—</span></button>
+        <button class="nav-item" type="button" data-view="opportunities"><span class="nav-glyph" aria-hidden="true">◫</span><span>Opportunities</span></button>
+        <button class="nav-item" type="button" data-view="people"><span class="nav-glyph" aria-hidden="true">◎</span><span>People</span><span class="nav-count" id="people-count">—</span></button>
+        <button class="nav-item" type="button" data-view="activity"><span class="nav-glyph" aria-hidden="true">↺</span><span>Activity</span></button>
+      </nav>
+      <div class="sidebar-divider"></div>
+      <div class="side-focus">
+        <div class="side-focus-label">CURRENT FOCUS</div>
+        <div class="focus-title" id="focus-role">Loading…</div>
+        <div class="focus-location" id="focus-location"></div>
+        <button class="text-button" type="button" data-open-preferences>Adjust focus <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="attention-card" id="attention-card">
+        <div class="attention-icon" aria-hidden="true">!</div>
+        <div><strong id="attention-title">Checking your queue…</strong><span id="attention-copy"></span></div>
+      </div>
+      <div class="sidebar-bottom">
+        <span>LOCAL DEMO STATE</span>
+        <button type="button" id="reset-demo">Reset sample</button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="crumb"><span class="crumb-dot" aria-hidden="true"></span><span>Personal workspace</span><span class="crumb-sep">/</span><span id="crumb-view">Priority inbox</span></div>
+        <div class="topbar-actions">
+          <label class="search-box"><span class="search-glyph" aria-hidden="true">⌕</span><span class="sr-only">Search jobs and people</span><input id="global-search" type="search" placeholder="Search jobs or people" autocomplete="off"><kbd>/</kbd></label>
+          <button class="button button-primary button-add" type="button" data-open-add><span aria-hidden="true">＋</span> Add opportunity</button>
+          <button class="profile-button" type="button" data-open-preferences aria-label="Edit search profile"><span class="profile-avatar" id="user-initials">A</span><span class="profile-name" id="user-short-name">Alex</span><span class="caret" aria-hidden="true">⌄</span></button>
+        </div>
+      </header>
+
+      <div id="storage-notice" class="storage-notice" role="status" hidden></div>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <section class="page-heading">
+        <div>
+          <div class="eyebrow" id="view-eyebrow">DECISIONS BEFORE APPLICATIONS</div>
+          <h1 id="view-title">Priority inbox</h1>
+          <p id="view-subtitle">Choose what deserves your attention next.</p>
+        </div>
+        <div class="heading-meta"><span class="scenario-date" id="scenario-date"></span><span class="confidence-note"><span class="confidence-mark" aria-hidden="true">i</span> Priority is a triage aid, not a hiring prediction</span></div>
+      </section>
+
+      <div class="workspace-layout">
+        <section class="queue-column" aria-label="Opportunity queue">
+          <div class="queue-toolbar">
+            <div class="queue-tabs" role="tablist" aria-label="Opportunity filters">
+              <button type="button" class="queue-tab is-selected" data-filter="active" role="tab" aria-selected="true">Active <span id="active-count">0</span></button>
+              <button type="button" class="queue-tab" data-filter="attention" role="tab" aria-selected="false">Needs attention <span id="due-count">0</span></button>
+              <button type="button" class="queue-tab" data-filter="all" role="tab" aria-selected="false">All <span id="all-count">0</span></button>
+            </div>
+            <label class="stage-filter"><span class="sr-only">Filter by application stage</span><select id="stage-filter"><option value="all">All stages</option></select></label>
+          </div>
+          <div class="queue-hint" id="queue-hint"></div>
+          <div id="queue-content" class="queue-content" aria-live="polite"><div class="loading-state"><span class="spinner" aria-hidden="true"></span>Loading your opportunities…</div></div>
+        </section>
+        <aside id="detail-panel" class="detail-panel" aria-label="Selected opportunity details"><div class="loading-state detail-loading"><span class="spinner" aria-hidden="true"></span>Preparing the opportunity brief…</div></aside>
+      </div>
+      <footer class="app-footer"><span>Focusline · Synthetic sample data</span><span>Nothing is sent or shared from this demo.</span><a href="../../../../index.html">Portfolio home</a></footer>
+    </main>
+  </div>
+
+  <dialog id="add-dialog" class="modal" aria-labelledby="add-title">
+    <form id="add-form" method="dialog" class="modal-card">
+      <div class="modal-head"><div><div class="eyebrow">NEW OPPORTUNITY</div><h2 id="add-title">Add a role to your search</h2><p>Paste a description or start with the role basics. Your entry stays in this browser.</p></div><button class="icon-button" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <div class="form-grid">
+        <label class="form-field"><span>Company</span><input name="company" required maxlength="80" placeholder="e.g. Meridian Works"></label>
+        <label class="form-field"><span>Role title</span><input name="roleTitle" required maxlength="100" placeholder="e.g. Business Transformation Analyst"></label>
+        <label class="form-field"><span>Location</span><input name="location" maxlength="80" placeholder="Singapore · Hybrid"></label>
+        <label class="form-field"><span>Role family</span><select name="roleFamily"><option>Business analysis</option><option>Business transformation</option><option>Digital transformation</option><option>Process improvement</option><option>AI-enabled business</option><option>Other</option></select></label>
+        <label class="form-field form-field-wide"><span>Job description or key responsibilities</span><textarea name="jobDescription" rows="6" maxlength="6000" placeholder="Paste the role description or the main requirements…"></textarea><small>Analysis is simulated locally and should be reviewed against the original posting.</small></label>
+      </div>
+      <div class="modal-actions"><button class="button" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit">Add and assess</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="preferences-dialog" class="modal" aria-labelledby="preferences-title">
+    <form id="preferences-form" method="dialog" class="modal-card">
+      <div class="modal-head"><div><div class="eyebrow">SEARCH PROFILE</div><h2 id="preferences-title">What matters in your search?</h2><p>These settings personalize the queue. Change them whenever your priorities change.</p></div><button class="icon-button" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <div class="form-grid">
+        <label class="form-field"><span>Display name</span><input name="displayName" maxlength="60" required></label>
+        <label class="form-field"><span>Preferred location</span><input name="location" maxlength="80"></label>
+        <label class="form-field form-field-wide"><span>Target role families</span><input name="roleFamilies" maxlength="240" placeholder="Separate with commas"></label>
+        <label class="form-field form-field-wide"><span>Skills and experience signals</span><textarea name="skillSignals" rows="3" maxlength="500" placeholder="Separate with commas"></textarea><small>Used only for the local keyword comparison when you add a role.</small></label>
+        <div class="form-field form-field-wide weight-field">
+          <span>Priority score weights <small>Weights are normalized automatically.</small></span>
+          <div class="weight-row"><label for="weight-fit">Role fit</label><input id="weight-fit" name="weightFit" type="number" min="0" max="100"><span>%</span></div>
+          <div class="weight-row"><label for="weight-value">Career value</label><input id="weight-value" name="weightValue" type="number" min="0" max="100"><span>%</span></div>
+          <div class="weight-row"><label for="weight-timing">Timing</label><input id="weight-timing" name="weightTiming" type="number" min="0" max="100"><span>%</span></div>
+        </div>
+        <div class="boundary-note form-field-wide"><strong>Network access does not increase the job’s rank.</strong> It informs the recommended next step, not the opportunity’s underlying quality.</div>
+      </div>
+      <div class="modal-actions"><button class="button" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit">Save search profile</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="confirm-dialog" class="modal modal-small" aria-labelledby="confirm-title">
+    <form id="confirm-form" method="dialog" class="modal-card">
+      <div class="modal-head"><div><div class="eyebrow">RESET SAMPLE</div><h2 id="confirm-title">Restore the starting scenario?</h2><p>This removes browser-local edits and restores the synthetic sample data.</p></div></div>
+      <div class="modal-actions"><button class="button" type="button" data-close-dialog>Keep my changes</button><button class="button button-danger" type="submit">Reset sample data</button></div>
+    </form>
+  </dialog>
+  <script src="app.js?v=focusline-1" defer></script>
+</body>
+</html>
