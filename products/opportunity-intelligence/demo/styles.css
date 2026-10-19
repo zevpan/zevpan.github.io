@@ -85,7 +85,7 @@ button{color:inherit}
 .draft-details summary,.message-draft,.draft-actions span,.contact-log-note,.contact-footnote,
 .resume-summary,.resume-reason,.tailoring-list li,.next-action-meta,.next-guidance,.stage-help,
 .detail-footer,.directory-opportunity small,.directory-opportunity p,.directory-links>strong {
-  font-size: 10px;
+  font-size: 11px;
 }
 .section-kicker,.scenario-date,.confidence-note,.queue-footnote,.detail-meta,.detail-id,
 .directory-opportunity .inline-link {font-size:10px}
@@ -100,4 +100,4 @@ button{color:inherit}
 .directory-person .contact-ident strong{font-size:11px}
 .directory-person .contact-ident>span{font-size:10px}
 .directory-person .contact-facts span{font-size:9px}
-@media(max-width:520px){.directory-opportunity{display:block}.directory-opportunity .inline-link{margin-top:7px}.contact-facts span{font-size:9px}}
+@media(max-width:520px){.directory-opportunity{display:block}.directory-opportunity .inline-link{margin-top:7px}.contact-facts span{font-size:10px}}

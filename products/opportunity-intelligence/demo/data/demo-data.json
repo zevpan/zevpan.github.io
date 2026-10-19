@@ -240,10 +240,6 @@
       "priorityOverride": "",
       "resumeId": "resume-ai-business",
       "resumeReason": "The role emphasizes AI-enabled analysis and requirements translation. Start with the AI & Business Analysis variant, then make the enterprise-programme evidence precise.",
-      "peopleIds": [
-        "p-101",
-        "p-102"
-      ],
       "assessmentSource": "Synthetic profile + synthetic job description",
       "application": {
         "stage": "Researching",
@@ -297,9 +293,6 @@
       "priorityOverride": "",
       "resumeId": "resume-transformation",
       "resumeReason": "The work is transformation-led. Use the Transformation & Change variant and foreground process redesign plus measured adoption outcomes.",
-      "peopleIds": [
-        "p-201"
-      ],
       "assessmentSource": "Synthetic profile + synthetic job description",
       "application": {
         "stage": "Networking",
@@ -353,10 +346,6 @@
       "priorityOverride": "",
       "resumeId": "resume-operations",
       "resumeReason": "Lead with Operations & Process Excellence. Add a quantified root-cause or service-quality example if you can substantiate it.",
-      "peopleIds": [
-        "p-301",
-        "p-302"
-      ],
       "assessmentSource": "Synthetic profile + synthetic job description",
       "application": {
         "stage": "Saved",
@@ -410,9 +399,6 @@
       "priorityOverride": "",
       "resumeId": "resume-transformation",
       "resumeReason": "Start with Transformation & Change. Reframe delivery examples around discovery, client-facing facilitation, and adoption—without implying consulting experience you do not have.",
-      "peopleIds": [
-        "p-401"
-      ],
       "assessmentSource": "Synthetic profile + synthetic job description",
       "application": {
         "stage": "Researching",
@@ -466,9 +452,6 @@
       "priorityOverride": "",
       "resumeId": "resume-operations",
       "resumeReason": "Operations & Process Excellence is the strongest starting point. Emphasize frontline change support and measurable adoption, then verify the role remains open.",
-      "peopleIds": [
-        "p-501"
-      ],
       "assessmentSource": "Synthetic profile + synthetic job description",
       "application": {
         "stage": "Saved",
@@ -522,9 +505,6 @@
       "priorityOverride": "lower",
       "resumeId": "resume-ai-business",
       "resumeReason": "Use AI & Business Analysis as a starting point. Add specific automation-platform experience only if you can substantiate it.",
-      "peopleIds": [
-        "p-601"
-      ],
       "assessmentSource": "Synthetic profile + synthetic job description",
       "application": {
         "stage": "Saved",
@@ -578,9 +558,6 @@
       "priorityOverride": "",
       "resumeId": "resume-operations",
       "resumeReason": "Operations & Process Excellence is the best starting point. Surface the strongest before/after result and be precise about personal ownership.",
-      "peopleIds": [
-        "p-701"
-      ],
       "assessmentSource": "Synthetic profile + synthetic job description",
       "application": {
         "stage": "Preparing",
@@ -634,9 +611,6 @@
       "priorityOverride": "",
       "resumeId": "resume-operations",
       "resumeReason": "If reopened, use Operations & Process Excellence and keep the transformation claims limited to the responsibilities shown.",
-      "peopleIds": [
-        "p-801"
-      ],
       "assessmentSource": "Synthetic profile + synthetic job description",
       "application": {
         "stage": "Closed",

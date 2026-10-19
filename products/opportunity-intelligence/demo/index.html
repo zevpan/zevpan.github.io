@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f7f8fa">
   <title>Focusline — Opportunity workspace</title>
   <meta name="description" content="A synthetic, browser-local opportunity intelligence workspace for job seekers.">
-  <link rel="stylesheet" href="styles.css?v=focusline-1">
+  <link rel="stylesheet" href="styles.css?v=focusline-2">
 </head>
 <body>
   <div class="demo-ribbon"><span class="demo-dot" aria-hidden="true"></span><strong>SYNTHETIC DEMO</strong><span>Sample jobs and people · saves in this browser · no live AI or external actions</span><a href="../index.html">Product case study</a></div>
@@ -111,12 +111,19 @@
     </form>
   </dialog>
 
+  <dialog id="submit-dialog" class="modal modal-small" aria-labelledby="submit-title">
+    <form id="submit-form" method="dialog" class="modal-card">
+      <div class="modal-head"><div><div class="eyebrow">APPLICATION STATUS</div><h2 id="submit-title">Did you submit this application?</h2><p>Confirm only after submitting on the employer’s site. Focusline will record the stage locally; it will not submit or contact the employer.</p></div><button class="icon-button" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <div class="boundary-note"><strong>You stay in control.</strong> This updates the sample opportunity to Applied and schedules a follow-up reminder. Nothing is sent from Focusline.</div>
+      <div class="modal-actions"><button class="button" type="button" data-close-dialog>Not yet</button><button class="button button-primary" type="submit">Yes, record as applied</button></div>
+    </form>
+  </dialog>
   <dialog id="confirm-dialog" class="modal modal-small" aria-labelledby="confirm-title">
     <form id="confirm-form" method="dialog" class="modal-card">
       <div class="modal-head"><div><div class="eyebrow">RESET SAMPLE</div><h2 id="confirm-title">Restore the starting scenario?</h2><p>This removes browser-local edits and restores the synthetic sample data.</p></div></div>
       <div class="modal-actions"><button class="button" type="button" data-close-dialog>Keep my changes</button><button class="button button-danger" type="submit">Reset sample data</button></div>
     </form>
   </dialog>
-  <script src="app.js?v=focusline-1" defer></script>
+  <script src="app.js?v=focusline-2" defer></script>
 </body>
 </html>
