@@ -13,11 +13,6 @@ const SAMPLE_BATCH = {
     {name:"Invitations.csv", type:"Invitations", rows:[
       {Direction:"OUTBOUND", inviteeProfileUrl:"https://www.linkedin.com/in/sample-avery", "Sent At":"2026-09-28"},
       {Direction:"ACCEPTED", inviteeProfileUrl:"https://www.linkedin.com/in/sample-avery", "Sent At":"2026-09-30"}
-    ]},
-    {name:"Messages.csv", type:"Messages", rows:[
-      {Direction:"INBOUND", "From":"Maya Chen", "Sender Profile URL":"https://www.linkedin.com/in/sample-maya", Date:"2026-09-30", Subject:"Re: workflow context"},
-      {Direction:"OUTBOUND", "From":"Zev Pan", "Recipient Profile URL":"https://www.linkedin.com/in/sample-daniel", Date:"2026-09-29", Subject:"Follow-up"},
-      {Direction:"INBOUND", "From":"Unknown sender", "Sender Profile URL":"", Date:"2026-09-30", Subject:"New conversation"}
     ]}
   ]
 };
@@ -207,8 +202,8 @@ function toggleDNC(id){
  render();
 }
 function evidence(){
- setHead("Workbook evidence","The workbook grounds the entity model; the live run shown elsewhere uses synthetic sample records.");
- view.innerHTML='<div class="panel evidence-source"><h2>AI Employee — Prospect Database</h2><p>Counts use rows with a populated record ID and exclude the header. No prospect identities, links, contact details, or message content are shown.</p><div class="table-wrap"><table class="data-table"><thead><tr><th>Tab</th><th>Records</th><th>Observed data</th></tr></thead><tbody><tr><td>People Master</td><td>5,542</td><td>Relationship State and Next Action are blank throughout; 1 Do Not Contact flag is true.</td></tr><tr><td>Follow-up Analysis</td><td>827</td><td>770 FOLLOW_UP · 57 NO_FOLLOW_UP.</td></tr><tr><td>Action Queue</td><td>250</td><td>212 DONE · 36 CANCELLED · 2 SNOOZED; all LINKEDIN_FOLLOW_UP.</td></tr></tbody></table></div><h3>Follow-up analysis</h3><p><b>Conversation state:</b> 750 NO_REPLY_TO_OUTREACH · 48 STALLED_WARM_CONVERSATION · 10 NATURAL_CLOSE · 11 DECLINED · 8 RECONNECT_LATER.</p><p><b>Priority:</b> 43 HIGH · 703 MEDIUM · 81 LOW.</p><h3>Operational fields</h3><p><b>People Master:</b> Relationship State, Last Interaction Date, Last Action, Next Action, Next Action Due, Follow-up Stage, Follow-up Override.</p><p><b>Follow-up Analysis:</b> Decision, Reason, Confidence, Conversation State, Follow-up Priority, Follow-up Angle, Analyzed At, Model.</p><p><b>Action Queue:</b> Due Date, Priority, Agent, Action Type, Why This Action, Suggested Action, Suggested Message, Status, Completed At, Outcome.</p><div class="callout blue"><strong>Limit of the evidence</strong><p>This workbook snapshot does not reveal n8n triggers or execution steps. The run and resulting recommendations are simulated, and are not represented as a live connection to LinkedIn, Google Sheets, or n8n.</p></div></div>';
+ setHead("Data model","The relationship workflow separates identity, interaction history, recommendations, and action outcomes.");
+ view.innerHTML='<div class="panel evidence-source"><h2>Record model · synthetic public example</h2><p>The public case uses invented identities and browser-local data. It does not reproduce a private workbook snapshot, operational row counts, message content, or contact details.</p><div class="table-wrap"><table class="data-table"><thead><tr><th>Record type</th><th>Purpose</th><th>Important fields</th></tr></thead><tbody><tr><td>People Master</td><td>Keep a canonical person and current network state.</td><td>Stable identity key, company, connection state, relationship state, next action.</td></tr><tr><td>Interaction history</td><td>Preserve source-backed context across data refreshes.</td><td>Interaction type, timestamp, source, short synthetic summary.</td></tr><tr><td>Action Queue</td><td>Show eligible work with a reason and human disposition.</td><td>Due date, priority, policy result, suggested action, status, outcome.</td></tr></tbody></table></div><h3>Governance rules shown in the demo</h3><ul><li>Stable identity keys resolve records; ambiguous matches are held.</li><li>Suppression rules take precedence over follow-up recommendations.</li><li>Prior interaction history is retained when a newer message export is absent.</li><li>Every recommendation remains reviewable; no message is sent.</li></ul><div class="callout blue"><strong>Data boundary</strong><p>Public scenario records and run summaries are synthetic. The demo does not connect to LinkedIn, Google Sheets, n8n, or a live model provider.</p></div></div>';
 }
 function runFlow(){
  if(state.batch.status==="COMPLETE"){state.currentView="runs";render();return;}
@@ -221,20 +216,18 @@ function runFlow(){
  state.currentView="workspace";state.selectedPerson=null;state.selectedAction=null;render();
 }
 function runSampleFlow(){
+ const priorMessageCount=state.interactions.filter(interaction=>interaction.type==="Message").length;
  const maya=state.people.find(person=>person.id==="P-1042");
- const prior=state.actions.find(action=>action.personId==="P-1042"&&action.status==="OPEN");
- if(prior){prior.status="SUPERSEDED";prior.outcome="New inbound message arrived in the imported Messages export.";state.audit.unshift({time:"Just now",actor:"Reconciliation",event:"action.superseded",detail:prior.id+" · newer inbound interaction"});}
- state.interactions.unshift({id:"I-3220",personId:"P-1042",date:"Just now",channel:"LinkedIn",direction:"Inbound",type:"Message",summary:"New reply received in the sample Messages export; asks about fitting alongside the existing CRM.",source:"Messages.csv"});
- maya.state="ACTIVE_CONVERSATION";maya.lastInteraction="Just now · Inbound LinkedIn message";maya.nextAction="Review inbound reply";maya.source="Messages.csv";
+ maya.source="Connections.csv · existing interaction history retained";
  const avery={id:"P-1214",name:"Avery Goh",title:"Operations Lead",company:"Lumen Works",url:"https://www.linkedin.com/in/sample-avery",state:"NEW_CONNECTION",lastInteraction:"Today · Connection accepted",nextAction:"Review fit before outreach",source:"Connections.csv",dnc:false,notes:"New connection from the sample exports; no outreach has been sent."};
  state.people.push(avery);
  state.interactions.unshift({id:"I-3221",personId:avery.id,date:"Today",channel:"LinkedIn",direction:"System",type:"Connection accepted",summary:"Connection state imported; human fit review remains before any outreach.",source:"Invitations.csv"});
  const unresolved=state.people.find(person=>person.id==="P-1188");unresolved.state="IDENTITY_REVIEW";unresolved.nextAction="Review imported profile match";
- state.actions.unshift({id:"ACT-2240",personId:"P-1042",type:"Review inbound reply",reason:"A newer inbound message makes the scheduled follow-up stale.",suggested:"Read the reply and decide whether a human response is appropriate.",confidence:"High",status:"OPEN",due:"New reply · review",evidence:["Inbound message imported from Messages.csv","Earlier follow-up moved to SUPERSEDED","No response has been sent"]});
  state.actions.unshift({id:"ACT-2241",personId:avery.id,type:"Review new connection",reason:"A newly accepted connection has no interaction history or confirmed business fit.",suggested:"Check fit and relationship context before choosing whether to contact.",confidence:"Medium",status:"OPEN",due:"New connection",evidence:["Connection status updated from Invitations.csv","No conversation history matched","Human decision required before outreach"]});
  state.audit.unshift({time:"Just now",actor:"Identity review",event:"identity.held",detail:"A similar name with a changed profile URL remains unresolved."});
+ state.audit.unshift({time:"Just now",actor:"Reconciliation",event:"messages.retained",detail:"No Messages export was present; older interaction history was preserved."});
  state.sequence++;
- return {id:"RUN-"+String(state.sequence).padStart(3,"0"),newPeople:1,updatedPeople:2,heldIdentity:1,superseded:prior?1:0,rows:9,fileCount:3,status:"Completed",note:"One new person, two profile updates, three interaction events, and one identity exception were reconciled. Two next actions were added for human review.",steps:[["Read source exports","Connections 4 · Invitations 2 · Messages 3 rows"],["Resolve identities","2 matched · 1 new profile · 1 held for review"],["Update relationship records","People Master updated · Interaction Log appended"],["Reconcile existing actions","1 stale follow-up superseded by the new inbound message"],["Recalculate next actions","2 recommendations added · no messages sent"]]};
+ return {id:"RUN-"+String(state.sequence).padStart(3,"0"),newPeople:1,updatedPeople:1,heldIdentity:1,superseded:0,rows:6,fileCount:2,status:"Completed",note:"One new person, one connection update, one identity exception, and one invitation event were reconciled. Existing interaction history was retained because no Messages export was present.",steps:[["Read source exports","Connections 4 · Invitations 2 rows · no Messages file"],["Resolve identities","2 matched · 1 new profile · 1 held for review"],["Update relationship records","People Master reconciled · invitation event appended"],["Preserve prior interactions",priorMessageCount+" older synthetic message record(s) left unchanged"],["Recalculate next actions","1 new-connection review task · no outreach sent"]]};
 }
 function runUploadedFlow(batch){
  let newPeople=0,updatedPeople=0,heldIdentity=0,interactionsAdded=0,superseded=0,actionsAdded=0;
@@ -292,10 +285,78 @@ function audit(){
  setHead("Audit trail","Follow the source event, record update, recommendation, and human decision.");
  view.innerHTML='<div class="panel"><div class="panel-head"><h3>Activity history</h3><span>'+state.audit.length+' events</span></div><div class="audit-list">'+state.audit.map(entry=>'<div class="audit-row"><time>'+escapeHTML(entry.time)+'</time><b>'+escapeHTML(entry.actor)+'</b><code>'+escapeHTML(entry.event)+'</code><span>'+escapeHTML(entry.detail)+'</span></div>').join("")+'</div></div>';
 }
+function mountProspectingCommand(){
+ if(!window.AgentCommandSurface)return;
+ window.AgentCommandSurface.mount({
+  product:"AX Workspace · Prospecting Operations",
+  placeholder:"Reconcile the latest exports and show me what needs review.",
+  suggestions:["Reconcile the latest connection and invitation exports","Show me next actions that need review","Find identity matches that need a human decision","What changed after the last reconciliation?"],
+  fallback:["Reconcile sample exports","Review open actions","Inspect identity exceptions"],
+  resolve(text){
+   const normalized=text.toLowerCase();
+   if(/reconcil|refresh|latest export|connection.*invitation|sync people|run.*flow/.test(normalized))return{
+    objective:"Reconcile new identity exports without clearing prior message history",
+    steps:[
+     {agent:"Identity Reconciliation Agent",task:"Match synthetic Connections and Invitations rows to People Master; hold ambiguous identities."},
+     {agent:"Relationship Analyst",task:"Read existing interaction context and preserve it when no new Messages export is present."},
+     {agent:"Action Queue Agent",task:"Recalculate review tasks while leaving unresolved identities and outreach under human control."}
+    ],
+    run(){
+     if(state.batch.status!=="COMPLETE")runFlow();else setView("runs");
+     const result=state.runResult||state.runs[0]?.result;
+     const noMessages=!state.batch.files.some(file=>file.type==="Messages");
+     return{
+      title:result?`Run ${result.id} · ${result.status}`:"No completed run found",
+      summary:result?.note||"Open Imports to load a sample batch before running reconciliation.",
+      facts:result?.steps?.map(step=>`${step[0]} · ${step[1]}`)||["No records changed"],
+      confidence:"High for exact profile matches · ambiguous identity held",
+      checked:`${state.batch.files.length} source files · ${state.batch.files.reduce((total,file)=>total+file.rows.length,0)} synthetic rows · ${state.people.length} people`,
+      freshness:noMessages?"Connections / Invitations sample is current · older message history retained":"Sample batch includes a Messages file",
+      assumptions:["Public demo data is synthetic",noMessages?"No Messages input means existing Interaction Log rows stay unchanged":"Message rows are part of the loaded sample"],
+      exception:result?.heldIdentity?`${result.heldIdentity} possible identity match remains in review; no profile was merged automatically.`:"No identity exception in this run.",
+      sources:["Connections.csv · synthetic","Invitations.csv · synthetic",...(noMessages?["Older interaction history · retained"]:["Messages export · synthetic"]),"People Master · local demo state"],
+      action:{label:"Review the reconciliation run",run:()=>setView("runs")}
+     };
+    }
+   };
+   if(/\b(action|follow.?up|review|what needs|next step|today)\b/.test(normalized))return{
+    objective:"Find the relationship actions that are ready for human review",
+    steps:[
+     {agent:"Relationship Analyst",task:"Review current state, latest recorded interaction, and suppression flags."},
+     {agent:"Action Queue Agent",task:"Separate open recommendations from completed, blocked, or cancelled work."}
+    ],
+    run(){
+     const open=state.actions.filter(action=>action.status==="OPEN");
+     setView("actions");
+     return{title:`${open.length} open action${open.length===1?"":"s"}`,summary:"Each card links a proposed action to recorded context. Open an action, review the evidence, then make the disposition yourself.",facts:open.slice(0,4).map(action=>{const person=personFor(action.personId);return`${person?.name||"Identity unresolved"} · ${action.type} · ${action.suggested}`;}),confidence:"Recommendations are not permission to contact someone",checked:`${state.actions.length} action records · ${state.people.length} synthetic people`,freshness:"Local sample run state",assumptions:["Do Not Contact suppression takes precedence","Contact willingness is never inferred from a profile match"],exception:open.some(action=>action.status==="BLOCKED")?"Some actions are blocked by identity or suppression checks.":"No message will be sent from this demo.",sources:["People Master","Interaction Log","Action Queue"],action:{label:"Open next action",run:()=>setView("actions")}};
+    }
+   };
+   if(/identity|ambiguous|unmatched|profile match/.test(normalized))return{
+    objective:"Review identity matches that are unsafe to merge automatically",
+    steps:[
+     {agent:"Identity Reconciliation Agent",task:"Compare stable profile identifiers before using names or company text."},
+     {agent:"Exception Handler",task:"Keep conflicting records separate until a human confirms identity."}
+    ],
+    run(){
+     const held=state.people.filter(person=>person.state==="IDENTITY_REVIEW");
+     setView("people");
+     return{title:`${held.length} identity record${held.length===1?"":"s"} need review`,summary:held.map(person=>`${person.name} · ${person.company}: ${person.nextAction}`).join("; ")||"No identity review is currently open.",facts:held.map(person=>`${person.name} · profile URL ${person.url?"present":"missing"} · source ${person.source}`),confidence:"Low until identity is confirmed",checked:`${state.people.length} synthetic People Master records`,freshness:"Current local reconciliation state",assumptions:["Name similarity alone is not a safe identity key"],exception:held.length?"No records were merged. Confirm the profile URL and company context in the People view.":"No unresolved identity remains.",sources:["Connections.csv","Invitations.csv","People Master"],action:held[0]?{label:"Review the held profile",run:()=>openPerson(held[0].id)}:null};
+    }
+   };
+   if(/changed|last run|run details|what happened/.test(normalized))return{
+    objective:"Inspect the latest workflow run and its exceptions",
+    steps:[{agent:"Workflow Analyst",task:"Retrieve run summary, row counts, changes, and held exceptions."}],
+    run(){setView("runs");const result=state.runResult||state.runs[0]?.result;return{title:result?`Run ${result.id}`:"No reconciliation run yet",summary:result?.note||"Import the synthetic batch and run reconciliation to create a result.",facts:result?.steps?.map(step=>`${step[0]} · ${step[1]}`)||[],confidence:"High for recorded local run state",checked:`${state.runs.length} completed run${state.runs.length===1?"":"s"}`,freshness:"Local demo audit trail",sources:["Flow run record","Activity log"],exception:result?.heldIdentity?`${result.heldIdentity} identity held for review.`:"No run exception recorded.",action:result?{label:"Open the latest run",run:()=>setView("runs")}:null};}
+   };
+   return null;
+  }
+ });
+}
 function resetDemo(){state=structuredClone(SEED);render();}
 document.querySelectorAll(".nav").forEach(button=>button.addEventListener("click",()=>setView(button.dataset.view)));
 $("#reset").addEventListener("click",resetDemo);
 $("#globalSearch").addEventListener("input",event=>{state.search=event.target.value;if(state.currentView==="people")people();});
 $("#globalSearch").addEventListener("keydown",event=>{if(event.key==="Escape"){event.target.value="";state.search="";if(state.currentView==="people")people();}});
 render();
+mountProspectingCommand();
 

@@ -1448,6 +1448,123 @@
     ));
   }
 
+  function mountThreadCommand() {
+    if (!window.AgentCommandSurface) return;
+    window.AgentCommandSurface.mount({
+      product: "Thread · AX Workspace",
+      placeholder: "What changed, and what needs a decision?",
+      suggestions: [
+        "What changed in the supplier rate card?",
+        "What needs my attention today?",
+        "Explain the Bin 7C variance",
+        "Prepare a follow-up for the rate review"
+      ],
+      fallback: ["Review supplier rate changes", "Find open decisions", "Investigate a stock variance"],
+      resolve(text) {
+        const normalized = text.toLowerCase();
+        const crestline = state.records.find(record => record.id === CRESTLINE_ID);
+        const binRecord = state.records.find(record => /bin 7c/i.test(record.title));
+        const explicitBin = /bin\s*7c|variance|cycle count/i.test(normalized);
+        const record = explicitBin ? binRecord : crestline;
+        const isToday = /\b(today|attention|what needs|open work|decisions?)\b/.test(normalized);
+        if (isToday) {
+          return {
+            objective: "Find work that needs a human decision today",
+            steps: [
+              { agent: "Context Retrieval Agent", task: "Read open context records and their source-linked facts." },
+              { agent: "Change Analyst", task: "Separate changed source information from facts that remain unverified." },
+              { agent: "Task Planner", task: "Order open decisions and follow-up tasks by due date and status." }
+            ],
+            run: () => {
+              const pending = state.records.filter(item => !["Decision recorded", "Up to date"].includes(statusFor(item)));
+              const tasks = state.records.flatMap(item => item.tasks.filter(task => task.status !== "done").map(task => ({ task, item })));
+              go("#today");
+              return {
+                title: `${pending.length} context record${pending.length === 1 ? "" : "s"} need review`,
+                summary: pending.map(item => item.title).join(" · ") || "The local workspace has no open decisions.",
+                facts: tasks.slice(0, 3).map(({ task, item }) => `${item.title} · ${task.title} · ${task.status}${task.dueDate ? ` · due ${task.dueDate}` : ""}`),
+                confidence: "High for local record and task state",
+                checked: `${state.records.length} context records · ${tasks.length} open tasks`,
+                freshness: "Browser-local sample records · dates shown on source notes",
+                assumptions: ["Only the records loaded in this demo were checked"],
+                sources: ["AX Memory · local record store", "Simulated Outlook / Sheets sources", "Task list"],
+                action: pending[0] ? { label: "Review the first open record", run: () => { searchInput.value = ""; goToRecord(pending[0].id); } } : null
+              };
+            }
+          };
+        }
+        if (/rate|supplier|crestline|effective|costing/.test(normalized)) {
+          return {
+            objective: "Reconcile the rate-card update with the current finance record",
+            steps: [
+              { agent: "Context Retrieval Agent", task: "Retrieve the current rate facts and the source notes that support them." },
+              { agent: "Change Analyst", task: "Compare the revised-rate notice with the existing costing snapshot." },
+              { agent: "Decision Planner", task: "Surface what is confirmed, what is still missing, and who owns review." }
+            ],
+            run: () => {
+              if (crestline) { searchInput.value = ""; goToRecord(CRESTLINE_ID); }
+              const facts = crestline?.facts || [];
+              const proposals = (crestline?.proposals || []).filter(proposal => ["pending", "unsure"].includes(proposal.status));
+              const sources = crestline?.sources || [];
+              const draftRequested = /draft|message|email|send|reply|follow.?up/.test(normalized);
+              return {
+                title: crestline?.title || "Rate record unavailable",
+                summary: crestline?.summary || "No supplier-rate record is available in this sample.",
+                facts: facts.map(fact => `${fact.label}: ${fact.value} · source ${sourceById(crestline, fact.sourceId)?.title || "not available"}`).concat(proposals.map(proposal => `Proposed ${proposal.factLabel}: ${proposal.proposedValue} · current ${proposal.currentValue} · pending human review`)),
+                confidence: proposals.length ? "Medium · source proposal present, decision pending" : "High for source presence · revised amounts not yet retrieved",
+                checked: `${facts.length} recorded facts · ${proposals.length} pending proposals · ${state.records.length} context records`,
+                freshness: sources.map(source => `${source.title} · ${source.date || "date unavailable"}`).join("; ") || "No source is attached",
+                assumptions: ["Proposed values do not become current facts until a person confirms them", "The demo cannot establish supplier intent beyond the attached source"],
+                exception: proposals.length ? "Rate and surcharge changes are proposals only; Finance review is still required." : "The current source note confirms receipt and effective date only. Use the simulated Outlook/Sheets sync to retrieve the sample rate card.",
+                sources: [...sources.map(source => source.title), "AX Memory local record", "Browser-local decision history"],
+                approval: draftRequested ? { title: "Supplier communication requires human review", description: "Review or edit this draft. Approval here records local review only; it does not send email or confirm commercial terms.", text: "Hello, could you confirm the revised standard and priority transfer rates and surcharge treatment effective 01 Nov? We are reviewing the update against our current finance model.", approveLabel: "Approve draft for manual use" } : null,
+                action: crestline ? { label: "Review the source-linked record", run: () => { searchInput.value = ""; goToRecord(CRESTLINE_ID); } } : null
+              };
+            },
+            onApproval(actionName) { return actionName === "approve" ? "Approved for manual use · no supplier email was sent and no finance value was updated." : "Rejected · no supplier email was sent." }
+          };
+        }
+        if (explicitBin) {
+          return {
+            objective: "Investigate the Bin 7C inventory variance without assuming its cause",
+            steps: [
+              { agent: "Context Retrieval Agent", task: "Retrieve the system snapshot and physical count evidence." },
+              { agent: "Evidence Analyst", task: "Calculate the recorded difference and identify the missing cause." },
+              { agent: "Task Planner", task: "Route the discrepancy to a human investigation rather than adjusting stock." }
+            ],
+            run: () => {
+              if (binRecord) { searchInput.value = ""; goToRecord(binRecord.id); }
+              const facts = binRecord?.facts || [];
+              return {
+                title: binRecord?.title || "Bin 7C record unavailable",
+                summary: binRecord?.summary || "No bin-variance record is available in this sample.",
+                facts: facts.map(fact => `${fact.label}: ${fact.value}`),
+                confidence: "High for recorded quantities · cause unknown",
+                checked: `${facts.length} source-linked facts · 1 synthetic context record`,
+                freshness: "System snapshot and cycle-count note dated 30 Sep 2026",
+                assumptions: ["The quantities are taken from two separate synthetic source notes", "A variance does not establish a stock adjustment"],
+                exception: "A human should verify the count and investigate movements before any record is changed.",
+                sources: ["Synthetic inventory system snapshot", "Synthetic physical count note", "AX Memory local record"],
+                action: binRecord ? { label: "Review the evidence and task", run: () => { searchInput.value = ""; goToRecord(binRecord.id); } } : null
+              };
+            }
+          };
+        }
+        if (/\b(task|follow.?up|prepare|proposal|proposal|review)\b/.test(normalized)) {
+          return {
+            objective: `Prepare a reviewable next step for ${record?.title || "the selected work"}`,
+            steps: [
+              { agent: "Context Retrieval Agent", task: "Collect source-linked facts and unresolved questions." },
+              { agent: "Task Planner", task: "Keep the next task assigned to a human owner and avoid sending notifications from the demo." }
+            ],
+            run: () => ({ title: record?.title || "No matching context record", summary: record?.summary || "Open a context record before creating a follow-up.", facts: record ? record.tasks.filter(task => task.status !== "done").map(task => `${task.title} · ${task.owner} · ${task.status}`) : [], confidence: "Medium · based on local task state", checked: `${record ? record.tasks.length : 0} tasks · ${record ? record.facts.length : 0} facts`, freshness: "Browser-local sample", assumptions: ["A task proposal is not a notification"], exception: "The demo records work locally; no email, calendar event, or external task was created.", sources: ["AX Workspace local tasks", "AX Memory context"], action: record ? { label: "Open the source record", run: () => { searchInput.value = ""; goToRecord(record.id); } } : null })
+          };
+        }
+        return null;
+      }
+    });
+  }
+
   function renderApp() {
     renderStorageBanner();
     const hash = window.location.hash.replace(/^#/, "") || "today";
@@ -1508,6 +1625,7 @@
   });
   window.addEventListener("hashchange", renderApp);
   renderStorageBanner();
+  mountThreadCommand();
   if (!window.location.hash) window.history.replaceState(null, "", "#today");
   renderApp();
 })();

@@ -671,6 +671,252 @@
     showToast("Note saved in this browser");
   }
 
+  function focusJobFromCommand(jobId, section) {
+    selectedJobId = jobId;
+    selectedPersonId = null;
+    query = "";
+    $("#global-search").value = "";
+    $("#stage-filter").value = "all";
+    activeFilter = "active";
+    setView("inbox");
+    window.setTimeout(() => {
+      const target = section ? $(`#detail-panel .${section}-section`) : $("#detail-panel");
+      (target || $("#detail-panel")).scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 60);
+  }
+
+  function commandJob(text) {
+    const normalized = text.toLowerCase();
+    return state.jobs.find(job => normalized.includes(job.company.toLowerCase()) || normalized.includes(job.roleTitle.toLowerCase()))
+      || jobById(selectedJobId)
+      || sortedJobs(activeJobs())[0]
+      || null;
+  }
+
+  function commandContact(job, text) {
+    if (!job) return null;
+    const links = (state.jobPersonLinks || []).filter(link => link.jobId === job.id)
+      .map(link => ({ link, person: personById(link.personId) }))
+      .filter(item => item.person);
+    const named = links.find(item => text.toLowerCase().includes(item.person.name.toLowerCase()));
+    if (named) return named;
+    const unknownName = text.match(/\b(?:ask|contact|message|referral for)\s+([A-Z][a-z]+\s+[A-Z][a-z]+)\b/);
+    if (unknownName && !links.some(item => item.person.name.toLowerCase() === unknownName[1].toLowerCase())) return { missingName: unknownName[1] };
+    const readinessRank = { High: 3, Medium: 2, Low: 1, Unknown: 0 };
+    links.sort((a, b) => (readinessRank[b.link.relationshipReadiness] || 0) - (readinessRank[a.link.relationshipReadiness] || 0)
+      || (b.link.referralRelevance === "High" ? 1 : 0) - (a.link.referralRelevance === "High" ? 1 : 0));
+    return links[0] || null;
+  }
+
+  function mountFocuslineCommand() {
+    if (!window.AgentCommandSurface) return;
+    window.AgentCommandSurface.mount({
+      product: "Focusline",
+      placeholder: "What should I focus on today?",
+      suggestions: [
+        "What should I focus on today?",
+        "Who can help me with this role?",
+        "Tailor my resume for this job",
+        "What opportunities am I neglecting?"
+      ],
+      fallback: ["Find the best opportunities", "Review a stretch role", "Prepare a resume strategy"],
+      resolve(text) {
+        const normalized = text.toLowerCase();
+        const job = commandJob(text);
+        if (/\b(add|save)\b/.test(normalized)) {
+          const match = text.match(/\b(?:add|save)\s+(?:a\s+)?(?:job\s+)?(.+?)\s+at\s+(.+?)(?:\s+in\s+(.+))?$/i);
+          return {
+            label: "Add and assess an opportunity",
+            objective: "Add a role and check the available evidence",
+            steps: [
+              { agent: "Opportunity Analyst", task: "Create a local opportunity record and compare role text with the editable search profile." },
+              { agent: "Network Analyst", task: "Check the synthetic people records for an exact company match." },
+              { agent: "Resume Agent", task: "Choose a starting resume variant from the role family." }
+            ],
+            run: () => {
+              if (!match) {
+                return { title: "Role details are needed", summary: "The demo cannot read an external job page. Open the add form and enter the company, title, and role description to create a local assessment.", confidence: "Not assessed", checked: "No role record created", freshness: "No source URL retrieved", exception: "A URL alone is not fetched in this demo. Paste the posting text or enter role details.", sources: ["Local opportunity form"], action: { label: "Open add opportunity form", run: () => $("#add-dialog").showModal() } };
+              }
+              const roleTitle = match[1].trim().replace(/[.,;]+$/, "");
+              const company = match[2].trim().replace(/[.,;]+$/, "");
+              const location = (match[3] || state.profile.location || "").trim();
+              const roleFamily = state.profile.roleFamilies.find(family => roleTitle.toLowerCase().includes(family.toLowerCase().split(" ")[0])) || "Other";
+              const added = mockAssessNewJob({ company, roleTitle, location, roleFamily, description: "Added through a natural-language command. Paste the original job description to improve the local comparison." });
+              state.jobs.unshift(added);
+              selectedJobId = added.id;
+              state.jobPersonLinks = state.jobPersonLinks || [];
+              const matches = state.people.filter(person => person.company.toLowerCase() === company.toLowerCase());
+              matches.forEach(person => {
+                const id = `link-${added.id}-${person.id}`;
+                const readiness = person.relationshipStrength === "Strong" ? "High" : person.relationshipStrength === "Warm" ? "Medium" : "Low";
+                const action = readiness === "High" ? "ASK_ROLE_INSIGHT" : person.networkState.startsWith("2nd") ? "CONNECT_FIRST" : "RECONNECT_FIRST";
+                state.jobPersonLinks.push({ id, jobId: added.id, personId: person.id, referralRelevance: "Medium", relationshipReadiness: readiness, recommendedAction: action, rationale: "Exact company match in the synthetic network. Check role relevance and relationship context before any outreach.", messageDraft: "" });
+              });
+              addActivity("opportunity", `Opportunity added · ${company}`, `${roleTitle} · local comparison prepared from the supplied role title`);
+              setView("opportunities");
+              const related = (state.jobPersonLinks || []).filter(link => link.jobId === added.id);
+              return {
+                title: `${company} · ${roleTitle}`,
+                summary: "The role is now in your opportunity list. Fit and resume matching are local estimates; company career value remains unverified until you review the role scope.",
+                facts: [`Local fit estimate: ${added.fitScore}/100 · ${added.fitConfidence.toLowerCase()} confidence`, `${related.length} synthetic network contact${related.length === 1 ? "" : "s"} matched by exact company`, `Starting resume: ${resumeById(added.resumeId).name}`],
+                confidence: "Medium · role description not supplied",
+                checked: "1 new role · synthetic network records",
+                freshness: "Created now · role text still needs review",
+                assumptions: ["Company match is exact-name only", "Career value is not an employer reputation rating"],
+                sources: ["Focusline opportunity list", "Synthetic People records", "Resume variants"],
+                action: { label: "Review the new opportunity", run: () => focusJobFromCommand(added.id) }
+              };
+            }
+          };
+        }
+
+        if (/\b(neglect|overdue|attention|follow.?up|focus.*today|today.*focus|what should i focus)\b/.test(normalized)) {
+          const attention = sortedJobs(activeJobs().filter(isAttention));
+          const best = attention[0] || sortedJobs(activeJobs())[0];
+          return {
+            objective: "Find the next opportunity that deserves attention today",
+            steps: [
+              { agent: "Application Agent", task: "Check due dates, open stages, and time since each opportunity was last touched." },
+              { agent: "Opportunity Analyst", task: "Keep role quality separate from urgency and rank active roles by the saved profile." },
+              { agent: "Network Analyst", task: "Check job-specific contact options for the highest-priority role." }
+            ],
+            run: () => {
+              setView("inbox");
+              setFilter(attention.length ? "attention" : "active");
+              return {
+                title: attention.length ? `${attention.length} opportunity${attention.length === 1 ? "" : "ies"} need attention` : "No overdue opportunity is recorded",
+                summary: best ? `${best.company} · ${best.roleTitle} is the first item to review. Priority remains based on your profile; due dates identify urgency separately.` : "Your active opportunity queue is empty. Add a role to begin a search.",
+                facts: best ? [`Next action: ${best.nextAction?.label || "Choose a next step"}`, `Priority score: ${priorityScore(best)}/100 · fit ${best.fitScore} · career value ${careerScore(best)} · timing ${best.timingScore}`, `${attention.length} active role${attention.length === 1 ? "" : "s"} currently due or quiet`] : ["No active roles are available in this sample"],
+                confidence: "High for recorded dates · not a hiring prediction",
+                checked: `${activeJobs().length} active opportunities · ${state.jobs.filter(job => job.stage !== "Closed" && job.nextAction).length} next actions`,
+                freshness: "Dates are recalculated for this browser session",
+                assumptions: ["Only records in this local demo were checked"],
+                sources: ["Opportunity records", "Application next actions", "Synthetic relationship links"],
+                action: best ? { label: "Review the first opportunity", run: () => focusJobFromCommand(best.id) } : null
+              };
+            }
+          };
+        }
+
+        if (/\b(stretch|fit|gap|why.*role|why.*rank|why.*score)\b/.test(normalized)) {
+          return {
+            objective: `Explain the fit and ranking for ${job?.company || "the selected role"}`,
+            steps: [
+              { agent: "Opportunity Analyst", task: "Compare role responsibilities with the candidate's stated skills and the authored evidence notes." },
+              { agent: "Company Analyst", task: "Separate role-scope signals from unverified employer reputation or career-growth claims." }
+            ],
+            run: () => {
+              if (job) { selectedJobId = job.id; setView("inbox"); }
+              return {
+                title: job ? `${job.fitScore}/100 fit · ${job.company}` : "No opportunity is selected",
+                summary: job ? job.fitRationale : "Open an opportunity before asking for an explanation.",
+                facts: job ? [...job.strengths.map(item => `Strength · ${item}`), ...job.gaps.map(item => `Gap · ${item}`), `Ranking uses ${Math.round(normalizedWeights().fit * 100)}% fit · ${Math.round(normalizedWeights().value * 100)}% career value · ${Math.round(normalizedWeights().timing * 100)}% timing`] : ["No record changed"],
+                confidence: job?.fitConfidence || "Not assessed",
+                checked: job ? `1 job description · ${state.profile.skillSignals.length} profile signals` : "No role record checked",
+                freshness: job?.assessmentSource || "Local sample",
+                assumptions: job ? ["Role descriptions and candidate evidence are synthetic demo inputs", "Fit is not a hiring probability"] : [],
+                sources: ["Synthetic job description", "Editable search profile", "Priority weights"],
+                action: job ? { label: "Review the evidence in the workspace", run: () => focusJobFromCommand(job.id) } : null
+              };
+            }
+          };
+        }
+
+        if (/\b(network|contact|referral|refer|anyone.*help|who can help|relationship|ask [a-z]+)\b/.test(normalized)) {
+          const contact = commandContact(job, text);
+          const wantsAsk = /\b(should i ask|ask .*referral|draft|write|message|contact|reach out)\b/.test(normalized);
+          return {
+            objective: `Check relationship options for ${job?.company || "the selected role"}`,
+            steps: [
+              { agent: "Network Analyst", task: "Match synthetic people to the role's company and function." },
+              { agent: "Relationship Agent", task: "Check connection state, interaction recency, and job-specific referral relevance." },
+              ...(wantsAsk ? [{ agent: "Drafting Agent", task: "Prepare a low-pressure draft for human review; do not send it." }] : [])
+            ],
+            run: () => {
+              if (job) { selectedJobId = job.id; setView("inbox"); }
+              if (contact?.missingName) return { title: `No synthetic contact named ${contact.missingName}`, summary: "No relationship was selected or changed. Search the People view or name a contact from this sample.", confidence: "Low · identity not matched", checked: job ? `1 job · ${(state.jobPersonLinks || []).filter(link => link.jobId === job.id).length} linked people` : "No role record checked", freshness: "Synthetic sample", exception: "An unmatched name is not treated as a contact or a referral lead.", sources: ["Synthetic People records", "Job-person links"] };
+              if (!job || !contact) return { title: "No job-specific contact found", summary: "The current sample has no linked contact for this opportunity. Network access does not change the opportunity ranking.", confidence: "Medium · sample coverage only", checked: job ? `1 role · ${state.people.length} synthetic people` : "No role record checked", freshness: "Synthetic sample", exception: "No matching person is not evidence that no real-world contact exists.", sources: ["Synthetic People records", "Job-person links"] };
+              const action = contactAction(contact.link);
+              const suggested = ACTION_LABELS[action];
+              const approval = wantsAsk && contact.link.messageDraft && action !== "SKIP" ? {
+                title: "External outreach stays under your control",
+                description: `${contact.person.name} has not agreed to refer you. Review or edit this draft; approving here only records your review and does not send a LinkedIn message.`,
+                text: contact.link.messageDraft,
+                approveLabel: "Approve draft for manual use"
+              } : null;
+              return {
+                title: `${contact.person.name} · ${suggested}`,
+                summary: contact.link.rationale,
+                facts: [`${contact.person.role} · ${contact.person.company}`, `${contact.person.networkState} · ${contact.person.relationshipState}`, `Last interaction: ${contact.person.latestInteractionDays === null ? "not recorded" : `${contact.person.latestInteractionDays} days ago`}`, `Relationship readiness: ${contact.link.relationshipReadiness} · role relevance: ${contact.link.referralRelevance}`, action === "DIRECT_REFERRAL_ASK" ? "A referral is possible to ask about; willingness is unknown." : `Suggested action: ${suggested}`],
+                confidence: `${contact.link.relationshipReadiness} readiness · guidance, not certainty`,
+                checked: `1 job · ${(state.jobPersonLinks || []).filter(link => link.jobId === job.id).length} job-specific contact record${(state.jobPersonLinks || []).filter(link => link.jobId === job.id).length === 1 ? "" : "s"}`,
+                freshness: `Interaction summary is ${contact.person.latestInteractionDays === null ? "not available" : `${contact.person.latestInteractionDays} days old in the synthetic sample`}`,
+                assumptions: ["Recorded relationship context is incomplete", "Referral willingness is unknown"],
+                sources: ["Synthetic People records", "Job-person relevance links", "Interaction summaries"],
+                approval,
+                action: { label: "Open this role and contact", run: () => focusJobFromCommand(job.id) }
+              };
+            },
+            onApproval: (actionName, editedText) => {
+              if (actionName === "edit") return "Draft edit is saved in this run only. Review it before any external use.";
+              addActivity("approval", actionName === "approve" ? `Draft reviewed · ${contact?.person?.name || "contact"}` : `Draft rejected · ${contact?.person?.name || "contact"}`, `${job?.roleTitle || "Opportunity"} · ${actionName === "approve" ? "ready for manual use; no message sent" : "no outreach sent"}${editedText ? " · edited draft" : ""}`);
+              return actionName === "approve" ? "Approved for manual use · no LinkedIn message was sent." : "Rejected · no LinkedIn message was sent.";
+            }
+          };
+        }
+
+        if (/\b(resume|tailor|tailoring|prepare.*application|application.*prepare)\b/.test(normalized)) {
+          return {
+            objective: `Prepare a grounded resume strategy for ${job?.company || "the selected role"}`,
+            steps: [
+              { agent: "Resume Agent", task: "Select the closest synthetic resume variant using the role family and saved search profile." },
+              { agent: "Opportunity Analyst", task: "Identify evidence to foreground and claims that still need verification." },
+              { agent: "Application Agent", task: "Update the local next step without submitting an application." }
+            ],
+            run: () => {
+              if (job) {
+                const resume = resumeById(job.resumeId);
+                job.stage = "Preparing";
+                job.nextAction = { label: "Review tailored evidence, then submit yourself", dueDate: dateFromOffset(1), dueInDays: 1, owner: "You", type: "resume" };
+                addActivity("plan", `Resume strategy prepared · ${job.company}`, `${resume.name} · local tailoring checklist only; no application submitted`);
+                selectedJobId = job.id;
+                setView("inbox");
+                return { title: resume.name, summary: resume.summary, facts: [...resume.tailoring, `Next action: ${job.nextAction.label}`, "Every example and claim still needs your verification."], confidence: "Medium · based on synthetic job scope", checked: `1 role · ${state.resumes.length} resume variants`, freshness: "Synthetic resume library", assumptions: ["The selected variant is a starting point", "No resume document was edited or submitted"], sources: ["Resume variants", "Role-family match", "Opportunity next action"], action: { label: "Review the resume panel", run: () => focusJobFromCommand(job.id, "resume") } };
+              }
+              return { title: "Select a role first", summary: "Open an opportunity so the resume strategy can be matched to a specific job.", confidence: "Not assessed", checked: "No role selected", freshness: "Local sample", action: { label: "Open the priority inbox", run: () => setView("inbox") } };
+            }
+          };
+        }
+
+        if (/\b(drop|remove|discard|not worth|deprioriti[sz]e|close anything)\b/.test(normalized)) {
+          const lower = sortedJobs(activeJobs()).filter(item => priorityScore(item) < 72);
+          return {
+            objective: "Find opportunities that may not justify more time",
+            steps: [
+              { agent: "Opportunity Analyst", task: "Compare active roles against the saved fit, career-value, and timing weights." },
+              { agent: "Application Agent", task: "Identify roles below the current review threshold without changing their stage." }
+            ],
+            run: () => ({ title: `${lower.length} role${lower.length === 1 ? "" : "s"} below the current triage threshold`, summary: "These opportunities are candidates for your review. No roles were closed, deleted, or moved automatically.", facts: lower.slice(0, 4).map(item => `${item.company} · ${item.roleTitle} · ${priorityScore(item)}/100`), confidence: "High for the saved score · threshold is user-editable", checked: `${activeJobs().length} active roles`, freshness: "Current browser-local state", assumptions: ["A lower score is not proof a role is unsuitable", "You make the decision to close or continue"], exception: "No destructive action was taken. Review any role before changing its application stage.", sources: ["Opportunity records", "Search-profile weights"], action: { label: "Review lower-priority opportunities", run: () => setView("opportunities") } })
+          };
+        }
+
+        if (/\b(interview|tomorrow)\b/.test(normalized)) {
+          const interview = activeJobs().filter(item => item.stage === "Interview").sort((a, b) => priorityScore(b) - priorityScore(a))[0];
+          return {
+            objective: "Prepare for a recorded upcoming interview",
+            steps: [
+              { agent: "Application Agent", task: "Check application stages and dated next actions for an interview." },
+              { agent: "Opportunity Analyst", task: "Gather the role's fit evidence and open questions for review." }
+            ],
+            run: () => interview ? { title: `${interview.company} · ${interview.roleTitle}`, summary: "Interview preparation checklist ready from the role record.", facts: [...interview.strengths, ...interview.gaps.map(gap => `Verify · ${gap}`)], confidence: "Medium · synthetic role evidence", checked: "1 interview-stage opportunity", freshness: "Browser-local application record", sources: ["Application stage", "Role fit notes"], action: { label: "Open the interview role", run: () => focusJobFromCommand(interview.id) } } : { title: "No interview is recorded for tomorrow", summary: "No active opportunity in this demo is in the Interview stage. Nothing was changed.", confidence: "High for the local application stages", checked: `${state.jobs.length} application records`, freshness: "Browser-local sample", exception: "The demo cannot inspect your real calendar or employer messages.", sources: ["Application stages", "Local next actions"] }
+          };
+        }
+        return null;
+      },
+      onApproval() { return "Human decision recorded in this browser only. Nothing was sent to a contact or employer." }
+    });
+  }
+
   function bindEvents() {
     $$(".nav-item").forEach(button => button.addEventListener("click", () => setView(button.dataset.view)));
     $$(".queue-tab").forEach(button => button.addEventListener("click", () => setFilter(button.dataset.filter)));
@@ -802,6 +1048,7 @@
       }
       populateStageFilter();
       bindEvents();
+      mountFocuslineCommand();
       if (!storageAvailable) $("#storage-notice").hidden = false;
       setView("inbox");
       if (!localStorage.getItem(STORAGE_KEY)) persist();

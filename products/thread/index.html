@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Thread — AX Memory + AX Workspace | Zev Pan</title>
-<meta name="description" content="Thread is an AX Memory and AX Workspace product concept with a 1,000+ integration ecosystem target and a synthetic local demo.">
+<meta name="description" content="Thread is an AX Memory and AX Workspace product concept for source-linked context, intent-led task planning, and human review across existing tools. The public demo uses synthetic local data.">
+<link rel="stylesheet" href="../../shared/intent-model.css?v=1">
 <style>
 :root{--ink:#172b4d;--dark:#0f1f3d;--muted:#5e6c84;--line:#dfe1e6;--soft:#f7f8fa;--blue:#0c66e4;--blue-soft:#e9f2ff;--green:#216e4e;--green-soft:#dcfff1;--amber:#674100;--amber-soft:#fff7d6;--shadow:0 18px 44px rgba(9,30,66,.09)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}button,a{outline-offset:3px}a:focus-visible,button:focus-visible{outline:3px solid #85b8ff}
@@ -51,6 +52,18 @@
       </div>
     </section>
 
+    <section class="intent-model" aria-label="Thread intent-to-outcome operating model">
+      <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Ask across work context. Get back the decision, evidence, and next step.</h2><p>Thread’s command layer retrieves source-linked context and routes bounded analysis across existing systems. AX Memory preserves what the organization knows; AX Workspace remains where people review, decide, and follow through.</p></div>
+      <div class="intent-case-command"><small>EXAMPLE COMMAND</small><blockquote>“Check this supplier rate update against the finance model and prepare the review.”</blockquote></div>
+      <div class="intent-case-grid">
+        <article class="intent-case-card"><small>Agent plan</small><strong>Retrieve · compare · plan</strong><span>Context Retrieval Agent finds source facts; Change Analyst identifies conflicts and missing evidence; Task Planner keeps review work assigned.</span></article>
+        <article class="intent-case-card"><small>Tools + data</small><strong>Existing sources stay in place</strong><span>Simulated Outlook, Sheets, source documents, AX Memory records, and browser-local tasks. Integrations are a product target, not connected in this demo.</span></article>
+        <article class="intent-case-card"><small>Bounded execution</small><strong>Evidence and proposals</strong><span>Retrieve, summarize, calculate, compare, and prepare a reviewable update. Do not silently replace a system-of-record value.</span></article>
+        <article class="intent-case-card"><small>Human review</small><strong>Confirm the record and any communication</strong><span>People accept, correct, or reject proposed facts; supplier responses and finance changes require explicit human decision.</span></article>
+      </div>
+      <div class="intent-case-note"><strong>Architecture:</strong> a provider-neutral orchestration layer can route different bounded tasks to an organization-selected model. The public demo uses synthetic local rules and does not call an LLM or a live enterprise system.</div>
+    </section>
+
     <section class="section" id="memory">
       <div class="section-head"><div class="eyebrow">AX Memory</div><h2>The governed knowledge layer.</h2><p>AX Memory is the product model for persistent team context: what the team currently knows, where it came from, what changed, and what remains uncertain. The records in this MVP are synthetic and local to one browser; team-wide shared memory would require a backend.</p></div>
       <div class="pillars">
@@ -60,9 +73,9 @@
     </section>
 
     <section class="section" id="integrations">
-      <div class="section-head"><div class="eyebrow">Integration vision</div><h2>Connect the tools. Keep the work in context.</h2><p>Thread’s roadmap target is an ecosystem of 1,000+ workplace apps, services, and data sources. AX Memory links incoming information to its source and history; AX Workspace routes changes into human review, decisions, and follow-up.</p></div>
+      <div class="section-head"><div class="eyebrow">Integration vision</div><h2>Connect the tools. Keep the work in context.</h2><p>Thread is designed to work across existing workplace systems. AX Memory links incoming information to its source and history; AX Workspace routes changes into human review, decisions, and follow-up. The demo does not include live connectors.</p></div>
       <div class="integration-layout">
-        <div class="integration-stat"><strong>1,000+</strong><b>integration ecosystem target</b><span>Product ambition. This demo has no live connectors.</span><small>Roadmap target</small></div>
+        <div class="integration-stat"><strong>Keep</strong><b>systems of record</b><span>Use approved connectors and APIs to bring context into the review workflow.</span><small>No rip-and-replace</small></div>
         <div class="integration-content">
           <div class="integration-grid" aria-label="Planned integration categories">
             <article class="integration-card"><b>Communication</b><span>Email, chat, and meeting records</span></article>
@@ -72,7 +85,7 @@
             <article class="integration-card"><b>Customer systems</b><span>CRM, support, and partner platforms</span></article>
             <article class="integration-card"><b>Operations and data</b><span>Inventory, databases, and internal tools</span></article>
           </div>
-          <div class="integration-architecture" aria-label="Planned Thread information flow"><span>Connected systems</span><b aria-hidden="true">→</b><span>AX Memory · source-linked context</span><b aria-hidden="true">→</b><span>AX Workspace · human review and action</span></div>
+          <div class="integration-architecture" aria-label="Planned Thread information flow"><span>Existing systems</span><b aria-hidden="true">→</b><span>Provider-neutral orchestration + AX Memory</span><b aria-hidden="true">→</b><span>AX Workspace · human review and action</span></div>
         </div>
       </div>
       <p class="integration-note">The categories describe intended coverage, not connectors already built or connected. A target architecture could combine maintained connectors for common systems with API and webhook paths for long-tail tools.</p>

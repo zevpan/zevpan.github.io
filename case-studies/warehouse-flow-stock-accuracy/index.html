@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Warehouse Flow & Stock Accuracy Decision Support — Zev Pan</title>
 <meta name="description" content="An anonymized warehouse transformation case study using connected operational evidence, human-in-the-loop review and measurable decision outcomes.">
+<link rel="stylesheet" href="../../shared/intent-model.css?v=1">
 <style>
 :root{--bg:#f7f7f5;--panel:#fff;--text:#171717;--muted:#666;--line:#deded8;--soft:#efefeb;--blue:#edf4ff;--green:#eef8f1;--amber:#fff4d6}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.56}.sitebar{border-bottom:1px solid var(--line);background:rgba(247,247,245,.94);position:sticky;top:0;z-index:10;backdrop-filter:blur(8px)}.sitebar-inner{max-width:1080px;margin:0 auto;padding:13px 24px;display:flex;justify-content:space-between;gap:20px}.brand,.nav a{text-decoration:none;color:inherit}.brand{font-weight:800}.nav{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}main{max-width:1080px;margin:0 auto;padding:56px 24px 96px}.hero{padding:42px 0 28px;border-bottom:1px solid var(--line)}.kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}h1{font-size:48px;line-height:1.08;margin:12px 0 16px;max-width:940px}h2{font-size:29px;margin:0 0 16px}.lead{font-size:20px;color:#383838;max-width:900px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.tag{background:var(--soft);border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-size:12px}section{padding:34px 0;border-bottom:1px solid var(--line)}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}.card strong{display:block;margin-bottom:6px}.callout{padding:18px;border-radius:12px;background:var(--blue);border:1px solid #cbdcf4}.callout.green{background:var(--green);border-color:#c7dfcc}.callout.amber{background:var(--amber);border-color:#e5d3a0}.diagram{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;overflow:auto}.diagram img{display:block;width:100%;height:auto;min-width:950px}.btn{display:inline-block;margin-top:12px;text-decoration:none;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px}.flow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.step{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px}.arrow{color:#888;font-weight:700}table{width:100%;border-collapse:collapse;background:#fff}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px;font-size:14px}th{background:var(--soft)}ul{margin:7px 0 0 20px;padding:0}li{margin:5px 0}.small{font-size:13px;color:var(--muted)}footer{padding-top:30px;color:var(--muted);font-size:13px}@media(max-width:760px){h1{font-size:36px}.grid2,.grid3{grid-template-columns:1fr}.diagram img{min-width:1200px}}
@@ -62,7 +63,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 </style></head><body>
 <header class="sitebar"><div class="sitebar-inner"><a class="brand" href="../../index.html">Zev Pan</a><nav class="nav"><a href="../../index.html">All Case Studies</a><a href="prototype.html">Launch interactive demo</a><a href="../travel-logistics-transformation/index.html">Travel Logistics</a><a href="../prospecting-operations/index.html">Prospecting Operations</a></nav></div></header>
 <main>
-<div class="hero"><div class="kicker">CASE STUDY 03 · INTERACTIVE</div><h1>Warehouse Flow & Stock Accuracy Decision Support</h1><p class="lead">Connecting recorded warehouse evidence with physical operational context — now informed by a six-month extract of <strong>135,957 warehouse-task rows</strong>, including <strong>39,536 PICK activities</strong> across 1,649 products.</p><div class="meta"><span class="tag">Process Analysis</span><span class="tag">Warehouse Operations</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Support</span><span class="tag">PoV Design</span></div></div>
+<div class="hero"><div class="kicker">CASE STUDY 03 · INTERACTIVE</div><h1>Warehouse Flow & Stock Accuracy Decision Support</h1><p class="lead">Connecting recorded warehouse evidence with physical operating context. The public workspace uses synthetic examples to show why time-window stability and human context matter before a stock or location decision.</p><div class="meta"><span class="tag">Process Analysis</span><span class="tag">Warehouse Operations</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Support</span><span class="tag">PoV Design</span></div></div>
 
 <div class="portfolio-kicker">Architecture · Governance · Working Prototype</div>
 <div class="project-strip">
@@ -75,6 +76,17 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <a class="back" href="../../index.html">Portfolio home</a>
   <a class="back" href="../../products/thread/index.html">Next: Thread Product Build →</a>
 </div>
+<section class="intent-model" aria-label="Warehouse decision-support intent-to-outcome model">
+  <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Find the few patterns worth a warehouse check—without deciding what to move.</h2><p>The system narrows evidence into a specific operational question. Warehouse context determines whether the finding is normal, actionable, or still uncertain.</p></div>
+  <div class="intent-case-command"><small>EXAMPLE COMMAND</small><blockquote>“Find the inventory patterns that need a warehouse review and tell me what evidence is missing.”</blockquote></div>
+  <div class="intent-case-grid">
+    <article class="intent-case-card"><small>Agent plan</small><strong>Rank · explain · request context</strong><span>Evidence Analyst compares activity, concentration, and time-window stability; Finding Analyst frames a specific check; Work Planner keeps a human owner on the case.</span></article>
+    <article class="intent-case-card"><small>Tools + data</small><strong>Read the warehouse evidence</strong><span>Historical task exports, WMS / inventory records, location history, cycle counts, and the review case register remain the target sources and system of record.</span></article>
+    <article class="intent-case-card"><small>Bounded execution</small><strong>Surface evidence, not a stock adjustment</strong><span>Calculate and rank review candidates, explain why each surfaced, and keep data limitations visible. No inventory or location record is changed by the agent layer.</span></article>
+    <article class="intent-case-card"><small>Human review</small><strong>Decide with physical context</strong><span>Warehouse leads confirm normal behavior, investigate, or approve a physical move or adjustment after checking operational constraints.</span></article>
+  </div>
+  <div class="intent-case-note"><strong>Returned outcome:</strong> a specific review case, supporting evidence, open question, owner, and a record of the later decision and result. Public cases are synthetic and browser-local.</div>
+</section>
 <section><h2>Transformation objective</h2><div class="callout green"><strong>Can connected warehouse evidence support better operational decisions?</strong><br>The objective is not a dashboard. The target is a useful operational decision with a measurable result.</div></section>
 
 <section><h2>AS-IS process architecture</h2><p>The current operating model spans goods receipt, put-away, Admin planning, physical picking, QC / staging / outbound and cycle-count control. System information and physical warehouse reality do not always contain the same context, so the analysis explicitly separates information flow from physical flow.</p><div class="diagram"><img src="../../assets/warehouse-as-is-process.png" alt="Anonymized AS-IS warehouse process swimlane"></div><a class="btn" href="../../assets/warehouse-as-is-process.png">Open AS-IS diagram full size →</a></section>
@@ -82,37 +94,18 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <section><h2>What remained to validate</h2><p>The discovery work deliberately separated known process facts from validation questions.</p><div class="grid2"><div class="card"><strong>Outbound / QC</strong>Exact GI → QC sequence and control point; how picking and QC exceptions are corrected and closed.</div><div class="card"><strong>Admin / Picking</strong>How work is assigned to pickers and which tracking-spreadsheet fields are actually used for planning and follow-up.</div><div class="card"><strong>Inventory Control</strong>Cycle-count selection logic and how variance moves from investigation to adjustment.</div><div class="card"><strong>Data & Decision</strong>Which timestamps can reliably measure outcomes and which decisions belong to the operator versus the principal / customer.</div></div><p class="small">These are validation items — not assumed problems.</p></section>
 
 <section>
-<div class="portfolio-kicker">Jan–Jun 2026 · Aggregate warehouse evidence</div>
-<h2>Six-month historical evidence</h2>
-<p>The High Runner design can now be tested against a six-month warehouse-task extract rather than volume assumptions alone. Public figures below are aggregate; product IDs, operators, warehouse orders, task IDs and exact bins remain private.</p>
-
-<div class="evidence-band">
-  <div class="evidence-stat"><small>Warehouse-task rows</small><b>135,957</b><span>across Jan–Jun 2026</span></div>
-  <div class="evidence-stat"><small>PICK activity</small><b>39,536</b><span>rows where Activity = PICK</span></div>
-  <div class="evidence-stat"><small>Picked products</small><b>1,649</b><span>distinct products in the six-month PICK population</span></div>
-  <div class="evidence-stat"><small>Top-100 concentration</small><b>55.3%</b><span>of all PICK activity comes from the Top 100 products</span></div>
-  <div class="evidence-stat"><small>Persistence</small><b>94 / 100</b><span>Top 100 products appear in all six months</span></div>
-  <div class="evidence-stat"><small>50% of activity</small><b>78</b><span>products account for half of all PICK activity</span></div>
-  <div class="evidence-stat"><small>80% of activity</small><b>309</b><span>products account for four-fifths of PICK activity</span></div>
-  <div class="evidence-stat"><small>Time-window effect</small><b>42% → 68%</b><span>median dominant-bin share: six-month aggregate vs monthly view</span></div>
-</div>
-
+<div class="portfolio-kicker">Synthetic prototype scenarios</div>
+<h2>Three patterns make the review decision concrete</h2>
+<p>The examples below are invented for the public demo. They illustrate how an evidence layer can distinguish a stable pick face, sequential relocation between periods, and persistent multi-location activity without publishing private warehouse aggregates.</p>
 <div class="evidence-map">
-  <div class="node"><b>Observed evidence</b><span>High-volume products are concentrated, but location concentration varies widely and can change over time.</span></div>
+  <div class="node"><b>Stable concentration</b><span>High activity stays within an expected primary location; suppress a noisy alert and keep the pattern reviewable.</span></div>
   <div class="map-arrow">→</div>
-  <div class="node"><b>Decision implication</b><span>Volume and six-month dispersion alone can create noisy or misleading review candidates.</span></div>
+  <div class="node"><b>Temporal relocation</b><span>Locations change between periods; ask about replenishment or layout history before classifying simultaneous dispersion.</span></div>
   <div class="map-arrow">→</div>
-  <div class="node"><b>Target capability</b><span>Combine pick frequency, location concentration and time-window stability before asking the warehouse a specific question.</span></div>
+  <div class="node"><b>Persistent dispersion</b><span>Activity remains distributed within the synthetic review window; ask an operator about overflow, replenishment, or physical constraints.</span></div>
 </div>
-
-<div class="callout green" style="margin-top:16px"><strong>Key analytical lesson</strong><br>Some products look dispersed over six months because the dominant bin moved between periods; other products remain dispersed within individual months. The system should distinguish those patterns before consuming warehouse review capacity.</div>
+<div class="callout green" style="margin-top:16px"><strong>Evidence boundary</strong><br>Public prototype counts and case details are synthetic. No warehouse export, product identifier, operator record, order, or derived business aggregate is included.</div>
 </section>
-
-<section><h2>PoV progress-review snapshot</h2>
-<div class="grid3"><div class="card"><strong>46,117</strong> pick activities reported in the later progress-review source.</div><div class="card"><strong>1,743</strong> qualifying SKUs reported in that source.</div><div class="card"><strong>100 → 5</strong> ranked High Runners narrowed to findings for human review.</div></div>
-<div class="snapshot-note" style="margin-top:16px"><strong>Source-snapshot boundary.</strong> The six-month Jan–Jun workbook independently yields 39,536 PICK rows and 1,649 distinct picked products. The 46,117 / 1,743 figures come from a separate PoV progress-review snapshot with a different extraction window and/or qualification definition. They are intentionally kept separate rather than silently reconciled.</div>
-<div class="callout" style="margin-top:16px"><strong>The value is not the ranking itself.</strong> The MVP reduces the amount of evidence warehouse users must inspect and gives them a concrete place to start investigating.</div>
-</section><div class="grid3"><div class="card"><strong>46,117</strong> historical pick activities connected into the review flow.</div><div class="card"><strong>1,743</strong> qualifying SKUs with pick activity.</div><div class="card"><strong>100 → 5</strong> ranked High Runners narrowed to a smaller set of findings for human review.</div></div><div class="callout" style="margin-top:16px"><strong>The value is not the ranking itself.</strong> The MVP reduces the amount of evidence warehouse users must inspect and gives them a concrete place to start investigating.</div></section>
 
 <section><h2>What a useful finding must explain</h2><div class="grid3"><div class="card"><strong>Why it caught attention</strong>Show the pattern that differs from comparable warehouse evidence.</div><div class="card"><strong>Where / when to look</strong>Point to the relevant SKU, location and period so relocation is not confused with simultaneous dispersion.</div><div class="card"><strong>What to check</strong>Convert the signal into a concrete warehouse question rather than an automatic conclusion.</div></div><p class="small">Worth checking does not mean something is wrong. The output is a specific check, not an automatic decision.</p></section>
 
@@ -126,7 +119,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 
 <section><h2>Measurement before value claims</h2><div class="callout amber"><strong>Select case → baseline → take action → measure result → prove value.</strong><br>Operational improvement is measured first. Business value is discussed after evidence exists.</div></section>
 
-<section><h2>Interactive prototype</h2><div class="callout green"><strong>Live interactive demo</strong><br>The warehouse decision workspace now uses synthetic scenarios calibrated to the six-month evidence: a stable-location High Runner, a temporal-relocation pattern and a persistent-dispersion pattern. Each produces a different review question before human context is added.</div><p>The prototype also includes QC process validation and explicitly preserves unknowns instead of inventing the missing operating sequence.</p><a class="btn" href="prototype.html">Launch interactive prototype →</a></section>
+<section><h2>Interactive prototype</h2><div class="callout green"><strong>Working synthetic demo</strong><br>The warehouse decision workspace uses invented stable-location, temporal-relocation, and persistent-dispersion scenarios. Each produces a different review question before human context is added.</div><p>The prototype also includes QC process validation and explicitly preserves unknowns instead of inventing the missing operating sequence.</p><a class="btn" href="prototype.html">Launch interactive prototype →</a></section>
 
-<footer>Anonymized case study based on real process-discovery and PoV work. Company, partner and customer identities are generalized. Public prototype identities are synthetic.</footer>
+<footer>Public narrative abstracts private source records and derived aggregates. Company, product, operator, and customer identities in the prototype are synthetic.</footer>
 </main></body></html>

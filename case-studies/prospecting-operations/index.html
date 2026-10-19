@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI-Assisted Prospecting Operations System — Zev Pan</title>
 <meta name="description" content="An AI transformation case study on relationship-state management, capacity-aware prioritization, human-in-the-loop AI and action reconciliation.">
+<link rel="stylesheet" href="../../shared/intent-model.css?v=1">
 <style>
 :root{--bg:#f7f7f5;--panel:#fff;--text:#171717;--muted:#666;--line:#deded8;--soft:#efefeb;--warn:#fff4d6;--good:#e9f7ef;--blue:#edf4ff;--violet:#f1edff}
 *{box-sizing:border-box}
@@ -133,6 +134,17 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <a class="back" href="../../index.html">Portfolio home</a>
   <a class="back" href="../warehouse-flow-stock-accuracy/index.html">Next: Warehouse Decision Support →</a>
 </div>
+<section class="intent-model" aria-label="Prospecting operations intent-to-outcome model">
+  <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Reconcile identity and relationship state before recommending outreach.</h2><p>New exports, prior interactions, suppression rules, and human follow-up capacity belong in one reviewable work cycle. Agents can reconcile and prepare; people own ambiguous identity and relationship choices.</p></div>
+  <div class="intent-case-command"><small>EXAMPLE COMMAND</small><blockquote>“Reconcile the latest connection and invitation exports, then show me which actions need review.”</blockquote></div>
+  <div class="intent-case-grid">
+    <article class="intent-case-card"><small>Agent plan</small><strong>Import · resolve · prioritize</strong><span>Import Agent reads the export schema; Identity Agent matches stable profile identifiers and holds ambiguity; Relationship Analyst uses interaction context; Queue Agent refreshes work.</span></article>
+    <article class="intent-case-card"><small>Tools + data</small><strong>Work with current systems</strong><span>LinkedIn export files, Google Sheets People Master and Interaction Log, n8n workflow state, and a browser-local action queue in this public demo.</span></article>
+    <article class="intent-case-card"><small>Bounded execution</small><strong>Preserve source and record state</strong><span>Reconcile Connections and Invitations, append new events, deduplicate known identities, and retain older interaction history when a newer Messages export is absent.</span></article>
+    <article class="intent-case-card"><small>Human review</small><strong>Resolve ambiguity and choose outreach</strong><span>Hold conflicting identity matches. A person chooses whether to reconnect, ask for role insight, request a referral, or skip. Messages are never sent automatically.</span></article>
+  </div>
+  <div class="intent-case-note"><strong>Returned outcome:</strong> reconciled People Master state, an exception list, and prioritized next actions. The sample run deliberately keeps older synthetic message history unchanged when the latest sample batch has no Messages file.</div>
+</section>
 <section><h2>AX Memory and AX Workspace</h2>
 <div class="grid">
   <div class="card"><strong>AX Memory · the context layer</strong>What the system should retain, update, trust, suppress, or ask about: canonical people, relationship history, source context, and prior decisions. In this case, the Google Sheet is the current operational record store. The demo models its People Master and Interaction Log; it is not connected to a separate AX Memory service.</div>
@@ -141,15 +153,14 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <div class="flow"><span class="step">Import source exports</span><span class="arrow">→</span><span class="step">Run the workflow</span><span class="arrow">→</span><span class="step">Update relationship memory</span><span class="arrow">→</span><span class="step">Review next actions</span><span class="arrow">→</span><span class="step">Record outcome / export</span></div>
 <p class="small">The demo represents this loop with synthetic records and browser-local rules. It does not execute the actual n8n workflow or connect to LinkedIn or the Google Sheet.</p>
 </section>
-<section><h2>Evidence from the prospect database</h2>
-<p>We analyzed the supplied <em>AI Employee - Prospect Database</em> workbook by counting rows with a populated record ID. The page and demo use aggregates and field names only; they do not expose prospect identities, links, contact details or message content.</p>
-<table><thead><tr><th>Workbook tab</th><th>Records</th><th>Observed data</th></tr></thead><tbody>
-<tr><td>People Master</td><td>5,542</td><td>Relationship State and Next Action are blank throughout; one Do Not Contact flag is true.</td></tr>
-<tr><td>Follow-up Analysis</td><td>827</td><td>770 FOLLOW_UP; 57 NO_FOLLOW_UP.</td></tr>
-<tr><td>Action Queue</td><td>250</td><td>212 DONE; 36 CANCELLED; 2 SNOOZED. All are LINKEDIN_FOLLOW_UP.</td></tr>
+<section><h2>Evidence and public-data boundary</h2>
+<p>The process model addresses fragmented identity, interaction history, relationship state, suppression rules, and follow-up capacity. Public case materials do not reproduce operational workbook counts, source records, contact identities, profile links, or message content.</p>
+<table><thead><tr><th>Record class</th><th>Purpose in the workflow</th><th>Public demo treatment</th></tr></thead><tbody>
+<tr><td>People Master</td><td>Maintain canonical identity, network state, relationship state, and next action.</td><td>Invented profiles and companies only.</td></tr>
+<tr><td>Interaction history</td><td>Inform relationship readiness and preserve useful context across source refreshes.</td><td>Short synthetic summaries; no message text.</td></tr>
+<tr><td>Action Queue</td><td>Represent eligibility, due work, capacity, suppression, and review outcomes.</td><td>Local synthetic actions with no external outreach.</td></tr>
 </tbody></table>
-<p>Follow-up Analysis records Decision, Reason, Confidence, Conversation State, Follow-up Priority, Follow-up Angle, Analyzed At and Model. Action Queue records Due Date, Priority, Agent, Action Type, rationale, suggested action and message, status, completion time and outcome.</p>
-<div class="callout blue"><strong>Evidence boundary</strong><p>This workbook snapshot contains action outcomes, not an active open queue. The interactive queue and state transitions are synthetic. The n8n workflow definition was not supplied, so its triggers and automation steps remain unverified.</p></div>
+<div class="callout blue"><strong>Evidence boundary</strong><p>The interactive queue and state transitions are synthetic. The demo does not execute the actual n8n workflow or connect to LinkedIn or the Google Sheet. No private export or derived aggregate is included in the public fixture.</p></div>
 </section>
 <section><h2>Transformation objective</h2>
 <p>Build a relationship-operations layer that converts fragmented network and interaction data into trustworthy state, governed eligibility, transparent priority and a continuously reconciled Action Queue.</p>
