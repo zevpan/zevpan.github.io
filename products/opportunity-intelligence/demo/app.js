@@ -770,7 +770,7 @@
           };
         }
 
-        if (/\b(neglect|overdue|attention|follow.?up|focus.*today|today.*focus|what should i focus)\b/.test(normalized)) {
+        if (/\b(neglect(?:ed|ing)?|overdue|attention|follow.?up|focus.*today|today.*focus|what should i focus)\b/.test(normalized)) {
           const attention = sortedJobs(activeJobs().filter(isAttention));
           const best = attention[0] || sortedJobs(activeJobs())[0];
           return {
