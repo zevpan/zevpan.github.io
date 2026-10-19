@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Operations Automation Workspace - Prototype</title>
+<link rel="stylesheet" href="../../shared/agent-command.css?v=2">
 <style>
 :root{--bg:#f4f6f8;--panel:#fff;--ink:#17202b;--muted:#687385;--line:#dde2e7;--nav:#17202b;--blue:#eaf2ff;--green:#e9f7ef;--amber:#fff3d1;--red:#ffe7e7;--slate:#eef1f4}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
@@ -36,6 +37,7 @@ table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:10px;bor
 </aside>
 <main>
 <div class="top"><div><h1 id="title">Two different automation problems. Two different designs.</h1><div class="sub" id="sub">Use decision support where judgement matters; deterministic automation where work is repetitive.</div></div><div class="badges"><span class="badge">Human-in-the-loop warehouse</span><span class="badge">Deterministic finance automation</span></div></div>
+<div id="agent-command-host"></div>
 
 <section id="home" class="panel active">
 <div class="split">
@@ -139,6 +141,26 @@ document.querySelector(`nav button[data-view="${id}"]`).classList.add("active");
 title.textContent=copy[id][0];sub.textContent=copy[id][1];
 }
 function msg(t){alert(t)}
+function mountOperationsCommand(){
+if(!window.AgentCommandSurface)return;
+window.AgentCommandSurface.mount({
+ product:"Operations Automation Workspace",
+ placeholder:"What should the operations team review or prepare?",
+ suggestions:["What should the operations team review today?","Show the largest finance exceptions","Review high-runner inbound candidates","Open the outbound QC control gap"],
+ fallback:["Review the synthetic exception queue","Open a warehouse review","Inspect the finance batch"],
+ resolve(text){
+  const q=text.toLowerCase();
+  let target="exceptions", title="Prioritize the synthetic exception queue", facts=["FIN-88254 · required charge mapping is missing","FIN-88312 · target-system rejection requires correction","OB-240918-27 · outbound QC checkpoint needs confirmation","SKU AX-184 · physical context is needed before a slotting decision."], checked="4 illustrative exception records";
+  if(/high.runner|slotting|warehouse|sku|inbound/.test(q)){target="runner";title="Review the high-runner inbound scenario";facts=["AX-184 · activity appears across multiple sample locations","Physical size, route, replenishment and layout still need a warehouse check."];checked="100 synthetic high-runner candidates · 1 featured case";}
+  else if(/\bqc\b|quality|outbound/.test(q)){target="qc";title="Review the outbound QC control gap";facts=["OB-240918-27 · the sample extract does not establish if verification happened or was missed","The QC owner must confirm the control point and exception path."];checked="1 synthetic process-validation case";}
+  else if(/finance|batch|po|invoice|validated|entry/.test(q)){target="finance";title="Review the finance batch validation";facts=["1,191 of 1,240 sample items are shown as validated","31 rows have missing or invalid fields","18 rows are marked duplicate or rejected","No rows were submitted to an external finance system."];checked="1,240 synthetic finance rows";}
+  else if(/audit|history|what changed/.test(q)){target="audit";title="Inspect the synthetic audit trail";facts=["The sample records validation, review prompts and human decisions","All statuses are fixtures in this browser prototype."];checked="4 illustrative audit entries";}
+  return{objective:title,steps:[{agent:"Operations Orchestrator",task:"Translate the instruction into a supported workspace view."},{agent:"Exception Analyst",task:"Review synthetic workflow state and identify the decision boundary."},{agent:"Work Planner",task:"Open the relevant queue or evidence surface."}],run(){showView(target);return{title,summary:"The workspace is showing the relevant synthetic records for review.",facts,confidence:"High for the authored fixture state",checked,freshness:"Illustrative browser-only prototype",assumptions:["All quantities and records shown here are synthetic"],exception:"This prototype does not update a warehouse or finance system.",sources:["Local scenario records","Authored validation rules"]};}};
+ }
+});
+}
+document.addEventListener("DOMContentLoaded",mountOperationsCommand);
 </script>
+<script src="../../shared/agent-command.js?v=2"></script>
 </body>
 </html>

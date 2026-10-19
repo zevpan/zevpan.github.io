@@ -54,21 +54,23 @@
             <div class="command-icon">⌘</div>
             <div><h2 id="command-title">Tell Finance Control Hub what you need</h2><p>Describe the outcome or import finance source files. Commands run locally against this batch.</p></div>
           </div>
-          <form id="command-form" class="command-form">
-            <label class="sr-only" for="command-input">Describe a finance task</label>
-            <button id="attach-button" class="composer-icon-button" type="button" data-action="attach" aria-label="Add source files" title="Add source files">+</button>
-            <input id="command-input" type="text" autocomplete="off" placeholder="Reconcile this month's vendor invoices" aria-describedby="composer-note">
-            <button id="speech-button" class="composer-icon-button" type="button" data-action="speech" aria-label="Dictate an instruction" title="Dictate an instruction">🎙</button>
-            <button id="command-submit" class="button button-primary" type="submit"><span id="command-submit-label">Start</span><span aria-hidden="true">↑</span></button>
-          </form>
-          <input id="source-file-input" class="sr-only" type="file" accept=".csv,.json,text/csv,application/json" multiple>
-          <div class="composer-toolbar">
-            <label class="composer-setting"><span>Model preference</span><select id="model-select" aria-label="Model preference"><option value="automatic">Organization default</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="gemini">Google Gemini</option><option value="enterprise">Enterprise-hosted model</option></select></label>
-            <label class="composer-setting"><span>Effort</span><select id="effort-select" aria-label="Reasoning effort"><option value="default">Default</option><option value="fast">Fast</option><option value="thorough">Thorough</option></select></label>
-            <span class="composer-note" id="composer-note">Preferences are saved here. This demo uses deterministic rules and does not call an LLM.</span>
-          </div>
-          <div class="file-drop-zone" id="file-drop-zone" tabindex="0" aria-label="Drop finance source files here">
-            <span class="drop-icon" aria-hidden="true">⇧</span><span>Drop a canonical JSON batch or four source CSV files here. Add an optional vendor-code map, or use +</span>
+          <div class="finance-composer" id="command-composer">
+            <div class="finance-drop-overlay" id="file-drop-overlay" aria-hidden="true"><strong>Drop files to add them to this batch</strong><span>Use a canonical JSON batch or the four source CSV files</span></div>
+            <form id="command-form" class="command-form">
+              <label class="sr-only" for="command-input">Describe a finance task</label>
+              <button id="attach-button" class="composer-icon-button" type="button" data-action="attach" aria-label="Add source files" title="Add files"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg></button>
+              <input id="command-input" type="text" autocomplete="off" placeholder="Reconcile this month's vendor invoices" aria-describedby="composer-note">
+              <button id="speech-button" class="composer-icon-button" type="button" data-action="speech" aria-label="Dictate an instruction" title="Dictate"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="2.5" width="6" height="10" rx="3"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v3M7 18h6"/></svg></button>
+              <button id="command-submit" class="button button-primary" type="submit"><span id="command-submit-label">Start</span><span aria-hidden="true">↑</span></button>
+            </form>
+            <input id="source-file-input" class="sr-only" type="file" accept=".csv,.json,text/csv,application/json" multiple>
+            <div class="composer-toolbar">
+              <div class="composer-controls">
+                <label class="composer-setting"><span>Model</span><select id="model-select" aria-label="Model"><option value="default">Default</option><option value="gpt-6-astra">GPT-6 Astra</option><option value="gpt-6-1-sol">GPT-6.1 Sol</option><option value="gpt-6-sol">GPT-6 Sol</option><option value="gpt-6-luna">GPT-6 Luna</option></select></label>
+                <label class="composer-setting"><span>Effort</span><select id="effort-select" aria-label="Effort"><option value="default">Default</option><option value="instant">Instant</option><option value="high">High</option><option value="max">Max</option></select></label>
+              </div>
+              <span class="composer-note" id="composer-note">Local rules only. Model and effort are saved preferences; nothing is sent to an LLM. Add files with + or drop them in the composer.</span>
+            </div>
           </div>
           <div class="staged-import" id="staged-import" hidden></div>
           <div class="import-feedback" id="import-feedback" role="status" aria-live="polite"></div>
@@ -91,6 +93,6 @@
     </main>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="app.js?v=5ffa343"></script>
+  <script type="module" src="app.js?v=cmd-controls-2"></script>
 </body>
 </html>

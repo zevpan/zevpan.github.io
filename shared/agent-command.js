@@ -8,6 +8,19 @@
   }[character]));
 
   const wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+  const icons = {
+    plus: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>',
+    mic: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="2.5" width="6" height="10" rx="3"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v3M7 18h6"/></svg>',
+    arrow: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 15V4M5.5 8.5 10 4l4.5 4.5"/></svg>'
+  };
+
+  function readPreference(key, fallback) {
+    try { return localStorage.getItem(key) || fallback; } catch (_) { return fallback; }
+  }
+
+  function savePreference(key, value) {
+    try { localStorage.setItem(key, value); } catch (_) { /* Preference is optional. */ }
+  }
 
   function mount(config) {
     const host = document.querySelector(config.target || "#agent-command-host");
@@ -26,14 +39,30 @@
           <span class="agent-command-state" data-agent-state data-state="READY" aria-live="polite">READY</span>
         </div>
         <form class="agent-command-form" data-agent-form>
-          <label class="sr-only" for="agent-command-input">Natural-language command</label>
-          <input class="agent-command-input" id="agent-command-input" data-agent-input type="text" maxlength="240" autocomplete="off" placeholder="${escapeHTML(config.placeholder || "What should I focus on today?")}">
-          <button class="agent-command-submit" type="submit" data-agent-submit>Run command</button>
+          <div class="agent-composer" data-agent-composer>
+            <div class="agent-drop-overlay" data-agent-drop-overlay aria-hidden="true"><span>Drop files to add context</span></div>
+            <div class="agent-attachment-list" data-agent-attachments role="status" aria-live="polite" hidden></div>
+            <label class="sr-only" for="agent-command-input">Natural-language instruction</label>
+            <textarea class="agent-command-input" id="agent-command-input" data-agent-input rows="2" maxlength="1000" autocomplete="off" placeholder="${escapeHTML(config.placeholder || "What should I focus on today?")}"></textarea>
+            <div class="agent-composer-toolbar">
+              <div class="agent-composer-leading">
+                <input class="sr-only" data-agent-file-input type="file" multiple accept=".csv,.json,.txt,.md,text/csv,application/json,text/plain,text/markdown" aria-label="Choose files to add as context">
+                <button class="agent-icon-button" type="button" data-agent-attach aria-label="Add files" title="Add files">${icons.plus}</button>
+                <span class="agent-file-hint">Add files or drop here</span>
+              </div>
+              <div class="agent-composer-trailing">
+                <label class="agent-setting"><span>Model</span><select data-agent-model aria-label="Model"><option value="default">Default</option><option value="gpt-6-astra">GPT-6 Astra</option><option value="gpt-6-1-sol">GPT-6.1 Sol</option><option value="gpt-6-sol">GPT-6 Sol</option><option value="gpt-6-luna">GPT-6 Luna</option></select></label>
+                <label class="agent-setting"><span>Effort</span><select data-agent-effort aria-label="Effort"><option value="default">Default</option><option value="instant">Instant</option><option value="high">High</option><option value="max">Max</option></select></label>
+                <button class="agent-icon-button agent-dictate" type="button" data-agent-dictate aria-label="Start dictation" title="Dictate">${icons.mic}</button>
+                <button class="agent-command-submit" type="submit" data-agent-submit><span data-agent-submit-label>Start</span><span class="agent-command-start-icon" data-agent-start-icon>${icons.arrow}</span></button>
+              </div>
+            </div>
+          </div>
         </form>
         <div class="agent-command-suggestions" aria-label="Suggested commands"><span>Try a command</span>${suggestions.map((suggestion) => `<button class="agent-command-suggestion" type="button" data-agent-suggestion="${escapeHTML(suggestion)}">${escapeHTML(suggestion)}</button>`).join("")}</div>
         <div class="agent-command-foot">
           <div class="agent-command-flow" aria-label="Dream, plan, execute, review, iterate"><b>Dream</b><i>→</i><b>Plan</b><i>→</i><b>Execute</b><i>→</i><b>Review</b><i>→</i><b>Iterate</b></div>
-          <span class="agent-command-local">Simulated run · no live model or external action</span>
+          <span class="agent-command-local">Local demo actions · model choice is a preference only · no external action</span>
         </div>
         <section class="agent-run" data-agent-run aria-label="Command execution evidence" aria-live="polite" hidden></section>
       </section>`;
@@ -41,10 +70,71 @@
     const form = host.querySelector("[data-agent-form]");
     const input = host.querySelector("[data-agent-input]");
     const submit = host.querySelector("[data-agent-submit]");
+    const submitLabel = host.querySelector("[data-agent-submit-label]");
+    const startIcon = host.querySelector("[data-agent-start-icon]");
     const stateBadge = host.querySelector("[data-agent-state]");
     const runPanel = host.querySelector("[data-agent-run]");
+    const composer = host.querySelector("[data-agent-composer]");
+    const fileInput = host.querySelector("[data-agent-file-input]");
+    const attachmentList = host.querySelector("[data-agent-attachments]");
+    const dropOverlay = host.querySelector("[data-agent-drop-overlay]");
+    const modelSelect = host.querySelector("[data-agent-model]");
+    const effortSelect = host.querySelector("[data-agent-effort]");
+    const dictateButton = host.querySelector("[data-agent-dictate]");
     let latest = null;
     let runSequence = 0;
+    let running = false;
+    let speechRecognition = null;
+    let attachments = [];
+
+    const modelPreference = readPreference("zev-demo-model", "default");
+    const effortPreference = readPreference("zev-demo-effort", "default");
+    if (Array.from(modelSelect.options).some((option) => option.value === modelPreference)) modelSelect.value = modelPreference;
+    if (Array.from(effortSelect.options).some((option) => option.value === effortPreference)) effortSelect.value = effortPreference;
+
+    function syncSubmitState() {
+      submit.disabled = false;
+      submitLabel.textContent = running ? "Stop" : "Start";
+      submit.setAttribute("aria-label", running ? "Stop this demo run" : "Start this demo run");
+      submit.classList.toggle("is-stop", running);
+      startIcon.hidden = running;
+    }
+
+    function renderAttachments(message) {
+      if (!attachments.length) {
+        attachmentList.hidden = true;
+        attachmentList.innerHTML = "";
+        return;
+      }
+      attachmentList.hidden = false;
+      attachmentList.innerHTML = attachments.map((file, index) => `<span class="agent-attachment-chip" title="${escapeHTML(file.name)}">${escapeHTML(file.name)}<button type="button" data-agent-remove-file="${index}" aria-label="Remove ${escapeHTML(file.name)}">×</button></span>`).join("");
+      if (message) attachmentList.setAttribute("aria-label", message);
+    }
+
+    function addFiles(fileList) {
+      const incoming = Array.from(fileList || []);
+      if (!incoming.length) return;
+      const eligible = incoming.filter((file) => /\.(csv|json|txt|md)$/i.test(file.name));
+      const room = Math.max(0, 10 - attachments.length);
+      const accepted = eligible.filter((file) => file.size <= 5 * 1024 * 1024).slice(0, room);
+      attachments = attachments.concat(accepted);
+      renderAttachments();
+      if (incoming.length !== accepted.length) {
+        const rejected = incoming.length - accepted.length;
+        runPanel.hidden = false;
+        runPanel.innerHTML = `<div class="agent-run-result" role="status"><h3>Some files were not added</h3><p>${rejected} file(s) were skipped. Add up to 10 CSV, JSON, TXT, or MD files, each up to 5 MB.</p></div>`;
+      }
+      if (accepted.length) input.focus();
+    }
+
+    async function getRunContext(commandText) {
+      const files = await Promise.all(attachments.map(async (file) => {
+        let text = "";
+        try { text = await file.text(); } catch (_) { /* File metadata remains available. */ }
+        return { name: file.name, type: file.type, size: file.size, text: text.slice(0, 60000) };
+      }));
+      return { commandText, model: modelSelect.value, effort: effortSelect.value, files };
+    }
 
     function setState(label) {
       stateBadge.dataset.state = label;
@@ -114,28 +204,42 @@
     }
 
     async function run(text) {
+      if (running) {
+        runSequence += 1;
+        running = false;
+        latest = null;
+        setState("STOPPED");
+        syncSubmitState();
+        runPanel.hidden = false;
+        runPanel.innerHTML = '<div class="agent-run-result"><h3>Run stopped</h3><p>The local action was cancelled before it completed. No external action was taken.</p></div>';
+        return;
+      }
       const commandText = String(text || input.value || "").trim();
-      if (!commandText || submit.disabled) return;
+      if (!commandText) { input.focus(); return; }
       input.value = commandText;
       runSequence += 1;
       const currentRun = runSequence;
-      submit.disabled = true;
+      running = true;
+      syncSubmitState();
       setState("UNDERSTANDING REQUEST");
       runPanel.hidden = false;
       runPanel.innerHTML = `<div class="agent-run-top"><strong>${escapeHTML(commandText)}</strong><span>UNDERSTANDING REQUEST</span></div><div class="agent-run-body"><div class="agent-run-result"><div class="agent-run-label">Request</div><h3>Scoping a bounded task</h3><p>Matching your instruction to supported demo actions. No work has changed yet.</p></div></div>`;
 
       let route;
+      let context;
       try {
-        route = config.resolve ? await config.resolve(commandText) : null;
+        context = await getRunContext(commandText);
+        route = config.resolve ? await config.resolve(commandText, context) : null;
       } catch (error) {
         route = null;
       }
       if (currentRun !== runSequence) return;
       if (!route) {
         latest = null;
+        running = false;
         setState("BLOCKED");
         runPanel.innerHTML = `<div class="agent-run-top"><strong>${escapeHTML(commandText)}</strong><span>BLOCKED · NO ACTION TAKEN</span></div><div class="agent-run-body"><div class="agent-run-result"><div class="agent-run-label">Command not mapped</div><h3>This demo does not support that instruction yet.</h3><p>Try one of the suggested commands. The simulation has not changed any records.</p>${(config.fallback || []).length ? `<div class="agent-run-sources">${config.fallback.slice(0, 3).map((item) => `<span class="agent-run-source">${escapeHTML(item)}</span>`).join("")}</div>` : ""}</div></div>`;
-        submit.disabled = false;
+        syncSubmitState();
         return;
       }
 
@@ -155,17 +259,23 @@
       }
 
       try {
-        const outcome = typeof route.run === "function" ? await route.run() : route.outcome || {};
+        const outcome = typeof route.run === "function" ? await route.run(context) : route.outcome || {};
         if (currentRun !== runSequence) return;
+        if (context.files.length) {
+          outcome.sources = [...(outcome.sources || []), ...context.files.map((file) => `Local attachment · ${file.name}`)];
+          outcome.facts = [...(outcome.facts || []), `${context.files.length} file(s) stayed in this browser. This demo action uses authored rules and does not interpret file contents.`];
+        }
         latest = { route: plannedRoute, outcome, commandText };
+        running = false;
         paint(plannedRoute, outcome.status || (outcome.approval ? "WAITING FOR APPROVAL" : "COMPLETED"), outcome);
         setState(outcome.status || (outcome.approval ? "WAITING FOR APPROVAL" : "COMPLETED"));
       } catch (error) {
         latest = null;
+        running = false;
         setState("BLOCKED");
         paint(plannedRoute, "BLOCKED", { title: "Execution paused", summary: "The simulated workflow could not complete this step.", checked: "No external records changed", freshness: "Local sample", exception: "No action was taken. Retry the command or use the structured controls.", confidence: "Not assessed" });
       } finally {
-        if (currentRun === runSequence) submit.disabled = false;
+        if (currentRun === runSequence) syncSubmitState();
       }
     }
 
@@ -208,6 +318,77 @@
     }
 
     form.addEventListener("submit", (event) => { event.preventDefault(); run(); });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); run(); }
+    });
+    host.addEventListener("click", (event) => {
+      if (event.target.closest("[data-agent-attach]")) fileInput.click();
+      if (event.target.closest("[data-agent-remove-file]")) {
+        attachments.splice(Number(event.target.closest("[data-agent-remove-file]").dataset.agentRemoveFile), 1);
+        renderAttachments();
+      }
+      if (event.target.closest("[data-agent-dictate]")) toggleDictation();
+    });
+    fileInput.addEventListener("change", (event) => { addFiles(event.target.files); event.target.value = ""; });
+    ["dragenter", "dragover"].forEach((type) => composer.addEventListener(type, (event) => {
+      if (!Array.from(event.dataTransfer?.types || []).includes("Files")) return;
+      event.preventDefault();
+      composer.classList.add("is-dragging");
+      dropOverlay.setAttribute("aria-hidden", "false");
+    }));
+    composer.addEventListener("dragleave", (event) => {
+      if (!Array.from(event.dataTransfer?.types || []).includes("Files")) return;
+      event.preventDefault();
+      if (composer.contains(event.relatedTarget)) return;
+      composer.classList.remove("is-dragging");
+      dropOverlay.setAttribute("aria-hidden", "true");
+    });
+    composer.addEventListener("drop", (event) => {
+      if (!event.dataTransfer?.files?.length) return;
+      event.preventDefault();
+      composer.classList.remove("is-dragging");
+      dropOverlay.setAttribute("aria-hidden", "true");
+      addFiles(event.dataTransfer.files);
+    });
+    modelSelect.addEventListener("change", () => savePreference("zev-demo-model", modelSelect.value));
+    effortSelect.addEventListener("change", () => savePreference("zev-demo-effort", effortSelect.value));
+
+    function toggleDictation() {
+      if (speechRecognition) { speechRecognition.stop(); return; }
+      const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Speech) {
+        runPanel.hidden = false;
+        runPanel.innerHTML = '<div class="agent-run-result" role="status"><h3>Dictation is unavailable</h3><p>This browser does not expose speech recognition. Type your instruction instead.</p></div>';
+        return;
+      }
+      const recognition = new Speech();
+      speechRecognition = recognition;
+      recognition.lang = navigator.language || "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      dictateButton.classList.add("is-recording");
+      dictateButton.setAttribute("aria-label", "Stop dictation");
+      recognition.onresult = (event) => {
+        const transcript = event.results?.[0]?.[0]?.transcript;
+        if (transcript) input.value = `${input.value.trim()}${input.value.trim() ? " " : ""}${transcript}`;
+        input.focus();
+      };
+      recognition.onerror = () => {
+        runPanel.hidden = false;
+        runPanel.innerHTML = '<div class="agent-run-result" role="status"><h3>Dictation could not start</h3><p>Check microphone permission or type your instruction.</p></div>';
+      };
+      recognition.onend = () => {
+        if (speechRecognition !== recognition) return;
+        speechRecognition = null;
+        dictateButton.classList.remove("is-recording");
+        dictateButton.setAttribute("aria-label", "Start dictation");
+      };
+      try { recognition.start(); } catch (_) {
+        speechRecognition = null;
+        dictateButton.classList.remove("is-recording");
+        dictateButton.setAttribute("aria-label", "Start dictation");
+      }
+    }
     host.addEventListener("click", (event) => {
       const suggestion = event.target.closest("[data-agent-suggestion]");
       if (suggestion) { input.value = suggestion.dataset.agentSuggestion; run(input.value); return; }
@@ -226,7 +407,7 @@
       if (event.target.closest("[data-agent-reject]")) { handleApproval("reject"); }
     });
 
-    return { run, getLatest: () => latest };
+    return { run, getLatest: () => latest, getPreferences: () => ({ model: modelSelect.value, effort: effortSelect.value }) };
   }
 
   window.AgentCommandSurface = { mount };
