@@ -6,6 +6,7 @@
 <title>Prospecting Operations Workspace — Interactive Demo</title>
 <meta name="description" content="An interactive workflow demo for importing relationship data, reconciling records, and reviewing next actions.">
 <link rel="stylesheet" href="styles.css?v=workflow-4">
+<link rel="stylesheet" href="../../../shared/agent-command.css?v=1">
 </head>
 <body>
 <div class="demo-strip"><strong>Interactive case-study demo</strong><span>Synthetic scenario · local CSV preview · no messages sent</span><a href="../index.html">Back to case study</a></div>
@@ -19,7 +20,7 @@
       <button class="nav" data-view="runs"><span class="nav-icon">↻</span><span>Flow runs</span></button>
       <button class="nav" data-view="people"><span class="nav-icon">◎</span><span>People Master</span></button>
       <button class="nav" data-view="actions"><span class="nav-icon">✓</span><span>Next actions</span></button>
-      <button class="nav" data-view="evidence"><span class="nav-icon">≡</span><span>Workbook evidence</span></button>
+      <button class="nav" data-view="evidence"><span class="nav-icon">≡</span><span>Data model</span></button>
       <button class="nav" data-view="audit"><span class="nav-icon">⌁</span><span>Activity log</span></button>
     </nav>
     <div class="bottom"><span>DEMO SESSION · RESETS ON REFRESH</span><button id="reset">Reset demo session</button></div>
@@ -33,9 +34,11 @@
       <div><div class="eyebrow">AI-ASSISTED PROSPECTING OPERATIONS</div><h1 id="title">Prospecting workspace</h1><p id="subtitle">Move exported data through reconciliation, relationship records, and next actions.</p></div>
       <div id="capacityPill" class="mode">Sample data · no messages sent</div>
     </header>
+    <div id="agent-command-host"></div>
     <section id="view" aria-live="polite"></section>
   </main>
 </div>
-<script src="app.js?v=workflow-5"></script>
+<script src="../../../shared/agent-command.js?v=1"></script>
+<script src="app.js?v=workflow-6"></script>
 </body>
 </html>

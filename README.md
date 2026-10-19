@@ -1,71 +1,66 @@
-# AI Transformation Case Studies
+# Zev Pan · Intent-driven work systems
 
-A collection of case studies focused on AI-enabled business transformation, process redesign, automation, and applied AI.
+Portfolio and interactive prototypes for AI-enabled business transformation, product design, process redesign, and human-controlled workflow automation.
 
-Live site: https://zevpan.github.io/
+**Portfolio:** <https://zevpan.github.io/>
 
-## Case Studies
+## Portfolio thesis
 
-### Global Travel Logistics Operations Transformation
+Software is moving from interfaces people must operate toward systems that can act on outcomes people express. The portfolio explores a credible operating model: people set intent and policy; an orchestrator plans bounded work; specialist agents use existing tools and data; evidence, exceptions, and proposed actions return for human review.
 
-An anonymized transformation case based on real operating experience.
+The interface still matters. Natural language sets direction; structured screens help people scan, compare, correct, and approve; agents carry out the bounded work.
 
-The case covers:
+## Featured work
 
-- As-Is process analysis
-- bottleneck and root-cause diagnosis
-- target operating model
-- OMS / TMS architecture
-- distributor and partner integration design
-- Human vs Automation vs AI decision framework
-- business and functional requirements
-- acceptance criteria and UAT scenarios
-- AI governance and operating controls
-- implementation roadmap
-- value-realization framework
-- prototype design
+| Project | Product / transformation question | Live public experience |
+|---|---|---|
+| Focusline | Which job deserves attention, who could help, and what is the next grounded step? | [Opportunity workspace demo](products/opportunity-intelligence/demo/index.html) · [Case study](case-studies/opportunity-intelligence/index.html) |
+| Thread | What does the organization know about this change, what evidence is missing, and who decides? | [Thread demo](products/thread/demo/index.html) · [Product build](products/thread/index.html) |
+| Prospecting operations | How should identity, interaction history, and follow-up eligibility be reconciled safely? | [Relationship operations demo](case-studies/prospecting-operations/demo/index.html) · [Case study](case-studies/prospecting-operations/index.html) |
+| Travel logistics | Which operational work can proceed by rule, and what must wait for a person? | [Control Tower demo](case-studies/travel-logistics-transformation/demo/index.html) · [Case study](case-studies/travel-logistics-transformation/index.html) |
+| Warehouse flow | Which evidence-backed variance should be investigated before changing physical or financial state? | [Decision workspace prototype](case-studies/warehouse-flow-stock-accuracy/prototype.html) · [Case study](case-studies/warehouse-flow-stock-accuracy/index.html) |
 
-### AI-Assisted Prospecting Operations System
+## Shared operating model
 
-In development.
+```text
+Human intent + policy
+        ↓
+Provider-neutral orchestration and task planning
+        ↓
+Specialist agents for bounded responsibilities
+        ↓
+Existing tools, systems of record, APIs, files, and data
+        ↓
+Business actions, proposed changes, and artifacts
+        ↓
+Evidence, exceptions, and human approval where required
+        ↓
+Finished outcome and auditable business state
+```
 
-This case focuses on:
+See [the operating-model architecture](docs/agentic-operating-model.md) for the responsibility boundaries and implementation seams. The conceptual LLM gateway is provider-agnostic: an organization can select suitable commercial or hosted models by policy. The public prototypes do not require a specific model provider.
 
-- relationship-state management
-- interaction-history normalization
-- workflow orchestration
-- capacity-aware prioritization
-- AI-assisted decision support
-- human-in-the-loop controls
-- action reconciliation and auditability
+## Demo behavior and privacy
 
-### Focusline — Opportunity Intelligence Workspace
+- Public fixtures use invented people, companies, jobs, orders, operational records, and interaction histories.
+- The command surface routes to authored, local demo scenarios; it does not make live LLM calls.
+- Interactions update browser-local demo state only. Approval buttons never send a message, submit an application, contact a supplier, or update an external system.
+- Tool and data labels describe the scenario’s simulated sources, not connected integrations.
+- No personal LinkedIn messages, private contacts, credentials, or application data belong in this repository.
 
-Product and transformation case study for an AI-assisted job-search workflow. The public demo uses synthetic opportunity, contact, relationship, resume, and application data; changes are saved in the current browser only.
+## Implementation
 
-- [Read the case study](case-studies/opportunity-intelligence/index.html)
-- [Launch the interactive demo](products/opportunity-intelligence/demo/index.html)
-- [Review the product brief](products/opportunity-intelligence/product-brief.md)
+The portfolio is a static GitHub Pages site using semantic HTML, CSS, and vanilla JavaScript. `shared/agent-command.js` and `shared/agent-command.css` provide the common command, execution-evidence, exception, and approval pattern. Each product supplies its own bounded local routes and existing structured workspace. `shared/intent-model.css` styles the reusable architecture and case-study model.
 
-The product centers on explainable opportunity prioritization, role-fit evidence, role-level career-value signals, proportionate relationship actions, resume strategy, and user-controlled next steps. It is not an auto-apply tool.
+### Local checks
 
-## Repository Structure
+```bash
+git diff --check
+node --check shared/agent-command.js
+node --check products/opportunity-intelligence/demo/app.js
+node --check products/thread/demo/app.js
+node --check case-studies/prospecting-operations/demo/app.js
+node --check case-studies/travel-logistics-transformation/demo/app.js
+```
 
-- `index.html` — main case-study site
-- additional case-study pages and interactive prototypes will be added over time
-
-## Case Study Approach
-
-Each case is structured around:
-
-**Business problem → As-Is process → diagnosis → target operating model → requirements → Human / Automation / AI decisions → governance → prototype → measurable business value**
-
-The emphasis is on applying AI and automation to real business processes rather than treating AI as a standalone feature.
-
-## Privacy
-
-Case studies are anonymized where appropriate.
-
-Company, partner, customer, and prospect identities are intentionally generalized, and prototype data is synthetic.
-
-Detailed working notes, internal analysis, and source material are maintained separately from this public repository.
+The warehouse prototype includes inline JavaScript and is checked through the browser demo flow.

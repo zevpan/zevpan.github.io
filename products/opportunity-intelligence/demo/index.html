@@ -7,6 +7,7 @@
   <title>Focusline — Opportunity workspace</title>
   <meta name="description" content="A synthetic, browser-local opportunity intelligence workspace for job seekers.">
   <link rel="stylesheet" href="styles.css?v=focusline-2">
+  <link rel="stylesheet" href="../../../shared/agent-command.css?v=1">
 </head>
 <body>
   <div class="demo-ribbon"><span class="demo-dot" aria-hidden="true"></span><strong>SYNTHETIC DEMO</strong><span>Sample jobs and people · saves in this browser · no live AI or external actions</span><a href="../index.html">Product case study</a></div>
@@ -49,6 +50,7 @@
 
       <div id="storage-notice" class="storage-notice" role="status" hidden></div>
       <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <div id="agent-command-host"></div>
       <section class="page-heading">
         <div>
           <div class="eyebrow" id="view-eyebrow">DECISIONS BEFORE APPLICATIONS</div>
@@ -124,6 +126,7 @@
       <div class="modal-actions"><button class="button" type="button" data-close-dialog>Keep my changes</button><button class="button button-danger" type="submit">Reset sample data</button></div>
     </form>
   </dialog>
-  <script src="app.js?v=focusline-2" defer></script>
+  <script src="../../../shared/agent-command.js?v=1" defer></script>
+  <script src="app.js?v=focusline-3" defer></script>
 </body>
 </html>

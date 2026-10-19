@@ -6,9 +6,10 @@
 <title>Travel Logistics Operations Workspace — Interactive Demo</title>
 <meta name="description" content="Interactive synthetic operations workspace for triage, dispatch decisions, exception handling and human-controlled resolution.">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../../shared/agent-command.css?v=1">
 </head>
 <body>
-<div class="demo-strip"><strong>Interactive case-study demo</strong><span>Synthetic order records · calibrated with aggregate evidence from 10.5k+ historical orders</span><a href="../index.html">Back to case study</a></div>
+<div class="demo-strip"><strong>Interactive case-study demo</strong><span>Synthetic order records · illustrative workflow scenarios only</span><a href="../index.html">Back to case study</a></div>
 <div class="shell">
   <aside class="sidebar">
     <div class="brand"><div class="mark">O</div><div><strong>Ops Workspace</strong><small>Travel Logistics</small></div></div>
@@ -20,7 +21,7 @@
       <button class="nav" data-view="dispatch"><span class="nav-icon">↗</span><span>Dispatch</span></button>
       <button class="nav" data-view="exceptions"><span class="nav-icon">!</span><span>Exceptions</span></button>
       <button class="nav" data-view="metrics"><span class="nav-icon">⌁</span><span>Demo Metrics</span></button>
-      <button class="nav" data-view="evidence"><span class="nav-icon">∑</span><span>Historical Evidence</span></button>
+      <button class="nav" data-view="evidence"><span class="nav-icon">∑</span><span>Evidence model</span></button>
     </nav>
 
     <div class="nav-label">Featured walkthrough</div>
@@ -44,9 +45,11 @@
       <div class="mode">SYNTHETIC DEMO · HISTORICALLY CALIBRATED</div>
     </header>
 
+    <div id="agent-command-host"></div>
     <section id="view"></section>
   </main>
 </div>
-<script src="app.js"></script>
+<script src="../../../shared/agent-command.js?v=1"></script>
+<script src="app.js?v=intent-1"></script>
 </body>
 </html>

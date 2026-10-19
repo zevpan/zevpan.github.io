@@ -1,25 +1,25 @@
 const SEED={
 historical:{
- cutoff:"29 Sep 2026",
- uniqueOrders:10524,
- coreRoutes:87.4,
- top3Channels:94.2,
- top3Suppliers:71.3,
- within72h:35.9,
- qcCoverage:64.0,
- refundCoverage:5.1,
- accommodationCoverage:5.0,
+ cutoff:"Synthetic sample",
+ uniqueOrders:240,
+ coreRoutes:71.0,
+ top3Channels:74.5,
+ top3Suppliers:58.8,
+ within72h:37.5,
+ qcCoverage:31.7,
+ refundCoverage:4.6,
+ accommodationCoverage:5.4,
  routeMix:[
-  ["Hotel → Airport",34.4],
-  ["Hotel → Hotel",26.8],
-  ["Airport → Hotel",26.3],
-  ["Other / specialist",12.5]
+  ["Hotel → Airport",32],
+  ["Hotel → Hotel",27],
+  ["Airport → Hotel",19],
+  ["Other / specialist",22]
  ],
  leadTime:[
-  ["<24h",3.3],
-  ["24–72h",32.6],
-  ["3–7d",24.1],
-  [">7d",40.0]
+  ["<24h",13],
+  ["24–72h",24],
+  ["3–7d",28],
+  [">7d",35]
  ]
 },
 orders:[
@@ -49,6 +49,9 @@ audit:[
 
 const KEY="travel-ops-workspace-v3";
 let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(SEED);
+// Keep user scenario progress,
+// but replace that fixed summary with synthetic fixture values on every load.
+state.historical=structuredClone(SEED.historical);
 const $=s=>document.querySelector(s),view=$("#view"),title=$("#title"),subtitle=$("#subtitle");
 
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
@@ -59,10 +62,10 @@ function pct(v){return Number(v).toFixed(1)+"%"}
 function historicalCards(){
  const h=state.historical;
  return '<div class="calibration-strip">'+
-  '<div class="calibration-stat"><small>Historical scale</small><b>'+h.uniqueOrders.toLocaleString()+'</b><span>unique orders analyzed through '+h.cutoff+'</span></div>'+
-  '<div class="calibration-stat"><small>Core flows</small><b>'+pct(h.coreRoutes)+'</b><span>three dominant service types</span></div>'+
-  '<div class="calibration-stat"><small>QC footprint</small><b>'+pct(h.qcCoverage)+'</b><span>unique orders in next-day QC</span></div>'+
-  '<div class="calibration-stat"><small>Booked ≤72h</small><b>'+pct(h.within72h)+'</b><span>commerce-system matched orders</span></div>'+
+  '<div class="calibration-stat"><small>Illustrative volume</small><b>'+h.uniqueOrders.toLocaleString()+'</b><span>synthetic sample records</span></div>'+
+  '<div class="calibration-stat"><small>Route mix</small><b>'+pct(h.coreRoutes)+'</b><span>synthetic common route groups</span></div>'+
+  '<div class="calibration-stat"><small>QC examples</small><b>'+pct(h.qcCoverage)+'</b><span>synthetic cases with QC context</span></div>'+
+  '<div class="calibration-stat"><small>Short lead-time examples</small><b>'+pct(h.within72h)+'</b><span>synthetic sample records</span></div>'+
  '</div>'
 }
 function queueRow(o){
@@ -135,29 +138,29 @@ function tower(){
   state.signals.slice(0,5).map(s=>'<div class="signal"><div class="signal-top"><b>'+s.title+'</b><time>'+s.time+'</time></div><p>'+s.text+'</p></div>').join("")+
   '</div></div>'+
  '</div></div>'+
- '<div class="workspace-note"><b>Historical evidence is intentionally outside the work surface.</b> Route mix, channel concentration, lead time and QC coverage remain available under Historical Evidence without competing with the operator queue.</div>'
+ '<div class="workspace-note"><b>Scenario context is separate from queue triage.</b> The evidence view uses synthetic fixture values and does not report business performance.</div>'
 }
 
 function evidence(){
- setHead("Historical Evidence","Aggregate operating evidence used to calibrate the target model.");
+ setHead("Evidence model","Synthetic sample values illustrate the operational questions in this prototype.");
  const h=state.historical;
  view.innerHTML=
- '<div class="evidence-banner"><b>Historical aggregates, synthetic records.</b><p>The metrics on this screen come from private 2026 operational data through '+h.cutoff+'. No customer names, addresses, booking IDs or individual historical records are exposed in the public prototype.</p></div>'+
+ '<div class="evidence-banner"><b>Synthetic baseline · not business results.</b><p>All values on this screen are invented to make the workflow behavior concrete. They are not calculated from private operational data and are not a statistically representative sample.</p></div>'+
  '<div class="historical-grid">'+
-  '<div class="historical-card"><div class="kind">Historical scale</div><b>'+h.uniqueOrders.toLocaleString()+'</b><p>unique historical order IDs</p></div>'+
-  '<div class="historical-card"><div class="kind">Core route concentration</div><b>'+pct(h.coreRoutes)+'</b><p>three dominant service types</p></div>'+
-  '<div class="historical-card"><div class="kind">Top-3 channels</div><b>'+pct(h.top3Channels)+'</b><p>share of historical order rows</p></div>'+
-  '<div class="historical-card"><div class="kind">Top-3 suppliers</div><b>'+pct(h.top3Suppliers)+'</b><p>share of historical order rows</p></div>'+
-  '<div class="historical-card"><div class="kind">Booked within 72h</div><b>'+pct(h.within72h)+'</b><p>matched historical orders</p></div>'+
-  '<div class="historical-card"><div class="kind">QC workflow</div><b>'+pct(h.qcCoverage)+'</b><p>unique historical orders</p></div>'+
-  '<div class="historical-card"><div class="kind">Refund workflow</div><b>'+pct(h.refundCoverage)+'</b><p>unique historical orders</p></div>'+
-  '<div class="historical-card"><div class="kind">Accommodation workflow</div><b>'+pct(h.accommodationCoverage)+'</b><p>unique historical orders</p></div>'+
+  '<div class="historical-card"><div class="kind">Illustrative volume</div><b>'+h.uniqueOrders.toLocaleString()+'</b><p>invented sample records</p></div>'+
+  '<div class="historical-card"><div class="kind">Common route groups</div><b>'+pct(h.coreRoutes)+'</b><p>synthetic scenario mix</p></div>'+
+  '<div class="historical-card"><div class="kind">Channel variety</div><b>'+pct(h.top3Channels)+'</b><p>illustrative sample share</p></div>'+
+  '<div class="historical-card"><div class="kind">Supplier mix</div><b>'+pct(h.top3Suppliers)+'</b><p>illustrative sample share</p></div>'+
+  '<div class="historical-card"><div class="kind">Short lead-time examples</div><b>'+pct(h.within72h)+'</b><p>synthetic records</p></div>'+
+  '<div class="historical-card"><div class="kind">QC scenarios</div><b>'+pct(h.qcCoverage)+'</b><p>invented sample share</p></div>'+
+  '<div class="historical-card"><div class="kind">Refund scenarios</div><b>'+pct(h.refundCoverage)+'</b><p>invented sample share</p></div>'+
+  '<div class="historical-card"><div class="kind">Accommodation scenarios</div><b>'+pct(h.accommodationCoverage)+'</b><p>invented sample share</p></div>'+
  '</div>'+
  '<div class="layout" style="margin-top:12px">'+
-  '<div class="panel"><div class="panel-head"><h3>Historical service-pattern mix</h3><span>share of order rows</span></div><div class="barlist">'+barRows(h.routeMix)+'</div></div>'+
-  '<div class="panel"><div class="panel-head"><h3>Booking lead-time mix</h3><span>matched orders</span></div><div class="barlist">'+barRows(h.leadTime)+'</div></div>'+
+  '<div class="panel"><div class="panel-head"><h3>Synthetic service-pattern mix</h3><span>invented sample values</span></div><div class="barlist">'+barRows(h.routeMix)+'</div></div>'+
+  '<div class="panel"><div class="panel-head"><h3>Synthetic booking lead-time mix</h3><span>invented sample values</span></div><div class="barlist">'+barRows(h.leadTime)+'</div></div>'+
  '</div>'+
- '<div class="evidence-note"><b>What this evidence supports:</b> standardize the dominant transaction paths; prioritize high-volume channel integrations; encode supplier routing and fallback explicitly; use lead time in urgency controls; treat QC as a core operating layer; and govern refunds / accommodation exceptions as structured workflows.<br><br><b>What it does not prove:</b> ROI, headcount savings, supplier quality ranking, post-redesign SLA improvement or a fully automatable percentage. <a class="evidence-link" href="../index.html">See the full case-study evidence →</a></div>'
+ '<div class="evidence-note"><b>What this example illustrates:</b> standardize transaction paths; encode supplier routing and fallback; use lead time in urgency controls; and govern QC, refund, and accommodation exceptions as structured workflows.<br><br><b>Boundary:</b> this synthetic sample does not measure ROI, headcount savings, supplier quality, service-level change, or an automatable percentage. <a class="evidence-link" href="../index.html">Read the process case →</a></div>'
 }
 function barRows(items){
  return items.map(x=>'<div class="barrow"><label>'+x[0]+'</label><div class="bartrack"><div class="barfill" style="width:'+x[1]+'%"></div></div><b>'+pct(x[1])+'</b></div>').join("")
@@ -165,7 +168,7 @@ function barRows(items){
 
 function orders(){
  setHead("Orders","Every source resolves to one canonical operational record.");
- view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Demo calibration:</b> the 10 synthetic records deliberately over-sample the three historically dominant service types. They are illustrative scenarios, not a statistically representative sample.</div>'+
+ view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Synthetic scenario:</b> this small set exercises route normalization, validation, supplier acknowledgement, and exception handling. It is not a statistically representative sample.</div>'+
  '<div class="panel"><div class="panel-head"><h3>Canonical Orders</h3><span>'+state.orders.length+' synthetic records</span></div><table><thead><tr><th>Order</th><th>Source</th><th>Route</th><th>Supplier</th><th>Owner</th><th>Status</th></tr></thead><tbody>'+
  state.orders.map(o=>'<tr class="click" onclick="openOrder(\''+o.id+'\')"><td><b>'+o.id+'</b><div class="small">'+o.sourceId+'</div></td><td>'+o.source+'</td><td>'+o.market+'<div class="small">'+o.service+'</div></td><td>'+(o.supplier||"Unassigned")+'</td><td>'+o.owner+'</td><td>'+pill(o)+'</td></tr>').join("")+
  '</tbody></table></div>'
@@ -174,7 +177,7 @@ function orders(){
 function dispatch(){
  setHead("Dispatch","Structured assignment, acknowledgement timers, fallback and human override.");
  const list=state.orders.filter(o=>o.status!=="COMPLETED"&&o.status!=="IN_SERVICE");
- view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Historical design input:</b> the top three supplier values cover 71.3% of historical rows, supporting explicit supplier master data, eligibility, acknowledgement and fallback logic.</div>'+
+ view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Routing rule:</b> check supplier eligibility before ranking, then track acknowledgement and fallback as explicit workflow states.</div>'+
  '<div class="panel"><div class="panel-head"><h3>Dispatch Queue</h3><span>Eligibility before ranking</span></div><table><thead><tr><th>Order</th><th>Market</th><th>Assigned supplier</th><th>Dispatch state</th><th>Status</th></tr></thead><tbody>'+
  list.map(o=>'<tr class="click" onclick="openOrder(\''+o.id+'\')"><td><b>'+o.id+'</b></td><td>'+o.market+'</td><td>'+(o.supplier||"—")+'</td><td>'+o.dispatch+'</td><td>'+pill(o)+'</td></tr>').join("")+
  '</tbody></table></div>'
@@ -183,7 +186,7 @@ function dispatch(){
 function exceptions(){
  setHead("Exceptions","Only cases requiring intervention should compete for Operations attention.");
  const ex=openExceptions();
- view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Historical design input:</b> next-day QC touches roughly 64% of unique historical orders. The target model therefore converts broad monitoring into explicit risk, timer and evidence-based exception states.</div>'+
+ view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Exception rule:</b> required information, time thresholds, and ownership determine what enters the queue; uncertain fields remain blocked until reviewed.</div>'+
  (ex.length?
  '<div class="panel"><div class="panel-head"><h3>Exception Queue</h3><span>'+ex.length+' open</span></div><table><thead><tr><th>Case</th><th>Order</th><th>Type</th><th>Severity</th><th>Owner</th><th>Status</th></tr></thead><tbody>'+
  ex.map(e=>'<tr class="click" onclick="openOrder(\''+e.orderId+'\')"><td><b>'+e.id+'</b></td><td>'+e.orderId+'</td><td>'+e.type+'</td><td>'+e.severity+'</td><td>'+e.owner+'</td><td>'+e.status+'</td></tr>').join("")+
@@ -192,31 +195,23 @@ function exceptions(){
 }
 
 function metrics(){
- setHead("Process Metrics","Historical baseline context separated from synthetic live-demo measures.");
+ setHead("Process Metrics","Synthetic browser-local measures for testing the target workflow.");
  const total=state.orders.length;
  const zero=state.orders.filter(o=>o.manualTouches===0).length;
  const manual=state.orders.reduce((a,o)=>a+o.manualTouches,0);
  const accepted=state.orders.filter(o=>o.dispatch==="ACCEPTED").length;
  const ex=state.exceptions.length;
  const touch=Math.round(zero/total*100),avg=(manual/total).toFixed(1),confirm=Math.round(accepted/total*100),exRate=Math.round(ex/total*100);
- const h=state.historical;
  view.innerHTML=
- '<div class="split-label">Verified historical aggregate context</div>'+
- '<div class="metric-grid">'+
-  '<div class="metric-card"><b>'+h.uniqueOrders.toLocaleString()+'</b><span>Unique historical orders analyzed</span></div>'+
-  '<div class="metric-card"><b>'+pct(h.qcCoverage)+'</b><span>Unique orders appearing in QC workflow</span></div>'+
-  '<div class="metric-card"><b>'+pct(h.within72h)+'</b><span>Matched orders booked within 72h</span></div>'+
-  '<div class="metric-card"><b>'+pct(h.refundCoverage)+'</b><span>Unique orders appearing in refund workflow</span></div>'+
- '</div>'+
  '<div class="split-label">Current synthetic demo state</div>'+
- '<div class="metric-note">The metrics below are calculated only from the 10 synthetic demo records. They are not historical business results.</div>'+
+ '<div class="metric-note">These measures are calculated from the local synthetic orders and update as you test workflow actions. They are not historical business results.</div>'+
  '<div class="metric-grid">'+
   '<div class="metric-card"><b>'+touch+'%</b><span>Zero-touch demo rate</span></div>'+
   '<div class="metric-card"><b>'+avg+'</b><span>Manual touches / demo order</span></div>'+
   '<div class="metric-card"><b>'+confirm+'%</b><span>Supplier accepted / demo total</span></div>'+
   '<div class="metric-card"><b>'+exRate+'%</b><span>Demo exception rate</span></div>'+
  '</div>'+
- '<div class="formula"><b>Why this matters:</b> once orders, events, supplier responses, exceptions and human overrides are structured, measures can be calculated from the event model instead of reconstructed manually. Historical performance and prototype-state metrics remain explicitly separated.<br><br><code>touchless_rate = zero_touch_orders / total_demo_orders</code><br><code>exception_rate = demo_exception_cases / total_demo_orders</code></div>'
+ '<div class="formula"><b>Measure the workflow only after the event model is reliable.</b> In a production implementation, define a baseline and validate event completeness before making business-value claims.<br><br><code>touchless_rate = zero_touch_orders / total_demo_orders</code><br><code>exception_rate = demo_exception_cases / total_demo_orders</code></div>'
 }
 
 function openOrder(id){
@@ -381,7 +376,77 @@ function approveAction(){
  state.audit.unshift(["Now","Human","exception.action.approved","Operations approved controlled hold / verification"]);
  save();openOrder(o.id)
 }
+function mountTravelCommand(){
+ if(!window.AgentCommandSurface)return;
+ window.AgentCommandSurface.mount({
+  product:"Travel Operations Workspace",
+  placeholder:"What needs intervention, and what can proceed safely?",
+  suggestions:["What needs intervention today?","Review TRV-1048","Dispatch Partner A for TRV-1048","Explain the missing-flight block"],
+  fallback:["Triage today's work queue","Review a canonical order","Prepare supplier dispatch for approval"],
+  resolve(text){
+   const normalized=text.toLowerCase();
+   const idMatch=text.match(/TRV-\d{4}/i);
+   const order=state.orders.find(item=>item.id===(idMatch?idMatch[0].toUpperCase():"TRV-1048"));
+   if(/\b(dispatch|send .*supplier|assign supplier)\b/.test(normalized)){
+    const target=order||state.orders.find(item=>item.dispatch==="NOT_SENT");
+    return{
+     objective:`Prepare a supplier dispatch for ${target?.id||"the selected order"}`,
+     steps:[
+      {agent:"Validation Agent",task:"Check required fields, service eligibility, and dispatch readiness using deterministic rules."},
+      {agent:"Supplier Routing Agent",task:"Select the configured supplier route and preserve the canonical order record."},
+      {agent:"Exception Agent",task:"Check for a block or open exception before a human approves dispatch."}
+     ],
+     run(){
+      if(!target)return{title:"No dispatch-ready order found",summary:"No synthetic order is available for dispatch.",confidence:"Not assessed",checked:"0 orders",freshness:"Local sample",exception:"No state changed.",sources:["Canonical orders"]};
+      const valid=target.id==="TRV-1048"&&target.dispatch==="NOT_SENT"&&target.validation.passed&&!target.validation.missingFlight&&!openExceptions().some(item=>item.orderId===target.id);
+      if(!valid)return{title:`Dispatch blocked · ${target.id}`,summary:"The order failed validation or has an unresolved exception. Resolve that state before dispatch.",confidence:"High for deterministic checks",checked:"1 canonical order · required fields and exceptions",freshness:"Current browser-local order state",exception:"No dispatch was prepared. Review missing information or the linked exception first.",sources:["Canonical order","Validation rules","Exception queue"],action:{label:"Open the blocked work item",run:()=>openOrder(target.id)}};
+      return{title:`${target.id} · supplier dispatch ready`,summary:"Required checks pass. Review the proposed supplier before the job is sent in a connected production system.",facts:[`${target.market} · ${target.service} · ${target.date} ${target.time}`,`Preferred route: Partner A · ${target.supplier||"not yet assigned"}`,"The simulated acknowledgement timer and fallback state are ready."],confidence:"High for eligibility · supplier acceptance unknown",checked:"1 canonical order · 4 deterministic validation checks",freshness:"Current browser-local scenario",assumptions:["The supplier API is simulated", "A dispatch changes external service state in production"],sources:["Canonical order record","Rules engine","Supplier routing policy"],approval:{title:"Supplier dispatch is an external action",description:"Review the order and supplier. Approval here advances only the synthetic demo state; it does not call a supplier API.",approveLabel:"Approve simulated dispatch"},onApproval(actionName){if(actionName==="approve"){if(target.id==="TRV-1048"&&target.dispatch==="NOT_SENT")dispatchA();return"Approved in the local demo · no supplier API call was made.";}return"Rejected · the order remains undispatched."}};
+     }
+    };
+   }
+   if(/customer info|request.*information|missing flight|missing airport/.test(normalized)){
+    const target=state.orders.find(item=>item.validation.missingFlight)||order;
+    return{
+     objective:"Resolve an order blocked by missing itinerary information",
+     steps:[{agent:"Validation Agent",task:"Identify the required itinerary field and the rule blocking dispatch."},{agent:"Communication Planner",task:"Prepare a customer-information request for human review; do not send it."}],
+     run(){if(!target?.validation.missingFlight)return{title:"No missing-flight exception found",summary:"The selected synthetic order does not currently have a missing-airport-data block.",confidence:"High for the current rule state",checked:"1 order",freshness:"Current browser-local state",sources:["Canonical order","Validation rule V-09"]};return{title:`${target.id} · itinerary data required`,summary:"Rule V-09 blocks dispatch until airport details are recorded.",facts:["Missing airport / itinerary information",`Current owner: ${target.owner}`,"After information arrives, deterministic validation must run again."],confidence:"High for the deterministic validation result",checked:"1 blocked order · rule V-09",freshness:"Current browser-local state",exception:"A customer message must be reviewed and sent by a person in production.",sources:["Canonical order","Rule V-09","Customer follow-up queue"],approval:{title:"Customer communication requires approval",description:"This is a proposed communication. The local demo will only log the simulated request.",text:`Hello, we need the flight or itinerary detail for order ${target.id} before dispatch can continue. Could you confirm the missing information?`,approveLabel:"Approve simulated request"},onApproval(actionName){if(actionName==="approve"){requestCustomerInfo(target.id);return"Approved in the local demo · no customer message was sent.";}return"Rejected · the order remains blocked for customer information."}};}
+    };
+   }
+   if(/\b(today|intervention|priority|attention|what needs)\b/.test(normalized))return{
+    objective:"Find bookings that need an operator decision today",
+    steps:[
+     {agent:"Operations Orchestrator",task:"Review canonical order state, validation results, supplier timers, and owners."},
+     {agent:"Exception Analyst",task:"Separate safe automated flow from blocked or time-sensitive work."},
+     {agent:"Work Planner",task:"Rank the intervention queue using SLA risk and required operator action."}
+    ],
+    run(){
+     const items=state.orders.filter(needsWork).sort((a,b)=>(Number(b.slaRisk)-Number(a.slaRisk))||(["EXCEPTION","VALIDATION_REQUIRED","AWAITING_SUPPLIER","READY"].indexOf(a.status)-["EXCEPTION","VALIDATION_REQUIRED","AWAITING_SUPPLIER","READY"].indexOf(b.status)));
+     render("tower");
+     return{title:`${items.length} bookings need intervention`,summary:items.slice(0,3).map(item=>`${item.id} · ${workReason(item).label}`).join("; ")||"No active booking currently needs an operator decision.",facts:items.slice(0,4).map(item=>`${item.id} · ${workAction(item)} · ${item.slaRisk?"SLA risk":"standard queue"} · owner ${item.owner}`),confidence:"High for recorded operational state",checked:`${state.orders.length} canonical orders · ${openExceptions().length} open exceptions`,freshness:"Local synthetic scenario · event state current in this browser",assumptions:["Queue rank uses deterministic state and SLA rules", "Historical metrics are not used as live order evidence"],sources:["Canonical Orders","Validation rules","Supplier responses","Exception queue"],action:items[0]?{label:`Open ${items[0].id}`,run:()=>openOrder(items[0].id)}:null};
+    }
+   };
+   if(/\b(review|open|inspect|explain|why)\b/.test(normalized)||idMatch){
+    return{
+     objective:`Review the canonical order ${order?.id||"selected in the queue"}`,
+     steps:[
+      {agent:"Order Context Agent",task:"Retrieve the canonical record and source-to-record mapping."},
+      {agent:"Validation Agent",task:"Summarize field checks, dispatch eligibility, and current owner."},
+      {agent:"Work Planner",task:"Return the next safe action and any approval boundary."}
+     ],
+     run(){
+      if(order)openOrder(order.id);
+      if(!order)return{title:"Order not found",summary:"The identifier does not match a synthetic order in this demo.",confidence:"Not assessed",checked:"No order matched",freshness:"Local sample",exception:"No action was taken.",sources:["Canonical orders"]};
+      const reason=workReason(order);
+      return{title:`${order.id} · ${reason.label}`,summary:reason.detail,facts:[`${order.market} · ${order.service} · ${order.date} ${order.time}`,`Status: ${order.status} · dispatch: ${order.dispatch} · owner: ${order.owner}`,`Next action: ${workAction(order)}`,`Validation: ${order.validation.passed?"passed":"not passed"}${order.validation.missingFlight?" · airport detail missing":""}`,`Open exception: ${openExceptions().some(item=>item.orderId===order.id)?"yes":"no"}`],confidence:"High for recorded state · not an operational guarantee",checked:"1 canonical order · source mapping · validation · event timeline",freshness:"Synthetic order event history",assumptions:["Supplier availability may change outside this demo"],exception:order.validation.missingFlight?"Dispatch remains blocked until a human records the required flight information.":"No external action occurs unless the user chooses and approves a step.",sources:["Canonical order","Source adapter","Rules engine","Event timeline"],action:{label:"Open full work item",run:()=>openOrder(order.id)}};
+     }
+    };
+   }
+   return null;
+  }
+ });
+}
 function resetDemo(){localStorage.removeItem(KEY);location.reload()}
 document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>render(b.dataset.view));
 $("#reset").onclick=resetDemo;
+mountTravelCommand();
 render("tower");

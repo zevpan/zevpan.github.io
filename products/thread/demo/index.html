@@ -6,6 +6,7 @@
 <title>Thread — AX Memory + AX Workspace</title>
 <meta name="description" content="A synthetic, browser-local demo of Thread's operational context and team workflow.">
 <link rel="stylesheet" href="styles.css?v=thread-integrations-1">
+<link rel="stylesheet" href="../../../shared/agent-command.css?v=1">
 </head>
 <body>
 <div class="demo-strip"><strong>SYNTHETIC DEMO DATA</strong><span>Working local demo · no live integrations or notifications</span><a href="../index.html">About Thread</a></div>
@@ -42,9 +43,11 @@
       <div><div class="eyebrow" id="page-eyebrow">AX WORKSPACE · LOCAL DEMO</div><h1 id="title">Today</h1><p id="subtitle">Operational context that needs a decision or follow-up.</p></div>
       <div id="page-meta" class="page-meta"></div>
     </header>
+    <div id="agent-command-host"></div>
     <section id="view" aria-live="polite" aria-label="Workspace content"></section>
   </main>
 </div>
-<script src="app.js?v=thread-integrations-1" defer></script>
+<script src="../../../shared/agent-command.js?v=1" defer></script>
+<script src="app.js?v=thread-intent-1" defer></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Global Travel Logistics Operations Transformation</title>
+<link rel="stylesheet" href="../../shared/intent-model.css?v=1">
 <style>
 :root{
   --bg:#f7f7f5;--panel:#fff;--text:#171717;--muted:#666;--line:#deded8;
@@ -135,7 +136,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <div class="hero">
 <div class="kicker">CASE STUDY 01 · INTERACTIVE</div>
 <h1>Global Travel Logistics Operations Transformation</h1>
-<p class="lead">From fragmented, manually coordinated fulfilment to a unified operating model — informed by analysis of <strong>10.5k+ unique 2026 historical orders</strong> and translated into an interactive Operations Control Tower.</p>
+<p class="lead">From fragmented, manually coordinated fulfilment to a unified operating model — translated into an interactive Operations Control Tower with synthetic operational scenarios.</p>
 <div class="meta">
 <span class="tag">Business Transformation</span>
 <span class="tag">Process Redesign</span>
@@ -160,31 +161,31 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <a class="back" href="../../index.html">Portfolio home</a>
   <a class="back" href="../prospecting-operations/index.html">Next: Relationship Operations →</a>
 </div>
+<section class="intent-model" aria-label="Travel operations intent-to-outcome model">
+  <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Ask for the work to be controlled. Let rules move safe cases and route exceptions.</h2><p>The interface stays available for dispatch, order review, and exception decisions. A command layer can coordinate the same workflow across existing booking channels, systems of record, supplier tools, and customer communications.</p></div>
+  <div class="intent-case-command"><small>EXAMPLE COMMAND</small><blockquote>“Triage today’s bookings, resolve validation blocks, and prepare supplier work that is safe to dispatch.”</blockquote></div>
+  <div class="intent-case-grid">
+    <article class="intent-case-card"><small>Agent plan</small><strong>Normalize · validate · route</strong><span>Intake Agent maps source payloads to canonical orders; Validation Agent applies explicit rules; Supplier Routing Agent checks eligibility and fallback; Exception Analyst prepares review context.</span></article>
+    <article class="intent-case-card"><small>Tools + data</small><strong>Keep booking and supplier systems</strong><span>Booking channels, CRM/OMS/TMS records, supplier APIs, event streams, and customer communication tools remain the target systems of record and execution.</span></article>
+    <article class="intent-case-card"><small>Bounded execution</small><strong>Automate stable checks</strong><span>Normalize fields, run required-field rules, monitor acknowledgements, and create work items. Dispatch and customer messages are prepared for controlled execution.</span></article>
+    <article class="intent-case-card"><small>Human review</small><strong>Approve consequential actions</strong><span>Operators resolve missing itinerary details, supplier exceptions, and recipient mismatches. No handover or external communication should proceed on uncertain identity.</span></article>
+  </div>
+  <div class="intent-case-note"><strong>Returned outcome:</strong> canonical order state, event history, intervention queue, and a clear owner. Public demo orders and command runs are synthetic and browser-local.</div>
+</section>
 <section>
-<div class="portfolio-kicker">Historical operational evidence · Aggregates only</div>
-<h2>Historical evidence behind the redesign</h2>
-<p>The redesign is now grounded in analysis of the 2026 operational tracker rather than process observation alone. Historical metrics below use service dates through <strong>29 Sep 2026</strong>; future pipeline is excluded. Individual customer, order and partner records remain private.</p>
-
-<div class="evidence-band">
-  <div class="evidence-stat"><small>Historical scale</small><b>10,524</b><span>unique historical order IDs analyzed</span></div>
-  <div class="evidence-stat"><small>Repeatability</small><b>87.4%</b><span>of historical rows fall into the three core service types</span></div>
-  <div class="evidence-stat"><small>Channel concentration</small><b>94.2%</b><span>of historical rows come through the top three booking channels</span></div>
-  <div class="evidence-stat"><small>Supplier concentration</small><b>71.3%</b><span>of historical rows are assigned across the top three supplier values</span></div>
-  <div class="evidence-stat"><small>Time pressure</small><b>35.9%</b><span>of commerce-system-matched historical orders were booked within 72 hours of service</span></div>
-  <div class="evidence-stat"><small>QC footprint</small><b>64.0%</b><span>of unique historical orders appear in the next-day QC workflow</span></div>
-  <div class="evidence-stat"><small>Refund workflow</small><b>5.1%</b><span>of unique historical orders appear in the refund workflow</span></div>
-  <div class="evidence-stat"><small>Accommodation cases</small><b>5.0%</b><span>of unique historical orders appear in the dedicated accommodation workflow</span></div>
-</div>
+<div class="portfolio-kicker">Process evidence · Public-safe summary</div>
+<h2>Process analysis behind the redesign</h2>
+<p>The transformation work examined how bookings move across channels, operations teams, supplier handoffs, service events, quality checks, refunds, and special-case handling. The public case explains the resulting process and control model without reproducing source records or business totals.</p>
 
 <div class="evidence-map">
-  <div class="node"><b>Observed evidence</b><span>Most transaction volume follows a small number of repeatable routes and concentrated channel / supplier relationships.</span></div>
+  <div class="node"><b>Process patterns</b><span>Repeated booking paths share stable validation needs; supplier response, service timing, QC, and exception handling require explicit state.</span></div>
   <div class="map-arrow">→</div>
-  <div class="node"><b>Operational consequence</b><span>Routine work can be standardized, while time-sensitive, QC-heavy and exception cases need explicit controls.</span></div>
+  <div class="node"><b>Operational consequence</b><span>Routine steps can follow deterministic rules, while missing information, delayed response, and special cases need owned work queues.</span></div>
   <div class="map-arrow">→</div>
-  <div class="node"><b>Target capability</b><span>Canonical order state, deterministic validation and routing, timer-driven QC, exception workspace and governed AI assistance.</span></div>
+  <div class="node"><b>Target capability</b><span>Canonical order state, validation and routing rules, event-based fulfilment, exception management, and bounded AI assistance.</span></div>
 </div>
 
-<div class="evidence-note" style="margin-top:16px"><strong>Evidence boundary.</strong> These aggregates support the operating-model design, but they do not prove post-redesign ROI, headcount savings, supplier quality rankings or an automation percentage. The public prototype continues to use synthetic records calibrated to the observed operating patterns. <span class="public-safe">PUBLIC-SAFE AGGREGATES</span></div>
+<div class="evidence-note" style="margin-top:16px"><strong>Public-data boundary.</strong> The interactive prototype uses invented orders and events. This case does not publish private transaction rows, customer details, partner identities, or derived business totals. The demo illustrates process behavior and does not claim historical business performance.</div>
 </section>
 
 <section>
@@ -207,7 +208,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <div class="card">Exception-resolution time</div>
 <div class="card">SLA adherence and customer-update latency</div>
 </div>
-<p class="small">Historical transaction structure, channel/supplier concentration, lead time, QC participation and refund-workflow participation are now measured. Manual handling time, ROI and post-redesign SLA improvement remain unmeasured and are not claimed.</p>
+<p class="small">The target model makes transaction routes, supplier response, lead-time risk, QC, and exception pathways measurable. Manual handling time, ROI, and post-redesign SLA improvement require a future instrumented baseline and are not claimed here.</p>
 </section>
 <section>
 <h2>Before — current operating model</h2>
@@ -282,7 +283,7 @@ Duplicate order IDs, supplier aliases and free-text reason variants create avoid
 </div>
 <div class="card">
 <strong>Workflow participation is measurable</strong>
-QC touches roughly 64% of unique historical orders, while refund and accommodation-specific workflows each touch about 5%.
+QC, refund, and accommodation handling should be visible as distinct workflow states with their own owners, evidence, and completion measures.
 </div>
 </div>
 <div class="callout blue" style="margin-top:18px">
