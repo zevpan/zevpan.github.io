@@ -117,7 +117,7 @@
       <div class="three-col">
         <article class="card"><small>Matching quality</small><h3 class="pass">100% precision · 100% recall</h3><p>On the generated positive-match cases: 3,405 expected automatic matches; 3,405 actual; zero incorrect automatic matches and zero missed automatic matches.</p></article>
         <article class="card"><small>Exception routing</small><h3 class="pass">545 / 545 correctly routed</h3><p>Outcome-label checks cover grouped charges, missing POs, amount/tax/currency variance, duplicate data, invalid references, ambiguity and missing mappings.</p></article>
-        <article class="card"><small>Runtime</small><h3>~150 ms in this runtime</h3><p>Observed local reconciliation duration for the 4,000-line fixture. This is demo execution time, not an operational SLA or measured business-time saving.</p></article>
+        <article class="card"><small>Runtime</small><h3>80 ms median · 284 ms browser run</h3><p>Observed median across 7 local engine runs; the deployed browser session evaluated the 4,000-line batch in 284 ms. Demo execution only, not an operational SLA or measured business-time saving.</p></article>
       </div>
       <div class="metric-note" style="margin-top:12px"><strong>Interpretation:</strong> These results validate the engine against deliberately constructed scenarios, not a production sample. The generator and answer key share the scenario design; the next validation step is blind testing against representative, approved real records and Finance adjudication.</div>
     </section>
