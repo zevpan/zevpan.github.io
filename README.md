@@ -21,17 +21,17 @@ I analyze fragmented workflows, define requirements and decision logic, and prot
 
 | Project | Zev’s contribution | What it demonstrates |
 |---|---|---|
-| Travel logistics operations | Mapped workflows and failure points; defined requirements, routing, controls, and a synthetic control-tower prototype | Process analysis, operating-model design, workflow orchestration, governance |
-| Prospecting operations | Designed reconciliation, relationship state, AI analysis gates, and safe next-action rules | Data modelling, deterministic controls, AI boundaries, auditability |
-| Warehouse flow and stock accuracy | Designed evidence-led review paths and human decision points | Process improvement, decision support, validation, human control |
+| Logistics OMS | Mapped workflows and failure points; defined requirements, routing, controls, and an interactive order-management prototype | Process analysis, operating-model design, workflow orchestration, governance |
+| AI Sales CRM | Designed reconciliation, relationship state, AI analysis gates, and safe next-action rules | Data modelling, deterministic controls, AI boundaries, auditability |
+| Warehouse Management System | Designed evidence-led review paths and human decision points | Process improvement, decision support, validation, human control |
 | [Finance Control Hub](case-studies/finance-control-hub/index.html) | Translated a freight-finance reconciliation need into a seeded dataset, matching rules, exception controls and approval-gated workbench | Finance process analysis, data modelling, deterministic reconciliation, human approvals |
-| Thread · operational context workspace | Designed source-linked context and review flows; built a browser-local MVP | Information architecture, decision records, workflow UX |
-| Focusline · opportunity intelligence | Defined the job-search journey, prioritization logic, relationship-readiness boundaries, and validation criteria | Product analysis, prioritization, explainability, human control |
+| Thread · Team Workspace | Designed source-linked context and review flows; built a browser-local MVP | Information architecture, decision records, workflow UX |
+| Focusline · AI Job Search Agent | Defined the job-search journey, prioritization logic, relationship-readiness boundaries, and validation criteria | Product analysis, prioritization, explainability, human control |
 
 ## Finance Control Hub · Case Study 06
 
 - [Read the case study](case-studies/finance-control-hub/index.html) · [Open the interactive workbench](case-studies/finance-control-hub/demo/index.html)
-- The public product uses approximately 4,000 synthetic invoice lines, generated deterministically with seed 20261014; no original finance files or personal records are included.
+- The public product uses 4,000 invoice lines generated deterministically from seed 20261014; no original finance files or personal records are included.
 - The engine normalizes Job ID/HAWB/MAWB identifiers, applies explicit vendor charge-code rules, checks amounts/currency/POs, detects duplicates and grouped candidates, and prevents an accrual from being allocated twice.
 - Uncertain matches and exceptions stay reviewable. Human approvals and export release update browser-local demo state only.
 - The CSV is an illustrative CargoWise-style mapping, not an official or production-validated EDI template.
@@ -54,7 +54,7 @@ I define the outcome, constraints, requirements, and acceptance criteria. AI can
 - Interactions update browser-local demo state only.
 - Approval controls never send messages, submit applications, contact suppliers, or update external systems.
 - Product pages describe simulated data sources, not connected integrations.
-- Finance Control Hub uses synthetic vendors, references, invoices, amounts, and generated test cases; its downloadable file is illustrative only.
+- Finance Control Hub uses generated vendors, references, invoices, amounts, and test cases; its downloadable file is illustrative only.
 - The public repository should not contain real LinkedIn messages, private contacts, credentials, or application records.
 
 ## Implementation

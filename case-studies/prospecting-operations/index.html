@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI-Assisted Prospecting Operations System - Zev Pan</title>
+<title>AI Sales CRM | Zev Pan</title>
 <meta name="description" content="An AI transformation case study on relationship-state management, capacity-aware prioritization, human-in-the-loop AI and action reconciliation.">
 <link rel="stylesheet" href="../../shared/intent-model.css?v=1">
 <style>
@@ -104,37 +104,39 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 @media(max-width:980px){.operating-loop{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:520px){.operating-loop{grid-template-columns:1fr 1fr}}
 
+
+@media (min-width: 1440px) { .sitebar-inner, main { max-width: clamp(1160px, 80vw, 1440px); } }
 </style>
 </head>
 <body>
 <header class="sitebar"><div class="sitebar-inner">
 <a class="brand" href="../../index.html">Zev Pan</a>
-<nav class="nav"><a href="../../index.html">All Case Studies</a><a href="demo/index.html">Launch interactive demo</a><a href="../travel-logistics-transformation/index.html">Travel Logistics</a></nav>
+<nav class="nav"><a href="../../index.html">All Case Studies</a><a href="demo/index.html">Launch interactive demo</a><a href="../travel-logistics-transformation/index.html">Logistics OMS</a></nav>
 </div></header>
 <main>
 <div class="hero">
 <div class="kicker">CASE STUDY 02 · INTERACTIVE</div>
-<h1>AI-Assisted Prospecting Operations System</h1>
+<h1>AI Sales CRM</h1>
 <p class="lead">Redesigning a fragmented relationship workflow into a governed operating layer that maintains relationship state, identifies the next best actions, allocates limited human capacity, and uses AI for interpretation while keeping external communication human-controlled.</p>
 <div class="meta"><span class="tag">Process Intelligence</span><span class="tag">Workflow Orchestration</span><span class="tag">State Management</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Governance</span><span class="tag">Requirements & UAT</span></div>
 </div>
 <div class="demo-cta">
-  <div><strong>Interactive Prospecting Workflow</strong><p>Follow the operating loop: import LinkedIn connections, invitations and message exports; run reconciliation; update managed relationship records; review recommended next actions; export the updated queue or records. The demo uses synthetic data and local rules.</p></div>
+  <div><strong>Interactive AI Sales CRM</strong><p>Follow the operating loop: import LinkedIn connections, invitations and message exports; run reconciliation; update managed relationship records; review recommended next actions; export the updated queue or records. The demo uses browser-local seed data and deterministic rules.</p></div>
   <a class="demo-btn" href="demo/index.html">Launch workflow demo →</a>
 </div>
 
 <div class="portfolio-kicker">Architecture · Governance · Working Prototype</div>
 <div class="project-strip">
   <div class="project-item"><b>Zev’s contribution</b><span>Designed reconciliation, relationship state, AI gates, and safe next-action rules.</span></div>
-  <div class="project-item"><b>System</b><span>Synthetic workflow for import, review, queue management, and export.</span></div>
+  <div class="project-item"><b>System</b><span>Browser-local workflow for import, review, queue management, and export.</span></div>
   <div class="project-item"><b>Demonstrates</b><span>Data modelling · orchestration · deterministic controls · AI governance.</span></div>
 </div>
 <div class="project-actions">
   <a class="launch" href="demo/index.html">Launch interactive demo →</a>
   <a class="back" href="../../index.html">Portfolio home</a>
-  <a class="back" href="../warehouse-flow-stock-accuracy/index.html">Next: Warehouse Decision Support →</a>
+  <a class="back" href="../warehouse-flow-stock-accuracy/index.html">Next: Warehouse Management System →</a>
 </div>
-<section class="intent-model" aria-label="Prospecting operations intent-to-outcome model">
+<section class="intent-model" aria-label="AI Sales CRM intent-to-outcome model">
   <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Reconcile identity and relationship state before recommending outreach.</h2><p>New exports, prior interactions, suppression rules, and human follow-up capacity belong in one reviewable work cycle. Agents can reconcile and prepare; people own ambiguous identity and relationship choices.</p></div>
   <div class="intent-case-command"><small>EXAMPLE COMMAND</small><blockquote>“Reconcile the latest connection and invitation exports, then show me which actions need review.”</blockquote></div>
   <div class="intent-case-grid">
@@ -143,7 +145,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
     <article class="intent-case-card"><small>Bounded execution</small><strong>Preserve source and record state</strong><span>Reconcile Connections and Invitations, append new events, deduplicate known identities, and retain older interaction history when a newer Messages export is absent.</span></article>
     <article class="intent-case-card"><small>Human review</small><strong>Resolve ambiguity and choose outreach</strong><span>Hold conflicting identity matches. A person chooses whether to reconnect, ask for role insight, request a referral, or skip. Messages are never sent automatically.</span></article>
   </div>
-  <div class="intent-case-note"><strong>Returned outcome:</strong> reconciled People Master state, an exception list, and prioritized next actions. The sample run deliberately keeps older synthetic message history unchanged when the latest sample batch has no Messages file.</div>
+  <div class="intent-case-note"><strong>Returned outcome:</strong> reconciled People Master state, an exception list, and prioritized next actions. The prepared run keeps older message history when the latest imported batch has no Messages file.</div>
 </section>
 <section><h2>AX Memory and AX Workspace</h2>
 <div class="grid">
@@ -151,16 +153,16 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <div class="card"><strong>AX Workspace · the operating surface</strong>Where the operator imports LinkedIn connections, invitations, messages, and other exports; runs reconciliation; reviews and manages relationship records; evaluates evidence-backed next actions; records outcomes; and exports updated data.</div>
 </div>
 <div class="flow"><span class="step">Import source exports</span><span class="arrow">→</span><span class="step">Run the workflow</span><span class="arrow">→</span><span class="step">Update relationship memory</span><span class="arrow">→</span><span class="step">Review next actions</span><span class="arrow">→</span><span class="step">Record outcome / export</span></div>
-<p class="small">The demo represents this loop with synthetic records and browser-local rules. It does not execute the actual n8n workflow or connect to LinkedIn or the Google Sheet.</p>
+<p class="small">The demo represents this loop with invented records and browser-local rules. It does not execute the actual n8n workflow or connect to LinkedIn or the Google Sheet.</p>
 </section>
 <section><h2>Evidence and public-data boundary</h2>
 <p>The process model addresses fragmented identity, interaction history, relationship state, suppression rules, and follow-up capacity. Public case materials do not reproduce operational workbook counts, source records, contact identities, profile links, or message content.</p>
 <table><thead><tr><th>Record class</th><th>Purpose in the workflow</th><th>Public demo treatment</th></tr></thead><tbody>
 <tr><td>People Master</td><td>Maintain canonical identity, network state, relationship state, and next action.</td><td>Invented profiles and companies only.</td></tr>
-<tr><td>Interaction history</td><td>Inform relationship readiness and preserve useful context across source refreshes.</td><td>Short synthetic summaries; no message text.</td></tr>
-<tr><td>Action Queue</td><td>Represent eligibility, due work, capacity, suppression, and review outcomes.</td><td>Local synthetic actions with no external outreach.</td></tr>
+<tr><td>Interaction history</td><td>Inform relationship readiness and preserve useful context across source refreshes.</td><td>Short summaries; no message text.</td></tr>
+<tr><td>Action Queue</td><td>Represent eligibility, due work, capacity, suppression, and review outcomes.</td><td>Local actions with no external outreach.</td></tr>
 </tbody></table>
-<div class="callout blue"><strong>Evidence boundary</strong><p>The interactive queue and state transitions are synthetic. The demo does not execute the actual n8n workflow or connect to LinkedIn or the Google Sheet. No private export or derived aggregate is included in the public fixture.</p></div>
+<div class="callout blue"><strong>Evidence boundary</strong><p>The interactive queue and state transitions use generated records. The demo does not execute the actual n8n workflow or connect to LinkedIn or the Google Sheet. No private export or derived aggregate is included.</p></div>
 </section>
 <section><h2>Transformation objective</h2>
 <p>Build a relationship-operations layer that converts fragmented network and interaction data into trustworthy state, governed eligibility, transparent priority and a continuously reconciled Action Queue.</p>
@@ -210,12 +212,12 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 
 <h3>4. Executive transformation overview</h3>
 <p>Here is a one-page summary of current state, transformation layers, target state, governance controls and migration roadmap.</p>
-<div class="blueprint"><img src="../../assets/prospecting-operations-blueprint.svg" alt="Executive AI Transformation Blueprint for the Prospecting Operations System"></div>
+<div class="blueprint"><img src="../../assets/prospecting-operations-blueprint.svg" alt="Executive AI Transformation Blueprint for the AI Sales CRM"></div>
 <a class="asset-link" href="../../assets/prospecting-operations-blueprint.svg">Open executive blueprint →</a>
 </section>
 
 <section><h2>Interactive prototype</h2>
-<div class="callout good"><strong>The interactive workflow demo is ready.</strong><p>Process an export bundle, inspect the reconciliation run, review People Master and Interaction Log changes, then work through the resulting recommendations. This public demo uses synthetic records and browser-local rules; it does not run the actual n8n flow or connect to the Google Sheet.</p><a class="asset-link" href="demo/index.html">Launch interactive workflow →</a></div>
+<div class="callout good"><strong>The interactive workflow demo is ready.</strong><p>Process an export bundle, inspect the reconciliation run, review People Master and Interaction Log changes, then work through the resulting recommendations. This public demo uses invented records and browser-local rules; it does not run the actual n8n flow or connect to the Google Sheet.</p><a class="asset-link" href="demo/index.html">Launch interactive workflow →</a></div>
 <div class="grid3" style="margin-top:16px">
   <div class="card"><strong>Featured walkthrough</strong>Run the sample connection, invitation, and message exports. A new inbound reply updates the relationship record, supersedes a stale follow-up, and creates a review recommendation.</div>
   <div class="card"><strong>Fail-closed controls</strong>Explore Do Not Contact and unresolved identity cases to see deterministic eligibility block action generation.</div>
@@ -270,7 +272,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 
 <section><h2>Architecture decision</h2><div class="callout violet"><strong>Build a relationship-operations system, not an autonomous outreach agent.</strong><p>The system should remove repeated reconciliation, state reconstruction and prioritization work while concentrating human effort on genuine conversations, relationship judgement and commercial decisions.</p></div></section>
 
-<footer>Anonymized transformation case study based on a real operating workflow. Public examples use generalized sources and synthetic identities; private prospect and message data is excluded.</footer>
+<footer>Anonymized transformation case study based on a real operating workflow. Public examples use generalized sources and invented identities; private prospect and message data is excluded.</footer>
 </main>
 </body>
 </html>

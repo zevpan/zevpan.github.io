@@ -365,10 +365,10 @@ for (const invoice of invoices) {
 
 const sourceData = {
   metadata: {
-    datasetName: "Finance Control Hub synthetic freight reconciliation backlog",
+    datasetName: "Finance Control Hub freight reconciliation demo",
     seed: SEED,
     generatedOn: "2026-10-14",
-    notice: "All vendors, shipment identifiers, invoices, values and records are synthetic. Source schemas are illustrative and are not official CargoWise export specifications.",
+    notice: "All vendors, shipment identifiers, invoices, values and records were generated for this demo. Source schemas are illustrative and are not official CargoWise export specifications.",
     invoiceLineCount: invoices.length,
     hawbRecordCount: hawbReport.length,
     mawbRecordCount: mawbReport.length,
@@ -385,7 +385,7 @@ const sourceData = {
 const truthCounts = {};
 for (const item of truth) truthCounts[item.expectedOutcome] = (truthCounts[item.expectedOutcome] || 0) + 1;
 const groundTruth = {
-  title: "Synthetic reconciliation ground truth",
+  title: "Reconciliation ground truth",
   seed: SEED,
   notice: "Test-only answer key. The reconciliation engine and browser demo do not read this file.",
   expectedLineCount: truth.length,

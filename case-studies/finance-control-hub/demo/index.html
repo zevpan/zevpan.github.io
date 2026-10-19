@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#14233b">
-  <title>Finance Control Hub · Synthetic Reconciliation Workbench</title>
-  <meta name="description" content="Interactive finance reconciliation simulation with 4,000 synthetic invoice lines, deterministic matching, exception review, human approvals and an illustrative CSV export.">
+  <title>Finance Control Hub · Reconciliation Workbench</title>
+  <meta name="description" content="Interactive finance reconciliation simulation with 4,000 invoice lines, deterministic matching, exception review, human approvals and an illustrative CSV export.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -34,7 +34,7 @@
       <header class="topbar">
         <div class="crumbs"><span>Finance operations</span><span class="crumb-slash">/</span><strong>Reconciliation batch</strong></div>
         <div class="topbar-actions">
-          <span class="simulation-pill" id="data-mode-pill"><span></span>Simulation · synthetic data</span>
+          <span class="simulation-pill" id="data-mode-pill"><span></span>Simulation · generated demo data</span>
           <button class="text-button" data-action="reset" title="Clear local decisions and start this demo again">Reset demo</button>
         </div>
       </header>
@@ -80,14 +80,14 @@
         </section>
 
         <section class="source-strip" id="source-strip" aria-label="Loaded source files">
-          <div class="source-strip-title"><span class="file-glyph">▤</span><div><strong>Reconciliation inputs</strong><small id="source-provenance">Source schemas are illustrative; all records are synthetic.</small></div></div>
+          <div class="source-strip-title"><span class="file-glyph">▤</span><div><strong>Reconciliation inputs</strong><small id="source-provenance">Source schemas are illustrative; records were generated for this demo.</small></div></div>
           <div class="source-files" id="source-files"></div>
           <button class="text-button source-inspect" data-view="sources">Inspect records <span>↗</span></button>
         </section>
 
         <section class="run-banner" id="run-banner" aria-live="polite"></section>
         <section id="workspace-content" aria-live="polite">
-          <div class="loading-state"><span class="loader"></span><div><strong>Loading synthetic source records</strong><small>Preparing invoice, HAWB, MAWB and Accrue Cost files.</small></div></div>
+          <div class="loading-state"><span class="loader"></span><div><strong>Loading demo source records</strong><small>Preparing invoice, HAWB, MAWB and Accrue Cost files.</small></div></div>
         </section>
       </div>
     </main>

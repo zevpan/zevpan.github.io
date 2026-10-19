@@ -1,5 +1,5 @@
 {
-  "title": "Synthetic reconciliation ground truth",
+  "title": "Reconciliation ground truth",
   "seed": 20261014,
   "notice": "Test-only answer key. The reconciliation engine and browser demo do not read this file.",
   "expectedLineCount": 4000,

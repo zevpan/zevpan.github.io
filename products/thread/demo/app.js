@@ -9,7 +9,7 @@
   const CRESTLINE_ID = "crestline-q4-rates";
   const SAMPLE_TITLE = "Rate card received from Crestline Logistics, 29 Sep 2026";
   const SAMPLE_DATE = "2026-09-29";
-  const SAMPLE_BODY = "Crestline Logistics has issued a revised rate schedule effective 01 Nov 2026. Standard transfer: $47.00. Priority transfer: $75.00. Fuel surcharge removed. Written confirmation required within 14 days. [SYNTHETIC DEMO CONTENT: not a real document]";
+  const SAMPLE_BODY = "Crestline Logistics has issued a revised rate schedule effective 01 Nov 2026. Standard transfer: $47.00. Priority transfer: $75.00. Fuel surcharge removed. Written confirmation required within 14 days. [DEMO DOCUMENT · invented]";
 
   const CONNECTOR_STORAGE_KEY = "thread-connectors-demo-v1";
   const DEFAULT_DEMO_CONNECTIONS = ["microsoft-outlook", "google-sheets", "netsuite"];
@@ -120,7 +120,7 @@
       type: "Pasted text",
       title: "Finance costing model snapshot - 25 Sep 2026",
       date: "2026-09-25",
-      body: "Q4 costing model inputs:\nStandard transfer rate: $42.00.\nPriority transfer rate: $68.00.\nFuel surcharge: Applied.\n[SYNTHETIC DEMO CONTENT: not a real document]",
+      body: "Q4 costing model inputs:\nStandard transfer rate: $42.00.\nPriority transfer rate: $68.00.\nFuel surcharge: Applied.\n[DEMO DOCUMENT · invented]",
       supportsFactIds: ["standard-rate", "priority-rate", "fuel-surcharge"],
       createdAt: "2026-09-25T08:00:00.000Z",
       createdBy: "Demo data",
@@ -131,7 +131,7 @@
       type: "Meeting note",
       title: "Operations intake note - revised rate card received, 29 Sep 2026",
       date: "2026-09-29",
-      body: "Operations logged receipt of a revised Crestline Logistics rate card with an effective date of 01 Nov 2026. The rate values and surcharge treatment are awaiting Finance review.\n[SYNTHETIC DEMO CONTENT: not a real note]",
+      body: "Operations logged receipt of a revised Crestline Logistics rate card with an effective date of 01 Nov 2026. The rate values and surcharge treatment are awaiting Finance review.\n[DEMO NOTE · invented]",
       supportsFactIds: ["effective-date"],
       createdAt: "2026-09-29T08:00:00.000Z",
       createdBy: "Demo data",
@@ -142,7 +142,7 @@
       type: "Pasted text",
       title: "Inventory system snapshot - Bin 7C, 30 Sep 2026",
       date: "2026-09-30",
-      body: "System quantity for bin location 7C: 360 units.\n[SYNTHETIC DEMO CONTENT: not a real record]",
+      body: "System quantity for bin location 7C: 360 units.\n[DEMO RECORD · invented]",
       supportsFactIds: ["system-quantity"],
       createdAt: "2026-09-30T08:00:00.000Z",
       createdBy: "Demo data",
@@ -153,7 +153,7 @@
       type: "Meeting note",
       title: "September cycle count note - Bin 7C",
       date: "2026-09-30",
-      body: "Physical cycle count for bin location 7C: 315 units. The count team did not verify the cause of the difference.\n[SYNTHETIC DEMO CONTENT: not a real record]",
+      body: "Physical cycle count for bin location 7C: 315 units. The count team did not verify the cause of the difference.\n[DEMO RECORD · invented]",
       supportsFactIds: ["physical-count", "quantity-difference"],
       createdAt: "2026-09-30T09:00:00.000Z",
       createdBy: "Demo data",
@@ -202,7 +202,7 @@
           ],
           uncertainties: [
             { id: "variance-cause", label: "Cause of variance", note: "Not verified. Check receiving and movement records before recording an adjustment.", status: "open", blocksStatus: true },
-            { id: "finance-not-informed", label: "Finance notification", note: "Finance has not been informed in this synthetic scenario. The demo does not send a notification.", status: "open", blocksStatus: true }
+            { id: "finance-not-informed", label: "Finance notification", note: "Finance has not been informed. The demo does not send a notification.", status: "open", blocksStatus: true }
           ],
           conflicts: [
             { label: "System quantity vs physical count", leftValue: "360 units", leftSourceId: stockLedger.id, rightValue: "315 units", rightSourceId: countSource.id, note: "The source records disagree. The cause is unverified; do not record a finance adjustment yet." }
@@ -218,9 +218,9 @@
         }
       ],
       history: [
-        { id: "history-seed-crestline", recordId: CRESTLINE_ID, type: "Source added", message: "The synthetic finance costing model snapshot is available on the Crestline Logistics rate record.", actor: "Demo data", at: "2026-09-25T08:00:00.000Z" },
-        { id: "history-seed-operations-intake", recordId: CRESTLINE_ID, type: "Source added", message: "The synthetic Operations intake note records the revised rate card's 01 Nov effective date.", actor: "Demo data", at: "2026-09-29T08:00:00.000Z" },
-        { id: "history-seed-bin7c", recordId: "bin-location-7c-variance", type: "Source added", message: "Synthetic inventory and cycle-count sources are available for the Bin Location 7C review.", actor: "Demo data", at: "2026-09-30T09:00:00.000Z" }
+        { id: "history-seed-crestline", recordId: CRESTLINE_ID, type: "Source added", message: "The finance costing model is available on the Crestline Logistics rate record.", actor: "Demo data", at: "2026-09-25T08:00:00.000Z" },
+        { id: "history-seed-operations-intake", recordId: CRESTLINE_ID, type: "Source added", message: "The Operations intake demo records the revised rate card's 01 Nov effective date.", actor: "Demo data", at: "2026-09-29T08:00:00.000Z" },
+        { id: "history-seed-bin7c", recordId: "bin-location-7c-variance", type: "Source added", message: "Inventory and cycle-count sources are available for the Bin Location 7C review.", actor: "Demo data", at: "2026-09-30T09:00:00.000Z" }
       ]
     };
   }
@@ -248,18 +248,18 @@
             current = parsed;
           } else {
             current = makeSeed();
-            warning = "A saved demo version could not be read. A clean synthetic seed is loaded.";
+            warning = "A saved demo version could not be read. A clean demo seed is loaded.";
             window.localStorage.removeItem(STORAGE_KEY);
           }
         } catch (_error) {
           current = makeSeed();
-          warning = "Saved demo data was unreadable. A clean synthetic seed is loaded.";
+          warning = "Saved demo data was unreadable. A clean demo seed is loaded.";
           window.localStorage.removeItem(STORAGE_KEY);
         }
       } else {
         current = makeSeed();
         if (window.localStorage.getItem(LEGACY_KEY)) {
-          warning = "An older demo save was found. It was not imported; a clean synthetic seed is loaded.";
+          warning = "An older demo save was found. It was not imported; a clean demo seed is loaded.";
         }
       }
     } catch (_error) {
@@ -392,7 +392,7 @@
   function attachCrestlineSampleProposals(record, source) {
     if (!record || record.id !== CRESTLINE_ID) return;
     if (!record.uncertainties.some((item) => item.id === "written-confirmation")) {
-      record.uncertainties.push({ id: "written-confirmation", label: "Written confirmation", note: "The synthetic rate card requests written confirmation within 14 days. A follow-up is assigned locally; the demo does not send a response.", status: "open", blocksStatus: false });
+      record.uncertainties.push({ id: "written-confirmation", label: "Written confirmation", note: "The rate card requests written confirmation within 14 days. A follow-up is assigned locally; the demo does not send a response.", status: "open", blocksStatus: false });
     }
     const proposalSpecs = [
       { factId: "standard-rate", factLabel: "Standard transfer rate", category: "Rate", proposedValue: "$47.00", excerpt: "Standard transfer: $47.00." },
@@ -637,7 +637,7 @@
 
     setPage("Today", "Operational context that needs a decision or follow-up.", `${state.records.length} context records`);
     const hero = node("div", { className: "hero-panel" },
-      node("div", {}, node("h2", {}, "Start with the work that needs a human decision."), node("p", {}, "Open the synthetic Crestline rate record, add the sample source, review each fact, and record a team decision. All changes stay in this browser.")),
+      node("div", {}, node("h2", {}, "Start with the work that needs a human decision."), node("p", {}, "Open the Crestline rate record, add the sample source, review each fact, and record a team decision. All changes stay in this browser.")),
       node("div", { className: "hero-actions" }, button("Open Crestline rate record", () => goToRecord(CRESTLINE_ID), "btn primary"))
     );
     const metrics = node("div", { className: "metrics" },
@@ -655,7 +655,7 @@
       panel("Needs attention", "Decision pending first, then records that need review.", recordsBody),
       panel("Follow-up due", "Open tasks ordered by due date.", taskBody)
     );
-    view.replaceChildren(hero, metrics, columns, node("p", { className: "footer-note" }, "Synthetic operational scenarios only. No source system, notification, email, or other external service is contacted by this demo."));
+    view.replaceChildren(hero, metrics, columns, node("p", { className: "footer-note" }, "Illustrative operational scenarios only. No source system, notification, email, or other external service is contacted by this demo."));
   }
 
   function renderWork() {
@@ -685,7 +685,7 @@
   }
 
   function renderContext() {
-    setPage("Context", "AX Memory records the sources, facts, decisions, uncertainty, and work behind each operational issue.", `${state.records.length} synthetic records`);
+    setPage("Context", "AX Memory records the sources, facts, decisions, uncertainty, and work behind each operational issue.", `${state.records.length} demo records`);
     view.replaceChildren(node("div", { className: "context-list" }, state.records.map(recordCard)), node("p", { className: "footer-note" }, "In this MVP, AX Memory is browser-local. Production sharing and team permissions require a real backend."));
   }
 
@@ -733,7 +733,7 @@
       type: "Simulated NetSuite + Sheets sync",
       title: "NetSuite + cycle-count sync - Bin Location 7C, 30 Sep 2026",
       date: "2026-09-30",
-      body: "NetSuite on-hand quantity: 360 units.\nWarehouse cycle count: 315 units.\nDifference: 45 units (12.5%).\nCause has not been verified.\n[SYNTHETIC DEMO CONTENT: no live inventory system was accessed]",
+      body: "NetSuite on-hand quantity: 360 units.\nWarehouse cycle count: 315 units.\nDifference: 45 units (12.5%).\nCause has not been verified.\n[DEMO RECORD · no live inventory system was accessed]",
       supportsFactIds: ["system-quantity", "physical-count", "quantity-difference"],
       createdAt: nowIso(),
       createdBy: "Demo connector flow",
@@ -823,7 +823,7 @@
       node("option", { value: "available" }, "Not connected")
     ]);
     const results = node("div", { className: "integration-results", role: "status" });
-    const grid = node("div", { className: "connector-grid", "aria-label": "Representative integration examples" });
+    const grid = node("div", { className: "connector-grid", "aria-label": "Representative integrations" });
     const controls = node("div", { className: "integration-controls" }, search, category, status, results);
     const catalog = panel("Browse representative integrations", `The target ecosystem is 1,000+ apps. These ${INTEGRATION_APPS.length} named cards make the concept tangible; search and filters operate on this sample catalog.`, node("div", {}, controls, grid));
     const disclosure = node("p", { className: "integration-disclosure" }, "Prototype boundary: all connector states and sample syncs are simulated and saved only in this browser. No credentials are requested, no external API is called, and no live information is read or written. The 1,000+ figure is a product target, not a count of connectors implemented in this demo.");
@@ -876,7 +876,7 @@
       onKeyup: () => captureSelection(source.id)
     }, source.body);
     return node("article", { className: "source-card", id: `source-${source.id}` },
-      node("div", { className: "card-top" }, node("div", {}, node("h4", {}, source.title), node("div", { className: "card-meta" }, node("span", {}, source.type), node("span", {}, dateLabel(source.date)))), node("span", { className: "type-pill" }, source.type.startsWith("Simulated") ? "Connector simulation" : source.sample ? "Synthetic sample" : "Synthetic source")),
+      node("div", { className: "card-top" }, node("div", {}, node("h4", {}, source.title), node("div", { className: "card-meta" }, node("span", {}, source.type), node("span", {}, dateLabel(source.date)))), node("span", { className: "type-pill" }, source.type.startsWith("Simulated") ? "Connector simulation" : source.sample ? "Demo source" : "Demo source")),
       node("p", {}, `Added by ${source.createdBy} · ${timestampLabel(source.createdAt)}`),
       sourceText,
       node("div", { className: "helper" }, source.type.startsWith("Simulated")
@@ -901,14 +901,14 @@
     const sourceTitle = node("input", { id: `source-title-${record.id}`, required: true, maxlength: "180", value: SAMPLE_TITLE });
     const sourceDate = node("input", { id: `source-date-${record.id}`, type: "date", required: true, value: SAMPLE_DATE });
     const sourceBody = node("textarea", { id: `source-body-${record.id}`, required: true, maxlength: "12000", value: SAMPLE_BODY });
-    const bodyHelp = node("div", { className: "helper" }, "Synthetic sample is pre-filled for one-click use. Choose another source type or edit the text to add your own synthetic source.");
+    const bodyHelp = node("div", { className: "helper" }, "A source is pre-filled for one-click use. Choose another source type or edit the text to add your own source.");
     const localEventNote = node("div", { className: "disclosure" }, "In production, Thread can receive updates from connected spreadsheets or inboxes. This demo records the event locally only. No external source was contacted.");
-    const sampleButton = button("Restore the synthetic sample", () => {
+    const sampleButton = button("Restore the prepared source", () => {
       sourceType.value = "Local demo event";
       sourceTitle.value = SAMPLE_TITLE;
       sourceDate.value = SAMPLE_DATE;
       sourceBody.value = SAMPLE_BODY;
-      bodyHelp.textContent = "Synthetic sample restored. Add it to create the pre-written fact proposals.";
+      bodyHelp.textContent = "Prepared source restored. Add it to create the pre-written fact proposals.";
       localEventNote.hidden = false;
     }, "btn");
     sourceType.addEventListener("change", () => { localEventNote.hidden = sourceType.value !== "Local demo event"; });
@@ -917,7 +917,7 @@
         field("Source type", sourceType, sourceType.id),
         field("Source date", sourceDate, sourceDate.id),
         field("Source title", sourceTitle, sourceTitle.id),
-        node("div", { className: "field" }, node("span", { className: "field-label" }, "Synthetic sample"), sampleButton),
+        node("div", { className: "field" }, node("span", { className: "field-label" }, "Source"), sampleButton),
         node("div", { className: "field full" }, node("span", { className: "field-label" }, "Local event boundary"), localEventNote),
         node("div", { className: "field full" }, node("span", { className: "field-label" }, "Source text"), sourceBody, bodyHelp)
       ),
@@ -964,7 +964,7 @@
       if (source.type === "Local demo event") {
         showMessage("Demo: local state updated. In production this change would arrive from a connected source.");
       } else if (isSample) {
-        showMessage("Synthetic sample source added. The demo did not contact an external source.");
+        showMessage("Source added. The demo did not contact an external source.");
       } else {
         showMessage("Source saved locally. No automated extraction or external source connection was used.");
       }
@@ -1159,7 +1159,7 @@
       ? node("div", { className: "source-list" }, record.sources.map((source) => sourceCard(record, source)))
       : emptyState("No sources have been added yet.", "Add a source so the team can review where this context came from.");
     return node("div", { className: "section-block" },
-      node("div", { className: "section-heading" }, node("div", {}, node("h3", {}, "Sources"), node("p", {}, "Every source is synthetic and stays in this browser.")), button(transient.sourceForm.has(record.id) ? "Close source form" : "Add a source", () => {
+      node("div", { className: "section-heading" }, node("div", {}, node("h3", {}, "Sources"), node("p", {}, "Sources stay in this browser.")), button(transient.sourceForm.has(record.id) ? "Close source form" : "Add a source", () => {
         transient.sourceForm.has(record.id) ? transient.sourceForm.delete(record.id) : transient.sourceForm.add(record.id);
         renderApp();
       }, "btn primary")),
@@ -1316,7 +1316,7 @@
         field("Owner", owner, owner.id),
         field("Due date", due, due.id)
       ),
-      node("div", { className: "helper" }, record.id === CRESTLINE_ID ? "Suggested for this demo: Marco Reyes · 30 Oct 2026, before the 01 Nov effective date." : "Synthetic follow-up task. Choose an owner and due date before saving."),
+      node("div", { className: "helper" }, record.id === CRESTLINE_ID ? "Suggested for this demo: Marco Reyes · 30 Oct 2026, before the 01 Nov effective date." : "Demo follow-up task. Choose an owner and due date before saving."),
       node("p", { className: "form-error", hidden: true }),
       node("div", { className: "task-actions" },
         node("button", { type: "submit", className: "btn primary" }, "Save task"),
@@ -1540,11 +1540,11 @@
                 summary: binRecord?.summary || "No bin-variance record is available in this sample.",
                 facts: facts.map(fact => `${fact.label}: ${fact.value}`),
                 confidence: "High for recorded quantities · cause unknown",
-                checked: `${facts.length} source-linked facts · 1 synthetic context record`,
+                checked: `${facts.length} source-linked facts · 1 demo context record`,
                 freshness: "System snapshot and cycle-count note dated 30 Sep 2026",
-                assumptions: ["The quantities are taken from two separate synthetic source notes", "A variance does not establish a stock adjustment"],
+                assumptions: ["The quantities are taken from two separate source notes", "A variance does not establish a stock adjustment"],
                 exception: "A human should verify the count and investigate movements before any record is changed.",
-                sources: ["Synthetic inventory system snapshot", "Synthetic physical count note", "AX Memory local record"],
+                sources: ["Inventory snapshot", "Cycle-count note", "AX Memory local record"],
                 action: binRecord ? { label: "Review the evidence and task", run: () => { searchInput.value = ""; goToRecord(binRecord.id); } } : null
               };
             }
@@ -1582,7 +1582,7 @@
       const record = recordById(recordId);
       if (record) renderRecord(record);
       else {
-        setPage("Context record not found", "This saved link does not match a synthetic record in this demo.");
+        setPage("Context record not found", "This saved link does not match a record in this demo.");
         view.replaceChildren(emptyState("Record unavailable.", "Open Context or reset the demo to return to the seed records."), button("Go to Context", () => go("#context"), "btn primary"));
       }
       return;
@@ -1607,7 +1607,7 @@
     clearMessage();
     saveState();
     go("#today");
-    showMessage("Demo reset to clean synthetic data and the starting simulated connections.");
+    showMessage("Demo reset to clean demo data and the starting simulated connections.");
   });
   searchInput.addEventListener("input", renderApp);
   searchInput.addEventListener("keydown", (event) => {

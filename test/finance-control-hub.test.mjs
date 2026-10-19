@@ -25,7 +25,7 @@ function countCsvRows(csv) {
   return csv.trim().split(/\r?\n/).length - 1;
 }
 
-test("the generated synthetic backlog has coherent source counts and a separate answer key", function () {
+test("the generated demo backlog has coherent source counts and a separate answer key", function () {
   assert.equal(source.invoices.length, 4000);
   assert.equal(source.hawbReport.length, source.metadata.hawbRecordCount);
   assert.equal(source.mawbReport.length, source.metadata.mawbRecordCount);

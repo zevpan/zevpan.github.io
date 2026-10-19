@@ -183,7 +183,7 @@
         <p>${escapeHTML(outcome.summary || "The requested work has been prepared for review.")}</p>
         ${facts.length ? `<div class="agent-run-label">Evidence returned</div><ul class="agent-run-list">${facts.map((fact) => `<li>${escapeHTML(fact)}</li>`).join("")}</ul>` : ""}
         <div class="agent-run-meta">
-          <div><strong>Records checked</strong><span>${escapeHTML(outcome.checked || "Synthetic demo records")}</span></div>
+          <div><strong>Records checked</strong><span>${escapeHTML(outcome.checked || "Demo records")}</span></div>
           <div><strong>Source freshness</strong><span>${escapeHTML(outcome.freshness || "Local sample · updated for this scenario")}</span></div>
         </div>
         ${sources.length ? `<div class="agent-run-sources" aria-label="Tools and data used">${sources.map((source) => `<span class="agent-run-source">${escapeHTML(source)}</span>`).join("")}</div>` : ""}
