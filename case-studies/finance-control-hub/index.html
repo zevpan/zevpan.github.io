@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Case Study 06 · Finance Control Hub — Zev Pan</title>
+  <meta name="description" content="How Zev translated a freight-forwarding finance reconciliation problem into a synthetic, tested exception-management workbench with deterministic matching and human approval controls.">
+  <link rel="stylesheet" href="../../shared/intent-model.css?v=1">
+  <style>
+    :root{--ink:#172b4d;--navy:#0f1f3d;--text:#26364c;--muted:#5e6c84;--line:#dfe1e6;--soft:#f7f8fa;--blue:#0c66e4;--blue-soft:#e9f2ff;--green:#216e4e;--green-soft:#e8f6ee;--amber:#80570d;--amber-soft:#fff7df;--red:#93423a}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:var(--text);font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:var(--blue)}.sitebar{position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(12px)}.nav{max-width:1100px;margin:auto;padding:12px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px}.brand{font-weight:850;color:var(--navy);text-decoration:none}.nav-links{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted)}.nav-links a{color:inherit;text-decoration:none}.nav-links a:hover{color:var(--blue)}
+    main{max-width:1100px;margin:0 auto;padding:36px 22px 80px}.hero{padding:42px 0 34px;border-bottom:1px solid var(--line)}.kicker{font-size:10px;letter-spacing:.12em;font-weight:900;text-transform:uppercase;color:#55718e}.hero h1{max-width:880px;margin:11px 0 12px;color:var(--navy);font-size:52px;line-height:1.06;letter-spacing:-.045em}.lead{max-width:900px;margin:0;color:#41536b;font-size:19px;line-height:1.55}.hero-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}.button{display:inline-flex;align-items:center;justify-content:center;min-height:39px;padding:0 14px;border:1px solid var(--line);border-radius:8px;color:#34465d;background:#fff;text-decoration:none;font-size:11px;font-weight:850}.button.primary{border-color:var(--blue);background:var(--blue);color:#fff}.button:hover{filter:brightness(.97)}
+    .meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:19px}.tag{padding:5px 8px;border:1px solid var(--line);border-radius:99px;background:#fafbfd;color:#596b82;font-size:9px;font-weight:750}
+    .disclosure{margin:19px 0 0;padding:12px 14px;border:1px solid #d6e2f1;border-radius:9px;background:#f7faff;color:#435a75;font-size:11px}.disclosure strong{color:#294867}
+    section{padding:34px 0;border-bottom:1px solid var(--line)}h2{margin:0 0 12px;color:var(--navy);font-size:28px;line-height:1.16;letter-spacing:-.025em}h3{margin:0 0 8px;color:#263a53;font-size:16px}p{margin:7px 0 12px}.section-intro{max-width:820px;color:var(--muted);font-size:13px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.card{padding:16px;border:1px solid var(--line);border-radius:11px;background:#fff}.card small{display:block;margin-bottom:6px;color:#73839a;font-size:9px;font-weight:850;letter-spacing:.06em;text-transform:uppercase}.card p{margin:0;color:#52647a;font-size:12px}.card strong{color:#263d57}
+    .workflow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:17px 0}.workflow-step{min-height:112px;padding:12px;border:1px solid var(--line);border-radius:9px;background:#fbfcfe}.workflow-step small{color:var(--blue);font-size:8px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.workflow-step strong{display:block;margin:6px 0 4px;color:#2c425c;font-size:11px}.workflow-step span{display:block;color:#718096;font-size:9px;line-height:1.45}
+    .loop{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.loop-step{padding:12px;border-left:3px solid #7b9fc9;background:#f5f8fc}.loop-step b{display:block;color:#294765;font-size:10px}.loop-step span{display:block;margin-top:4px;color:#6d7e92;font-size:9px}
+    .rule-table{width:100%;border-collapse:collapse}.rule-table th,.rule-table td{padding:9px 10px;border-bottom:1px solid #e9edf2;text-align:left;vertical-align:top}.rule-table th{background:#f7f9fb;color:#61738a;font-size:9px;text-transform:uppercase;letter-spacing:.04em}.rule-table td{color:#52647a;font-size:11px}.rule-table td strong{color:#31455e}
+    .schema-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.schema{padding:12px;border:1px solid var(--line);border-radius:9px;background:#fbfcfd}.schema strong{display:flex;justify-content:space-between;gap:10px;color:#2e425b;font-size:11px}.schema strong span{color:#6e829a;font-size:9px;white-space:nowrap}.schema p{margin:5px 0 0;color:#718096;font-size:10px}
+    .metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}.metric{padding:12px;border:1px solid var(--line);border-radius:9px;background:#fbfcfd}.metric strong{display:block;color:var(--navy);font-size:22px;letter-spacing:-.03em}.metric span{display:block;margin-top:2px;color:#738197;font-size:9px}
+    .metric-note,.caution{padding:12px 14px;border:1px solid #eadcae;border-radius:9px;background:var(--amber-soft);color:#6b5929;font-size:10px}.metric-note strong,.caution strong{color:#594719}.pass{color:var(--green);font-weight:850}
+    .architecture{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.architecture div{padding:11px;border:1px solid #dae4ef;border-radius:8px;background:#f8fbff;text-align:center}.architecture strong{display:block;color:#31577d;font-size:10px}.architecture span{display:block;margin-top:4px;color:#728198;font-size:8px}
+    .decision-callout{padding:15px;border-left:3px solid var(--blue);background:#f5f8fc;color:#495d75;font-size:12px}.decision-callout strong{color:#263e59}
+    .capability-list{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.capability-list span{padding:6px 9px;border-radius:99px;background:#f1f4f8;color:#53677e;font-size:9px;font-weight:750}
+    footer{padding-top:24px;color:#78869a;font-size:10px}.footer-row{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    @media(max-width:780px){main{padding:22px 16px 55px}.nav{align-items:flex-start;flex-direction:column}.hero{padding:25px 0}.hero h1{font-size:39px}.lead{font-size:16px}.two-col,.three-col{grid-template-columns:1fr}.workflow{grid-template-columns:1fr 1fr}.loop{grid-template-columns:1fr 1fr}.metric-row{grid-template-columns:1fr 1fr}.architecture{grid-template-columns:1fr 1fr}.schema-grid{grid-template-columns:1fr}.rule-table-wrap{overflow:auto}.rule-table{min-width:620px}}
+    @media(max-width:400px){.workflow{grid-template-columns:1fr}.loop{grid-template-columns:1fr}.hero-actions .button{width:100%}.metric-row{gap:6px}}
+  </style>
+</head>
+<body>
+  <header class="sitebar"><div class="nav">
+    <a class="brand" href="../../index.html">Zev Pan · Selected work</a>
+    <nav class="nav-links" aria-label="Case study navigation"><a href="../../index.html#work">All work</a><a href="#problem">Problem</a><a href="#workflow">Workflow</a><a href="#validation">Validation</a><a href="demo/index.html">Interactive demo</a></nav>
+  </div></header>
+  <main>
+    <header class="hero">
+      <div class="kicker">CASE STUDY 06 · FINANCE PROCESS TRANSFORMATION · SYNTHETIC PROOF OF CONCEPT</div>
+      <h1>Finance Control Hub</h1>
+      <p class="lead">I translated a freight-forwarding finance reconciliation problem into a tested operations workbench: deterministic matching for defensible records, a prioritized queue for exceptions, and human approval before an illustrative import file is released.</p>
+      <div class="meta"><span class="tag">Business Analysis</span><span class="tag">Finance Operations</span><span class="tag">Process Improvement</span><span class="tag">Data Modelling</span><span class="tag">Deterministic Reconciliation</span><span class="tag">Human Controls</span></div>
+      <div class="hero-actions"><a class="button primary" href="demo/index.html">Open interactive workbench →</a><a class="button" href="../../index.html#work">Back to Zev’s selected work</a></div>
+      <div class="disclosure"><strong>Evidence and privacy:</strong> The workflow was inspired by an operational finance problem. The original financial files were not provided; all vendors, invoice lines, references, amounts and test records in this public demo are synthetic. The prototype was not deployed to the originating business, and no private people or messages appear here.</div>
+    </header>
+
+    <section id="problem">
+      <h2>The work to improve</h2>
+      <p class="section-intro">Finance needed to compare vendor invoice charges with three operational exports: HAWB, MAWB and Accrue Cost. Those files describe connected parts of a shipment, but invoice lines do not always carry one consistent key or one clean one-to-one amount.</p>
+      <div class="two-col">
+        <article class="card"><small>Current problem</small><h3>Manual cross-referencing absorbs attention</h3><p>An analyst opens several reports, searches by job or air-waybill reference, translates vendor-specific charge codes, compares currencies and amounts, then records missing POs, duplicates and unresolved cases by hand.</p></article>
+        <article class="card"><small>What makes a match difficult</small><h3>Identifiers and financial meaning do not line up neatly</h3><p>A charge may reference a Job ID, HAWB or MAWB; one invoice line may cover multiple accruals; several invoice lines can form one consolidated charge. Missing POs, tax treatment, currency and duplicate records can make an apparently close match unsafe.</p></article>
+      </div>
+      <div class="decision-callout" style="margin-top:12px"><strong>Analysis decision:</strong> treat “find something similar” as insufficient. A match must preserve source lineage, resolve to a shipment, use a configured vendor/charge rule, respect currency and PO controls, avoid reuse of a record, and explain the amount comparison.</div>
+    </section>
+
+    <section id="workflow">
+      <h2>Current state to future state</h2>
+      <div class="two-col">
+        <article class="card"><small>Current-state workflow</small><div class="workflow" style="grid-template-columns:1fr 1fr">
+          <div class="workflow-step"><small>01 · Gather</small><strong>Open four exports</strong><span>Invoices plus HAWB, MAWB and Accrue Cost.</span></div>
+          <div class="workflow-step"><small>02 · Search</small><strong>Resolve references</strong><span>Look across Job ID, HAWB and MAWB.</span></div>
+          <div class="workflow-step"><small>03 · Interpret</small><strong>Translate charges</strong><span>Compare vendor codes and internal charges.</span></div>
+          <div class="workflow-step"><small>04 · Decide</small><strong>Investigate differences</strong><span>Check PO, amount, duplicates, tax and currency.</span></div>
+          <div class="workflow-step"><small>05 · Prepare</small><strong>Build import rows</strong><span>Copy approved values into a target format.</span></div>
+          <div class="workflow-step"><small>06 · Recheck</small><strong>Prevent repeat entry</strong><span>Track what is resolved or already exported.</span></div>
+        </div></article>
+        <article class="card"><small>Future-state workflow</small><div class="workflow" style="grid-template-columns:1fr 1fr">
+          <div class="workflow-step"><small>01 · Intake</small><strong>Load source bundle</strong><span>Check schema and required fields.</span></div>
+          <div class="workflow-step"><small>02 · Normalize</small><strong>Resolve identifiers</strong><span>Index shipment links without changing source values.</span></div>
+          <div class="workflow-step"><small>03 · Reconcile</small><strong>Apply explicit rules</strong><span>Match unique exact and configured tolerance cases.</span></div>
+          <div class="workflow-step"><small>04 · Route</small><strong>Prioritize exceptions</strong><span>Keep ambiguity and variance visible.</span></div>
+          <div class="workflow-step"><small>05 · Review</small><strong>Record Finance decisions</strong><span>Approve, hold, reject, annotate or escalate.</span></div>
+          <div class="workflow-step"><small>06 · Release</small><strong>Prepare validated export</strong><span>Human approves a local illustrative CSV download.</span></div>
+        </div></article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Product requirements and source model</h2>
+      <p class="section-intro">The demo represents the records needed to reconcile and explain a decision. Counts describe this generated test batch, not historical client files. Field names are proposed simulation schemas, not official CargoWise report definitions.</p>
+      <div class="schema-grid">
+        <article class="schema"><strong>Vendor Invoice Lines <span>4,000 rows</span></strong><p>Vendor, invoice and line IDs, invoice date, Job/MAWB/HAWB references, PO, charge description/code, currency, unit price, quantity, tax and line amount.</p></article>
+        <article class="schema"><strong>CargoWise HAWB Report <span>4,095 rows</span></strong><p>House airway bill, Job ID, MAWB link, route, pieces, weight and shipment status.</p></article>
+        <article class="schema"><strong>CargoWise MAWB Report <span>512 rows</span></strong><p>Master airway bill, carrier, route, linked house shipment count and status.</p></article>
+        <article class="schema"><strong>CargoWise Accrue Cost <span>4,055 rows</span></strong><p>Job ID, HAWB/MAWB, PO, accrual reference, vendor, charge code, currency, accrued amount, tax treatment and status.</p></article>
+      </div>
+      <div class="architecture" aria-label="System responsibility model">
+        <div><strong>Source records</strong><span>Invoice and CargoWise-style reports</span></div>
+        <div><strong>Deterministic engine</strong><span>Normalize, match, calculate, deduplicate</span></div>
+        <div><strong>Finance workbench</strong><span>Evidence, queue, resolution and audit</span></div>
+        <div><strong>Human release</strong><span>Approve local export; no system posting</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Where rules, AI and people belong</h2>
+      <div class="rule-table-wrap"><table class="rule-table"><thead><tr><th>Responsibility</th><th>System owner</th><th>Finance Control Hub behavior</th></tr></thead><tbody>
+        <tr><td><strong>Normalization and calculation</strong></td><td>Deterministic engine</td><td>Normalize case and punctuation, resolve source links, map only configured vendor codes, calculate variances and detect duplicate fingerprints.</td></tr>
+        <tr><td><strong>Defensible matching</strong></td><td>Deterministic engine</td><td>Require unique shipment/vendor/charge/currency evidence; apply only the configured 0.05 rounding tolerance; reserve matched records so they cannot be allocated twice.</td></tr>
+        <tr><td><strong>Unstructured interpretation</strong></td><td>Optional model assist</td><td>A simulated, provider-neutral suggestion may interpret a charge description. It never writes a mapping or financial match and always remains labeled as unconfirmed.</td></tr>
+        <tr><td><strong>Ambiguity and financial exceptions</strong></td><td>Finance analyst</td><td>Missing PO, large variance, duplicate, tax/currency mismatch, conflicting references and grouped charges remain in a review queue with source evidence.</td></tr>
+        <tr><td><strong>Export release</strong></td><td>Finance approver</td><td>Eligible rows are previewed. A person attests and downloads the illustrative CSV; no CargoWise record is posted or modified.</td></tr>
+      </tbody></table></div>
+      <div class="decision-callout" style="margin-top:12px"><strong>AI boundary:</strong> this public demo makes no live LLM call. Command interpretation uses a supported local action registry; matching is deterministic. A real model gateway could later use an organization-selected provider for bounded text interpretation, without changing the financial authority model.</div>
+    </section>
+
+    <section id="validation">
+      <h2>Validation against generated ground truth</h2>
+      <p class="section-intro">A fixed-seed generator creates coherent shipment, invoice and accrual relationships. A separate test fixture records intended outcomes; the production reconciliation engine never reads the answer key.</p>
+      <div class="metric-row">
+        <div class="metric"><strong>4,000</strong><span>synthetic invoice lines evaluated</span></div>
+        <div class="metric"><strong>3,405</strong><span>unique exact or tolerance matches · 85.1%</span></div>
+        <div class="metric"><strong>545</strong><span>exceptions routed for Finance review</span></div>
+        <div class="metric"><strong>50</strong><span>prior-export rows excluded from re-export</span></div>
+      </div>
+      <div class="three-col">
+        <article class="card"><small>Matching quality</small><h3 class="pass">100% precision · 100% recall</h3><p>On the generated positive-match cases: 3,405 expected automatic matches; 3,405 actual; zero incorrect automatic matches and zero missed automatic matches.</p></article>
+        <article class="card"><small>Exception routing</small><h3 class="pass">545 / 545 correctly routed</h3><p>Outcome-label checks cover grouped charges, missing POs, amount/tax/currency variance, duplicate data, invalid references, ambiguity and missing mappings.</p></article>
+        <article class="card"><small>Runtime</small><h3>~150 ms in this runtime</h3><p>Observed local reconciliation duration for the 4,000-line fixture. This is demo execution time, not an operational SLA or measured business-time saving.</p></article>
+      </div>
+      <div class="metric-note" style="margin-top:12px"><strong>Interpretation:</strong> These results validate the engine against deliberately constructed scenarios, not a production sample. The generator and answer key share the scenario design; the next validation step is blind testing against representative, approved real records and Finance adjudication.</div>
+    </section>
+
+    <section>
+      <h2>Business value and limits</h2>
+      <div class="two-col">
+        <article class="card"><small>Intended operational change</small><p>Move analyst time from repetitive cross-file searching toward exception investigation, evidence review and controlled release. An earlier estimate suggested at least two hours per working day might be recoverable; it is an unvalidated projection, not a measured saving.</p></article>
+        <article class="card"><small>Not claimed</small><p>No real source files were supplied, no historical accuracy or time baseline was measured, and this prototype was not deployed at the originating business. The generated dataset, matching results and runtime are demo evidence only.</p></article>
+      </div>
+      <div class="caution" style="margin-top:12px"><strong>Import-format limit:</strong> The downloadable CSV is an illustrative CargoWise-style mapping. No official EDI spreadsheet template was supplied or validated, so the output must not be treated as production-compatible.</div>
+    </section>
+
+    <section>
+      <h2>What this case demonstrates</h2>
+      <p class="section-intro">I worked from an operational requirement through future-state logic, data design, control boundaries, implementation and test criteria. AI accelerated parts of build execution; I defined the system behavior, evidence standard, exception policy and acceptance checks.</p>
+      <div class="loop">
+        <div class="loop-step"><b>Diagnose</b><span>Identify cross-report search, unstable keys and exception burden.</span></div>
+        <div class="loop-step"><b>Specify</b><span>Define records, mappings, tolerances, statuses and export eligibility.</span></div>
+        <div class="loop-step"><b>Design</b><span>Separate automatic matches from reviewer-owned decisions.</span></div>
+        <div class="loop-step"><b>Build</b><span>Create a seeded dataset, matching engine and decision workbench.</span></div>
+        <div class="loop-step"><b>Validate</b><span>Check labels, idempotence, no double allocation and export controls.</span></div>
+      </div>
+      <div class="capability-list"><span>Business requirements</span><span>Process redesign</span><span>Data modelling</span><span>Finance workflow controls</span><span>AI decision boundaries</span><span>Operational UX</span><span>Automated testing</span><span>Human-in-the-loop governance</span></div>
+    </section>
+
+    <footer><div class="footer-row"><span>Case Study 06 · Finance Control Hub · Synthetic proof of concept · Zev Pan</span><span><a href="../../index.html#work">Return to portfolio</a> · <a href="demo/index.html">Open demo</a></span></div></footer>
+  </main>
+</body>
+</html>
