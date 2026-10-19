@@ -114,7 +114,7 @@ footer{padding-top:28px;color:#718096;font-size:10px}
       <thead><tr><th>Current sales work</th><th>Target operating model</th></tr></thead>
       <tbody>
         <tr><td>Retype meeting notes and customer requirements into separate systems.</td><td>Capture notes once, retain the original text, extract a structured RFQ and link it to the account.</td></tr>
-        <tr><td>Ask colleagues to check stock, price, discount rules and delivery timing.</td><td>Retrieve catalog and policy records, show source age and uncertainty, surface missing confirmation.</td></tr>
+        <tr><td>Ask colleagues to check data sources, price, discount rules and delivery timing.</td><td>Retrieve catalog and policy records, show source freshness and uncertainty, surface missing confirmation.</td></tr>
         <tr><td>Build quote totals manually and look up approval rules.</td><td>Calculate totals, discounts, tax assumptions, gross margin and markup with deterministic rules.</td></tr>
         <tr><td>Prepare a proposal from a separate document and copy quote values by hand.</td><td>Assemble a proposal from the linked requirements and quote version, then flag when the quote changes.</td></tr>
         <tr><td>Write a second activity report for management.</td><td>Derive team visibility from pipeline, RFQ, quote, approval and interaction records.</td></tr>
@@ -126,10 +126,10 @@ footer{padding-top:28px;color:#718096;font-size:10px}
     <span class="eyebrow">THE INFORMATION DUMP TO PROPOSAL WORKFLOW</span>
     <h2>Describe the outcome. Inspect completed work. Decide what needs a person.</h2>
     <p class="section-lead">The flagship flow starts with natural-language notes. It does not force a long form before the system can begin.</p>
-    <div class="quote-command"><p>“Acme Technologies needs 120 units of Product X next month. They currently pay around $430 per unit and we discussed $410 for the full quantity. They want implementation support and a two-year maintenance agreement. Check availability, prepare the quotation and put together a proposal.”</p></div>
+    <div class="quote-command"><p>“Acme Technologies is planning a two-year Industrial Data Foundation across 3 sites. Connect its process historian, asset management system, engineering drawings and maintenance history. Include the Asset Context Workspace, Industrial AI Workbench, integration and contextualization, and platform support. The initial budget is around $8,000,000. Prepare an enterprise quotation and proposal.”</p></div>
     <ol class="operation-loop">
       <li><span class="step-no">01 · STRUCTURE</span><b>Understand the request</b>Identify the account, product, quantity, target price, competitor reference, delivery window and service needs.</li>
-      <li><span class="step-no">02 · VALIDATE</span><b>Check company context</b>Match the catalog, inspect cost and discount rules, show inventory freshness and flag unconfirmed capacity.</li>
+      <li><span class="step-no">02 · VALIDATE</span><b>Check company context</b>Match the catalog, inspect cost and discount rules, show source freshness and flag unconfirmed delivery capacity.</li>
       <li><span class="step-no">03 · CALCULATE</span><b>Prepare a governed quote</b>Compute totals, tax estimate, gross margin and markup. Hold prices that cross policy limits.</li>
       <li><span class="step-no">04 · GENERATE</span><b>Prepare the proposal</b>Use customer requirements, catalog facts and the linked quote version. Keep cost and margin out of the client document.</li>
       <li><span class="step-no">05 · REVIEW</span><b>Return only decisions</b>Show exceptions, open assumptions, customer next steps and a manager view built from the same records.</li>
@@ -143,7 +143,7 @@ footer{padding-top:28px;color:#718096;font-size:10px}
     <div class="two-col">
       <article class="card">
         <h3>Pricing that can be inspected</h3>
-        <p>Quote calculations use saved catalog costs, list prices, per-product margin floors, maximum discounts, account currency and example tax rules.</p>
+        <p>Quote calculations use illustrative enterprise prices for a multi-site data platform, asset context workspace, AI workbench, integration and support services, with saved costs, margin floors, discounts and example tax rules.</p>
         <ul class="control-list">
           <li><span class="control-mark">✓</span><span>Gross margin is calculated as profit divided by selling price.</span></li>
           <li><span class="control-mark">✓</span><span>Markup is calculated as profit divided by cost.</span></li>
@@ -169,7 +169,7 @@ footer{padding-top:28px;color:#718096;font-size:10px}
     <h2>A connected operating surface, not another contact list.</h2>
     <div class="capability-grid">
       <article class="capability"><b>Natural-language RFQ workbench</b><span>Progressive extraction of account, product, quantity, delivery and commercial context.</span></article>
-      <article class="capability"><b>Catalog and pricing engine</b><span>Physical product, subscription and service records with explicit source freshness.</span></article>
+      <article class="capability"><b>Enterprise industrial catalog</b><span>Multi-site data foundation, asset context and AI workbench subscriptions with integration and support services.</span></article>
       <article class="capability"><b>Versioned quotation workflow</b><span>Editable lines, deterministic totals, margin checks, approval holds and downloadable documents.</span></article>
       <article class="capability"><b>Proposal generation adapter</b><span>Native proposal drafting from customer facts, catalog records and the selected quotation.</span></article>
       <article class="capability"><b>CRM event timeline</b><span>Customer notes, RFQs, quote changes, approval decisions and proposals appear together.</span></article>
@@ -195,7 +195,7 @@ footer{padding-top:28px;color:#718096;font-size:10px}
   <section>
     <span class="eyebrow">PROTOTYPE BOUNDARY</span>
     <h2>Clear about what runs locally.</h2>
-    <div class="boundary"><b>Interactive portfolio prototype</b><p>Records, account data, costs, availability and company policies are example data stored in this browser. The intake uses a local extraction adapter. No live CRM, ERP, inventory, email, Business WhatsApp, external language model, Gamma or n8n connection is configured. The role switch demonstrates different views and is not production authentication. No customer message is sent. This prototype demonstrates my product and process design work and does not claim a real employer deployment.</p></div>
+    <div class="boundary"><b>Interactive portfolio prototype</b><p>Records, account data, costs, delivery capacity and company policies are example data stored in this browser. The intake uses a local extraction adapter. No live CRM, industrial data platform, data source, email, Business WhatsApp, external language model, Gamma or n8n connection is configured. The role switch demonstrates different views and is not production authentication. No customer message is sent. This prototype demonstrates my product and process design work and does not claim a real employer deployment.</p></div>
     <div class="link-row"><a class="primary-link" href="demo/index.html">Try the interactive workspace <span aria-hidden="true">→</span></a><a class="secondary-link" href="../../index.html">Back to portfolio</a><a class="secondary-link" href="../warehouse-flow-stock-accuracy/index.html">Next: Warehouse Management System</a></div>
   </section>
 

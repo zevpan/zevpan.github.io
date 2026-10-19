@@ -9,7 +9,7 @@ const round = value => Math.round(value);
 
 export function createInitialState() {
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     role: 'sales',
     activeView: 'overview',
     selectedAccountId: null,
@@ -17,28 +17,29 @@ export function createInitialState() {
     accounts: [
       { id: 'AC-100', name: 'Acme Technologies', industry: 'Industrial technology', country: 'Singapore', currency: 'SGD', taxRateBps: 900, owner: 'Zev Pan', tier: 'Strategic', email: 'procurement@acme.example', phone: '+65 6123 4400', lastTouch: '18 Oct 2026', source: 'CRM account profile', contacts: [{ name: 'Avery Goh', title: 'Procurement Lead', email: 'avery.goh@acme.example', role: 'Economic buyer' }, { name: 'Maya Chen', title: 'Head of Operations', email: 'maya.chen@acme.example', role: 'Technical stakeholder' }] },
       { id: 'AC-101', name: 'Vector Labs', industry: 'Software and analytics', country: 'Singapore', currency: 'SGD', taxRateBps: 900, owner: 'Mina Koh', tier: 'Growth', email: 'finance@vector.example', phone: '+65 6770 2200', lastTouch: '17 Oct 2026', source: 'CRM account profile', contacts: [{ name: 'Sarah Lim', title: 'VP Customer Success', email: 'sarah.lim@vector.example', role: 'Executive sponsor' }] },
-      { id: 'AC-102', name: 'Northstar Freight', industry: 'Logistics', country: 'Singapore', currency: 'SGD', taxRateBps: 900, owner: 'Zev Pan', tier: 'Growth', email: 'operations@northstar.example', phone: '+65 6331 1020', lastTouch: '14 Oct 2026', source: 'CRM account profile', priceAgreements: [{ id: 'AGR-NS-2026', productId: 'PX-120', unitPriceCents: 44500, minimumQuantity: 50, validFrom: '2026-09-01', validThrough: '2027-03-31', status: 'Active', source: 'Approved customer rate card' }], contacts: [{ name: 'Daniel Wong', title: 'Commercial Director', email: 'daniel.wong@northstar.example', role: 'Economic buyer' }] },
+      { id: 'AC-102', name: 'Northstar Freight', industry: 'Logistics', country: 'Singapore', currency: 'SGD', taxRateBps: 900, owner: 'Zev Pan', tier: 'Growth', email: 'operations@northstar.example', phone: '+65 6331 1020', lastTouch: '14 Oct 2026', source: 'CRM account profile', priceAgreements: [{ id: 'AGR-NS-2026', productId: 'IDF-ENT', unitPriceCents: 46500000, minimumQuantity: 5, validFrom: '2026-09-01', validThrough: '2027-03-31', status: 'Active', source: 'Approved customer rate card' }], contacts: [{ name: 'Daniel Wong', title: 'Commercial Director', email: 'daniel.wong@northstar.example', role: 'Economic buyer' }] },
       { id: 'AC-103', name: 'Helix Advisory', industry: 'Professional services', country: 'Singapore', currency: 'SGD', taxRateBps: 900, owner: 'Mina Koh', tier: 'Core', email: 'hello@helix.example', phone: '+65 6228 1900', lastTouch: '12 Oct 2026', source: 'CRM account profile', contacts: [{ name: 'Priya Nair', title: 'COO', email: 'priya.nair@helix.example', role: 'Executive sponsor' }] }
     ],
     opportunities: [
-      { id: 'OP-2047', accountId: 'AC-100', name: 'Product X replacement and service plan', stage: 'Solution design', valueCents: 6328000, probability: 55, owner: 'Zev Pan', nextAction: 'Confirm currency and delivery assumptions', dueDate: '2026-10-20', lastActivity: '2026-10-19', source: 'Customer meeting', status: 'Open' },
-      { id: 'OP-1984', accountId: 'AC-101', name: 'Operations suite renewal', stage: 'Discovery', valueCents: 6000000, probability: 35, owner: 'Mina Koh', nextAction: 'Confirm SSO and migration scope', dueDate: '2026-10-21', lastActivity: '2026-10-17', source: 'Renewal', status: 'Open' },
+      { id: 'OP-2047', accountId: 'AC-100', name: 'Industrial data foundation rollout', stage: 'Solution design', valueCents: 818000000, probability: 55, owner: 'Zev Pan', nextAction: 'Confirm site, source-system and delivery scope', dueDate: '2026-10-20', lastActivity: '2026-10-19', source: 'Customer meeting', status: 'Open' },
+      { id: 'OP-1984', accountId: 'AC-101', name: 'Industrial AI workbench subscription', stage: 'Discovery', valueCents: 44000000, probability: 35, owner: 'Mina Koh', nextAction: 'Confirm identity and data access scope', dueDate: '2026-10-21', lastActivity: '2026-10-17', source: 'Renewal', status: 'Open' },
       { id: 'OP-2110', accountId: 'AC-102', name: 'Freight visibility rollout', stage: 'Commercial review', valueCents: 3850000, probability: 65, owner: 'Zev Pan', nextAction: 'Review revised service scope', dueDate: '2026-10-20', lastActivity: '2026-10-14', source: 'Inbound referral', status: 'Open' },
       { id: 'OP-1922', accountId: 'AC-103', name: 'Client onboarding workflow', stage: 'Qualification', valueCents: 2400000, probability: 25, owner: 'Mina Koh', nextAction: 'Resolve identity and sponsor', dueDate: '2026-10-22', lastActivity: '2026-10-12', source: 'Inbound lead', status: 'Open' }
     ],
     products: [
-      { id: 'PX-120', name: 'Product X', category: 'Physical product', description: 'Industrial monitoring unit for distributed equipment sites.', unit: 'unit', listPriceCents: 49900, unitCostCents: 31000, marginFloorBps: 2200, maxDiscountBps: 1800, volumeDiscounts: [{ minimumQuantity: 100, discountBps: 800 }, { minimumQuantity: 250, discountBps: 1000 }], taxRateBps: 900, taxable: true, stock: { onHand: 140, reserved: 20, available: 120, asOf: '2026-10-18 09:30 SGT', source: 'Example warehouse snapshot', confidence: 'Snapshot only' }, leadTime: '4 to 6 business days after release', features: ['Remote equipment monitoring', 'Standard telemetry interface', 'One year manufacturer warranty'], status: 'Active', pricingSource: 'Approved catalog price list, 18 Oct 2026' },
-      { id: 'OPS-50', name: 'Operations Suite License', category: 'Technology subscription', description: 'Operations workspace subscription with identity and workflow controls.', unit: 'user / month', listPriceCents: 7900, unitCostCents: 2900, marginFloorBps: 2800, maxDiscountBps: 1500, volumeDiscounts: [{ minimumQuantity: 50, discountBps: 500 }], taxRateBps: 900, taxable: true, stock: null, capacity: { availableSeats: 75, asOf: '2026-10-18 16:00 SGT', source: 'Example tenant allocation', confidence: 'Snapshot only' }, leadTime: 'Provisioning subject to technical readiness review', features: ['Single sign-on (SSO)', 'Role-based access', 'CSV import and export', 'Workflow activity history'], status: 'Active', pricingSource: 'Approved catalog price list, 18 Oct 2026' },
-      { id: 'S-IMPL', name: 'Implementation and onboarding', category: 'Professional service', description: 'Planning, configuration, onboarding and handover support.', unit: 'one-time package', listPriceCents: 240000, unitCostCents: 160000, marginFloorBps: 2400, maxDiscountBps: 1200, taxRateBps: 900, taxable: true, stock: null, capacity: { status: 'Confirmation required', asOf: '2026-10-18', source: 'Example delivery calendar', confidence: 'Not reserved' }, leadTime: 'Target window requires delivery team confirmation', features: ['Requirements workshop', 'Configuration plan', 'Team onboarding', 'Handover checklist'], status: 'Active', pricingSource: 'Approved service rate card, 18 Oct 2026' },
-      { id: 'S-MAINT', name: 'Maintenance and support', category: 'Support service', description: 'Annual service coverage with scheduled maintenance and support access.', unit: 'year', listPriceCents: 560000, unitCostCents: 420000, marginFloorBps: 2200, maxDiscountBps: 1000, taxRateBps: 900, taxable: true, stock: null, capacity: null, leadTime: 'Starts on agreed service commencement date', features: ['Scheduled maintenance', 'Business-hours support', 'Service review'], status: 'Active', pricingSource: 'Approved service rate card, 18 Oct 2026' },
-      { id: 'S-MIG', name: 'Data migration package', category: 'Professional service', description: 'Data mapping, validation and assisted migration planning.', unit: 'one-time package', listPriceCents: 840000, unitCostCents: 580000, marginFloorBps: 2500, maxDiscountBps: 1200, taxRateBps: 900, taxable: true, stock: null, capacity: { status: 'Confirmation required', asOf: '2026-10-17', source: 'Example delivery calendar', confidence: 'Not reserved' }, leadTime: 'Timeline depends on source data review', features: ['Source data assessment', 'Field mapping', 'Validation checklist', 'Cutover planning'], status: 'Active', pricingSource: 'Approved service rate card, 18 Oct 2026' }
+      { id: 'IDF-ENT', name: 'Industrial Data Foundation', matchTerms: ['industrial data platform', 'industrial data foundation', 'data foundation'], category: 'Industrial data platform', description: 'Unifies operational, engineering and business data into a governed operating context across sites.', unit: 'site', billingPeriod: 'year', listPriceCents: 52000000, unitCostCents: 17000000, marginFloorBps: 4200, maxDiscountBps: 1400, volumeDiscounts: [{ minimumQuantity: 5, discountBps: 500 }, { minimumQuantity: 10, discountBps: 800 }], taxRateBps: 900, taxable: true, stock: null, capacity: { status: 'Solution validation required', asOf: '2026-10-18', source: 'Example delivery plan', confidence: 'Not reserved' }, leadTime: 'Site readiness and source access review required', features: ['Operational and engineering data federation', 'Governed asset data model', 'Time-series and event pipelines', 'Pipeline health monitoring'], status: 'Active', pricingSource: 'Illustrative enterprise rate card, 18 Oct 2026' },
+      { id: 'ACW-ENT', name: 'Asset Context Workspace', matchTerms: ['asset context workspace', 'asset context', 'asset knowledge graph'], category: 'Asset knowledge graph', description: 'Connects asset hierarchies, engineering documents, time series and work history in a searchable context.', unit: 'site', billingPeriod: 'year', listPriceCents: 26000000, unitCostCents: 8500000, marginFloorBps: 4200, maxDiscountBps: 1200, volumeDiscounts: [{ minimumQuantity: 5, discountBps: 500 }], taxRateBps: 900, taxable: true, stock: null, capacity: { status: 'Solution validation required', asOf: '2026-10-18', source: 'Example delivery plan', confidence: 'Not reserved' }, leadTime: 'Asset model and source mapping review required', features: ['Asset hierarchy and relationship views', 'Engineering drawings and document context', 'Time-series and maintenance history', 'Cross-source entity resolution'], status: 'Active', pricingSource: 'Illustrative enterprise rate card, 18 Oct 2026' },
+      { id: 'IAW-ENT', name: 'Industrial AI Workbench', matchTerms: ['industrial AI workbench', 'industrial agent workbench', 'industrial AI agents'], category: 'Industrial AI workbench', description: 'Builds role-aware assistants and agents grounded in governed site data with reviewable workflow actions.', unit: 'site', billingPeriod: 'year', listPriceCents: 44000000, unitCostCents: 14500000, marginFloorBps: 4200, maxDiscountBps: 1000, volumeDiscounts: [{ minimumQuantity: 5, discountBps: 500 }], taxRateBps: 900, taxable: true, stock: null, capacity: { status: 'Solution validation required', asOf: '2026-10-18', source: 'Example delivery plan', confidence: 'Not reserved' }, leadTime: 'Identity, permissions and action boundaries require review', features: ['Grounded industrial assistants', 'Role-aware data access', 'Approval-based workflow actions', 'Agent activity and outcome traces'], status: 'Active', pricingSource: 'Illustrative enterprise rate card, 18 Oct 2026' },
+      { id: 'S-IMPL', name: 'Industrial Integration and Contextualization', matchTerms: ['industrial data integration', 'integration and contextualization', 'contextualization services'], category: 'Data integration service', description: 'Connects source systems, maps industrial entities and establishes monitored data pipelines.', unit: 'engagement', billingPeriod: null, listPriceCents: 38000000, unitCostCents: 18000000, marginFloorBps: 3500, maxDiscountBps: 1000, taxRateBps: 900, taxable: true, stock: null, capacity: { status: 'Delivery slot requires confirmation', asOf: '2026-10-18', source: 'Example delivery plan', confidence: 'Not reserved' }, leadTime: 'Scope follows a source-system and data-quality review', features: ['Connector and source-system planning', 'Entity matching and contextualization', 'Pipeline validation and monitoring', 'Acceptance and handover checklist'], status: 'Active', pricingSource: 'Illustrative enterprise rate card, 18 Oct 2026' },
+      { id: 'S-MAINT', name: 'Platform Success and Support', matchTerms: ['platform success and support', 'ongoing platform support', 'support agreement'], category: 'Platform support service', description: 'Provides ongoing platform reviews, operational guidance and support coverage.', unit: 'engagement', billingPeriod: 'year', listPriceCents: 24000000, unitCostCents: 13000000, marginFloorBps: 3800, maxDiscountBps: 1000, taxRateBps: 900, taxable: true, stock: null, capacity: { status: 'Service start date requires confirmation', asOf: '2026-10-18', source: 'Example delivery plan', confidence: 'Not reserved' }, leadTime: 'Begins on an agreed service commencement date', features: ['Quarterly operating reviews', 'Data quality and pipeline reviews', 'Platform support coverage', 'Adoption and workflow planning'], status: 'Active', pricingSource: 'Illustrative enterprise rate card, 18 Oct 2026' },
+      { id: 'S-MIG', name: 'Data Onboarding and Connector Enablement', matchTerms: ['data onboarding and connector enablement', 'data migration', 'connector enablement'], category: 'Data onboarding service', description: 'Plans historical data onboarding, source mapping and controlled cutover to the new operating context.', unit: 'engagement', billingPeriod: null, listPriceCents: 29000000, unitCostCents: 16000000, marginFloorBps: 4000, maxDiscountBps: 1000, taxRateBps: 900, taxable: true, stock: null, capacity: { status: 'Delivery slot requires confirmation', asOf: '2026-10-18', source: 'Example delivery plan', confidence: 'Not reserved' }, leadTime: 'Timeline follows a source-data assessment', features: ['Historical data backfill plan', 'Source and identifier mapping', 'Validation and reconciliation', 'Cutover and recovery planning'], status: 'Active', pricingSource: 'Illustrative enterprise rate card, 18 Oct 2026' }
     ],
     rfqs: [],
     quotes: [],
     proposals: [],
     approvals: [],
     interactions: [
-      { id: 'INT-0308', accountId: 'AC-100', opportunityId: 'OP-2047', date: '2026-10-19T09:10:00+08:00', channel: 'Customer meeting', direction: 'Internal note', summary: 'Customer discussed replacing Product X, delivery next month, implementation support and a two-year maintenance term.', source: 'Meeting notes', owner: 'Zev Pan' },
+      { id: 'INT-0308', accountId: 'AC-100', opportunityId: 'OP-2047', date: '2026-10-19T09:10:00+08:00', channel: 'Customer meeting', direction: 'Internal note', summary: 'Customer discussed an industrial data foundation across three sites, asset context, governed AI workflows and a two-year support term.', source: 'Meeting notes', owner: 'Zev Pan' },
       { id: 'INT-0309', accountId: 'AC-101', opportunityId: 'OP-1984', date: '2026-10-17T14:25:00+08:00', channel: 'Email', direction: 'Inbound', summary: 'Renewal sponsor asked about SSO and migration effort. Budget and implementation window need confirmation.', source: 'CRM timeline example', owner: 'Mina Koh' },
       { id: 'INT-0310', accountId: 'AC-102', opportunityId: 'OP-2110', date: '2026-10-14T11:00:00+08:00', channel: 'Customer call', direction: 'Inbound', summary: 'Commercial director requested a review of service scope before the next quotation revision.', source: 'Call note', owner: 'Zev Pan' }
     ],
@@ -52,7 +53,8 @@ export function createInitialState() {
 export function formatMoney(cents, currency) {
   const amount = Number(cents || 0) / 100;
   try {
-    return new Intl.NumberFormat('en-SG', { style: 'currency', currency: currency || 'SGD', currencyDisplay: 'code', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
+    const fractionDigits = Number.isInteger(amount) ? 0 : 2;
+    return new Intl.NumberFormat('en-SG', { style: 'currency', currency: currency || 'SGD', currencyDisplay: 'code', minimumFractionDigits: fractionDigits, maximumFractionDigits: 2 }).format(amount);
   } catch {
     return (currency || 'SGD') + ' ' + amount.toFixed(2);
   }
@@ -66,22 +68,24 @@ export function parseRequirements(text, options) {
   const source = String(text || '').trim();
   const normalized = normalize(source);
   const account = accounts.find(item => normalized.includes(normalize(item.name))) || null;
-  const product = products.find(item => normalized.includes(normalize(item.name)) && !item.category.includes('service')) || null;
-  let quantityMatch = source.match(/\b(\d[\d,]*)\s*(units?|licenses?|seats?|users?)\b/i);
+  const matchedProducts = products.filter(item => !item.category.toLowerCase().includes('service') && [item.name].concat(item.matchTerms || []).some(term => normalized.includes(normalize(term))));
+  const product = matchedProducts[0] || null;
+  let quantityMatch = source.match(/\b(\d[\d,]*)\s*(units?|licenses?|seats?|users?|sites?|locations?|environments?)\b/i);
   if (!quantityMatch && product) {
     const productAt = source.toLowerCase().indexOf(product.name.toLowerCase());
     const preceding = source.slice(Math.max(0, productAt - 28), productAt).match(/(\d[\d,]*)\s*$/);
     if (preceding) quantityMatch = preceding;
   }
   const quantity = quantityMatch ? Number(quantityMatch[1].replace(/,/g, '')) : null;
-  const currentPriceMatch = source.match(/(?:currently pay(?:ing)?(?: around)?|pay(?:ing)? around|another supplier(?: at| for)?|currently paying)\s*\$?\s*([\d,]+(?:\.\d{1,2})?)/i);
+  const currencyPrefix = '(?:SGD\\s*)?\\$?\\s*';
+  const currentPriceMatch = source.match(new RegExp('(?:currently pay(?:ing)?(?: around)?|pay(?:ing)? around|another supplier(?: at| for)?|currently paying)\\s*' + currencyPrefix + '([\\d,]+(?:\\.\\d{1,2})?)', 'i'));
   const currentPrice = currentPriceMatch ? Math.round(Number(currentPriceMatch[1].replace(/,/g, '')) * 100) : null;
-  const budgetMatch = source.match(/budget(?:\s+is)?(?:\s+around|\s+of)?\s*\$?\s*([\d,]+(?:\.\d{1,2})?)/i);
+  const budgetMatch = source.match(new RegExp('budget(?:\\s+is)?(?:\\s+around|\\s+of)?\\s*' + currencyPrefix + '([\\d,]+(?:\\.\\d{1,2})?)', 'i'));
   const budgetCents = budgetMatch ? Math.round(Number(budgetMatch[1].replace(/,/g, '')) * 100) : null;
-  const targetPriceMatch = source.match(/(?:closer to|target(?: price)?(?: of)?|proposed price(?: of)?|price(?: at| of| to)?|offer(?:ing)?(?: at| of)?)\s*\$?\s*([\d,]+(?:\.\d{1,2})?)/i);
+  const targetPriceMatch = source.match(new RegExp('(?:closer to|target(?: price)?(?: of)?|proposed price(?: of)?|price(?: at| of| to)?|offer(?:ing)?(?: at| of| to)?)\\s*' + currencyPrefix + '([\\d,]+(?:\\.\\d{1,2})?)', 'i'));
   let targetPrice = targetPriceMatch ? Math.round(Number(targetPriceMatch[1].replace(/,/g, '')) * 100) : null;
-  if (targetPrice === null && /\b(?:at|for)\s+\$?\s*([\d,]+(?:\.\d{1,2})?)\s+per\s+(?:unit|user|license|seat)/i.test(source)) {
-    const priceMatch = source.match(/\b(?:at|for)\s+\$?\s*([\d,]+(?:\.\d{1,2})?)\s+per\s+(?:unit|user|license|seat)/i);
+  if (targetPrice === null && new RegExp('\\b(?:at|for|to)\\s*' + currencyPrefix + '([\\d,]+(?:\\.\\d{1,2})?)\\s+per\\s+(?:unit|user|license|seat|site|location|environment)', 'i').test(source)) {
+    const priceMatch = source.match(new RegExp('\\b(?:at|for|to)\\s*' + currencyPrefix + '([\\d,]+(?:\\.\\d{1,2})?)\\s+per\\s+(?:unit|user|license|seat|site|location|environment)', 'i'));
     targetPrice = priceMatch ? Math.round(Number(priceMatch[1].replace(/,/g, '')) * 100) : null;
   }
   const termMatch = source.match(/\b(two|2|three|3|one|1)\s*[- ]?year(?:s)?\b/i);
@@ -94,9 +98,9 @@ export function parseRequirements(text, options) {
       : annualSubscription ? 12 : null;
   const delivery = /next month/i.test(source) ? nextMonthLabel(today) : (source.match(/before\s+([A-Z][a-z]+\s+\d{4})/i) || [])[1] || null;
   const serviceIds = [];
-  if (/implementation|onboarding|implementation support/i.test(source)) serviceIds.push('S-IMPL');
-  if (/maintenance|support agreement|service coverage/i.test(source)) serviceIds.push('S-MAINT');
-  if (/migration|data move|cutover/i.test(source)) serviceIds.push('S-MIG');
+  if (/implementation|onboarding|integration|contextualization|connector/i.test(source)) serviceIds.push('S-IMPL');
+  if (/maintenance|support|service coverage/i.test(source)) serviceIds.push('S-MAINT');
+  if (/migration|data move|cutover|historical backfill/i.test(source)) serviceIds.push('S-MIG');
   const blockers = [];
   if (!account) blockers.push('Link this request to an account.');
   if (!product) blockers.push('Confirm the required product or service.');
@@ -105,6 +109,7 @@ export function parseRequirements(text, options) {
   if (/\$/.test(source) && account && account.currency) openQuestions.push('The customer used the $ symbol. Confirm the quote currency is ' + account.currency + ' before customer release.');
   if (/next month|before\s+[A-Z]/i.test(source)) openQuestions.push('Confirm delivery or implementation capacity before making a commitment.');
   if (product && product.unit === 'user / month' && subscriptionTermMonths === null) openQuestions.push('The subscription term was not provided. Draft assumes 12 months; confirm or revise before customer release.');
+  if (product && product.billingPeriod === 'year' && !termMatch) openQuestions.push('The annual subscription term was not provided. Draft assumes one year; confirm or revise before customer release.');
   const assumptions = [];
   if (account) assumptions.push('Currency defaults to ' + account.currency + ' from the CRM account profile until confirmed.');
   if (account && account.taxRateBps) assumptions.push('Tax uses the example ' + (account.taxRateBps / 100) + '% policy for ' + account.country + '; validate the billing profile before issue.');
@@ -118,11 +123,13 @@ export function parseRequirements(text, options) {
   const expiry = source.match(/expires?\s+(?:in\s+)?(January|February|March|April|May|June|July|August|September|October|November|December)\s+(20\d{2})/i);
   if (expiry) notes.push('Existing solution expires in ' + expiry[1] + ' ' + expiry[2] + '.');
   if (product && product.unit === 'user / month' && subscriptionTermMonths === null) notes.push('Subscription term was not provided. Draft uses 12 months for review.');
+  if (product && product.billingPeriod === 'year' && !termMatch) notes.push('Annual subscription term was not provided. Draft uses one year for review.');
   return {
     sourceText: source,
     accountId: account ? account.id : null,
     accountName: account ? account.name : null,
     productId: product ? product.id : null,
+    productIds: matchedProducts.map(item => item.id),
     productName: product ? product.name : null,
     quantity,
     unit: inferredUnit,
@@ -180,9 +187,10 @@ function productLine(product, quantity, periodCount, unitPriceCents, label, pric
     quantity: quantity,
     periodCount: periodCount || 1,
     unit: product.unit,
+    billingPeriod: product.billingPeriod || null,
     label: label || product.unit,
     unitPriceCents: unitPriceCents === null || unitPriceCents === undefined ? product.listPriceCents : unitPriceCents,
-    priceBasis: priceBasis || 'Approved catalog list price',
+    priceBasis: priceBasis || 'Illustrative catalog list price',
     unitCostCents: product.unitCostCents,
     listPriceCents: product.listPriceCents,
     marginFloorBps: product.marginFloorBps,
@@ -351,24 +359,30 @@ function makeQuote(state, rfq, timestamp) {
   const account = findAccount(state, rfq.accountId);
   const opportunity = findOpportunity(state, rfq.accountId);
   if (!account || !requirements.productId || !requirements.quantity) return null;
-  const primary = state.products.find(item => item.id === requirements.productId);
+  const productsForQuote = (requirements.productIds && requirements.productIds.length ? requirements.productIds : [requirements.productId])
+    .map(id => state.products.find(item => item.id === id)).filter(Boolean);
+  const primary = productsForQuote[0];
   if (!primary) return null;
   const quoteDate = (timestamp || new Date().toISOString()).slice(0, 10);
-  const agreement = (account.priceAgreements || []).find(item => item.productId === primary.id && item.status === 'Active' && requirements.quantity >= item.minimumQuantity && quoteDate >= item.validFrom && quoteDate <= item.validThrough);
-  const volumeBreak = (primary.volumeDiscounts || []).filter(item => requirements.quantity >= item.minimumQuantity).sort((a, b) => b.minimumQuantity - a.minimumQuantity)[0];
-  const volumePrice = volumeBreak ? round(primary.listPriceCents * (10000 - volumeBreak.discountBps) / 10000) : primary.listPriceCents;
-  const standardPrice = agreement ? agreement.unitPriceCents : volumePrice;
-  const customerTarget = requirements.targetUnitPriceCents !== null && requirements.targetUnitPriceCents !== undefined;
-  const priceBasis = customerTarget ? 'Customer requested price, checked against policy' : agreement ? 'Customer-specific agreement ' + agreement.id : volumeBreak ? 'Volume price at ' + (volumeBreak.discountBps / 100) + '% off' : 'Approved catalog list price';
-  const primaryLine = productLine(primary, requirements.quantity, primary.unit === 'user / month' ? (requirements.subscriptionTermMonths || 12) : 1, customerTarget ? requirements.targetUnitPriceCents : standardPrice, primary.unit === 'user / month' ? 'months' : primary.unit, priceBasis);
-  const lines = [primaryLine];
+  const lines = productsForQuote.map((product, index) => {
+    const agreement = (account.priceAgreements || []).find(item => item.productId === product.id && item.status === 'Active' && requirements.quantity >= item.minimumQuantity && quoteDate >= item.validFrom && quoteDate <= item.validThrough);
+    const volumeBreak = (product.volumeDiscounts || []).filter(item => requirements.quantity >= item.minimumQuantity).sort((a, b) => b.minimumQuantity - a.minimumQuantity)[0];
+    const volumePrice = volumeBreak ? round(product.listPriceCents * (10000 - volumeBreak.discountBps) / 10000) : product.listPriceCents;
+    const customerTarget = index === 0 && requirements.targetUnitPriceCents !== null && requirements.targetUnitPriceCents !== undefined;
+    const standardPrice = agreement ? agreement.unitPriceCents : volumePrice;
+    const priceBasis = customerTarget ? 'Customer requested price, checked against policy' : agreement ? 'Customer-specific agreement ' + agreement.id : volumeBreak ? 'Volume price at ' + (volumeBreak.discountBps / 100) + '% off' : 'Illustrative catalog list price';
+    const periods = product.billingPeriod === 'year' ? requirements.termYears : product.unit === 'user / month' ? (requirements.subscriptionTermMonths || 12) : 1;
+    const periodLabel = product.billingPeriod === 'year' ? 'years' : product.unit === 'user / month' ? 'months' : product.unit;
+    return productLine(product, requirements.quantity, periods, customerTarget ? requirements.targetUnitPriceCents : standardPrice, periodLabel, priceBasis);
+  });
   requirements.serviceIds.forEach(id => {
     const service = state.products.find(item => item.id === id);
     if (!service) return;
-    const periods = id === 'S-MAINT' ? requirements.termYears : 1;
-    lines.push(productLine(service, 1, periods, null, id === 'S-MAINT' ? 'years' : service.unit));
+    const periods = service.billingPeriod === 'year' ? requirements.termYears : 1;
+    const periodLabel = service.billingPeriod === 'year' ? 'years' : service.unit;
+    lines.push(productLine(service, 1, periods, null, periodLabel));
   });
-  const physical = primary.category === 'Physical product';
+  const physical = productsForQuote.some(item => item.category === 'Physical product');
   const calculation = calculateQuote({
     lines,
     shippingCents: physical ? 48000 : 0,
@@ -381,6 +395,9 @@ function makeQuote(state, rfq, timestamp) {
     currency: requirements.currency
   });
   const releaseQuestions = (rfq.requirements.openQuestions || []).slice();
+  if (productsForQuote.some(item => item.capacity)) {
+    releaseQuestions.push('Site readiness, source access and delivery capacity are not reserved. Confirm the implementation plan before commitment.');
+  }
   if (rfq.requirements.budgetCents && calculation.totalCents > rfq.requirements.budgetCents) {
     releaseQuestions.push('The estimated total including tax is above the stated customer budget. Confirm whether the budget includes tax or adjust scope.');
   }
@@ -677,7 +694,7 @@ export function confirmQuoteForCustomer(state, quoteId, confirmation, options) {
     opportunityId: quote.opportunityId,
     quoteId: quote.id,
     summary: 'Salesperson confirmed the commercial assumptions. Quote is ready for customer review.',
-    detail: 'Customer currency and documented availability assumptions reviewed.'
+    detail: 'Commercial currency, scope and documented delivery assumptions reviewed.'
   });
   return quote;
 }
@@ -706,7 +723,7 @@ export function generateProposal(state, quoteId, options) {
       customerNeed: requirements.sourceText ? summarizeBrief(requirements) : 'Requirements are linked from the CRM account and opportunity record.',
       solution: productNames.join(', '),
       benefits: products.flatMap(item => item.features || []),
-      delivery: 'Requested window: ' + (quote.deliveryWindow || 'To be agreed') + '. Confirm inventory and delivery team capacity before committing a date.',
+      delivery: 'Requested window: ' + (quote.deliveryWindow || 'To be agreed') + '. Confirm site readiness, source-system access and delivery team capacity before committing a date.',
       commercial: 'Quotation ' + quote.number + ', version ' + quote.version + ', total ' + formatMoney(quote.calculation.totalCents, quote.currency) + ' including the example tax estimate.',
       assumptions: quote.assumptions.concat(quote.releaseQuestions)
     },
@@ -895,7 +912,7 @@ export function customerQuoteHtml(state, quote) {
     (quote.calculation.shippingCents ? '<div><span>Delivery</span><b>' + escapeHtml(formatMoney(quote.calculation.shippingCents, quote.currency)) + '</b></div>' : '') +
     '<div><span>GST estimate at ' + (quote.taxRateBps / 100) + '%</span><b>' + escapeHtml(formatMoney(quote.calculation.taxCents, quote.currency)) + '</b></div><div class="grand"><span>Total</span><b>' + escapeHtml(formatMoney(quote.calculation.totalCents, quote.currency)) + '</b></div></div>' +
     '<h2>Commercial terms</h2><p>Currency: ' + escapeHtml(quote.currency) + '. Quote validity: 30 days from issue. Tax is an estimate based on the account profile and must be validated before issue.</p>' +
-    '<div class="note"><b>Assumptions and exclusions</b><ul>' + assumptions + '<li>Availability shown in the workspace is a dated snapshot and is not reserved.</li><li>External messages are not sent from this demo.</li></ul></div><button class="print" onclick="window.print()">Print or save as PDF</button></body></html>';
+    '<div class="note"><b>Assumptions and exclusions</b><ul>' + assumptions + '<li>Site readiness, source access and delivery capacity require confirmation and are not reserved.</li><li>External messages are not sent from this demo.</li></ul></div><button class="print" onclick="window.print()">Print or save as PDF</button></body></html>';
 }
 
 export function proposalHtml(state, proposal) {
