@@ -67,6 +67,9 @@ test('seeds a broader customer portfolio with balanced pipeline values', () => {
   const totalPipeline = workload.reduce((sum, item) => sum + item.valueCents, 0);
   assert.ok(Math.abs(workload[0].valueCents - workload[1].valueCents) / totalPipeline < 0.06);
   assert.ok(Math.max(...state.opportunities.map(item => item.valueCents)) / totalPipeline < 0.34);
+  const salespersonPipeline = state.opportunities.filter(item => item.owner === 'Zev Pan');
+  const salespersonValue = salespersonPipeline.reduce((sum, item) => sum + item.valueCents, 0);
+  assert.ok(Math.max(...salespersonPipeline.map(item => item.valueCents)) / salespersonValue < 0.34);
 
   const manager = managerMetrics(state, 'manager');
   const salesperson = managerMetrics(state, 'sales');
