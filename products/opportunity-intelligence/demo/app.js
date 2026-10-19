@@ -27,6 +27,7 @@
   let activeFilter = "active";
   let selectedJobId = null;
   let selectedPersonId = null;
+  let pendingSubmitJobId = null;
   let query = "";
   let toastTimer;
   let storageAvailable = true;
@@ -508,9 +509,8 @@
     job.stageUpdatedAt = today;
     const title = job.nextAction?.label || "Next action";
     if (kind === "submit") {
-      const submitted = window.confirm("Confirm that you submitted this application yourself? Focusline will only record the status.");
-      if (!submitted) return;
-      saveStage(job, "Applied");
+      pendingSubmitJobId = job.id;
+      $("#submit-dialog").showModal();
       return;
     }
     if (kind === "research" || kind === "source-check") {
@@ -585,7 +585,7 @@
       referralState: "Not assessed", nextAction: { label: "Review the original posting and confirm role scope", dueDate: dateFromOffset(1), dueInDays: 1, owner: "You", type: "research" },
       resumeId: matchingResume.id,
       resumeReason: `The ${matchingResume.name} variant is the closest starting point for this role family. Review each claim before using it.`,
-      peopleIds: [], assessmentSource: "Local keyword comparison · synthetic profile", outcome: ""
+      assessmentSource: "Local keyword comparison · synthetic profile", outcome: ""
     };
   }
 
@@ -746,6 +746,14 @@
     });
     $("#add-form").addEventListener("submit", event => { event.preventDefault(); addNewOpportunity(event.currentTarget); });
     $("#preferences-form").addEventListener("submit", event => { event.preventDefault(); savePreferences(event.currentTarget); });
+    $("#submit-dialog").addEventListener("close", () => { pendingSubmitJobId = null; });
+    $("#submit-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const job = jobById(pendingSubmitJobId);
+      pendingSubmitJobId = null;
+      $("#submit-dialog").close();
+      if (job) saveStage(job, "Applied");
+    });
     $("#confirm-form").addEventListener("submit", event => {
       event.preventDefault();
       localStorage.removeItem(STORAGE_KEY);
