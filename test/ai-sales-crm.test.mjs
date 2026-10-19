@@ -46,6 +46,45 @@ test('extracts an industrial solution across several products, sites, term and s
   assert.ok(parsed.openQuestions.some(item => item.toLowerCase().includes('currency')));
 });
 
+test('seeds a broader customer portfolio with balanced pipeline values', () => {
+  const state = createInitialState();
+  assert.ok(state.accounts.length > 4);
+  assert.ok(state.opportunities.length > 4);
+  assert.ok(state.products.length > 4);
+  assert.ok(state.interactions.length > 4);
+  assert.equal(new Set(state.accounts.map(item => item.id)).size, state.accounts.length);
+  assert.equal(new Set(state.products.map(item => item.id)).size, state.products.length);
+  assert.ok(state.opportunities.every(item => state.accounts.some(account => account.id === item.accountId)));
+  assert.ok(state.interactions.every(item => state.accounts.some(account => account.id === item.accountId)));
+
+  const workload = Object.values(state.opportunities.reduce((result, item) => {
+    result[item.owner] = result[item.owner] || { count: 0, valueCents: 0 };
+    result[item.owner].count += 1;
+    result[item.owner].valueCents += item.valueCents;
+    return result;
+  }, {}));
+  assert.deepEqual(workload.map(item => item.count).sort((a, b) => a - b), [5, 5]);
+  const totalPipeline = workload.reduce((sum, item) => sum + item.valueCents, 0);
+  assert.ok(Math.abs(workload[0].valueCents - workload[1].valueCents) / totalPipeline < 0.06);
+  assert.ok(Math.max(...state.opportunities.map(item => item.valueCents)) / totalPipeline < 0.34);
+
+  const manager = managerMetrics(state, 'manager');
+  const salesperson = managerMetrics(state, 'sales');
+  assert.equal(manager.accountCount, state.accounts.length);
+  assert.equal(manager.opportunityCount, state.opportunities.length);
+  assert.ok(salesperson.accountCount > 4);
+  assert.ok(salesperson.opportunityCount > 4);
+});
+
+test('matches new industrial AI delivery services into quote lines', () => {
+  const state = createInitialState();
+  const request = 'Acme Technologies needs Industrial Data Foundation across 2 sites for one year, plus Industrial AI Use Case Delivery.';
+  const parsed = parseRequirements(request, { accounts: state.accounts, products: state.products, today: '2026-10-19' });
+  assert.deepEqual(parsed.serviceIds, ['S-AI']);
+  const result = processCustomerBrief(state, request, { now: fixedNow, today: '2026-10-19' });
+  assert.ok(result.quote.calculation.lines.some(item => item.productId === 'S-AI'));
+});
+
 test('extracts an annual workbench request and preserves budget uncertainty', () => {
   const state = createInitialState();
   const text = 'Vector Labs needs 1 site of Industrial AI Workbench for a two-year term. They require SSO and are worried about data migration. Budget is around $1,200,000. Integration is needed before January 2027. Their current solution expires in December 2026.';
@@ -200,10 +239,10 @@ test('requires salesperson currency confirmation and keeps proposal totals tied 
 
 test('daily review reflects shared workflow records and manager visibility expands the view', () => {
   const { state, result } = preparedAcme();
-  assert.equal(visibleAccounts(state, 'sales').length, 2);
-  assert.equal(visibleAccounts(state, 'manager').length, 4);
-  assert.equal(managerMetrics(state, 'sales').accountCount, 2);
-  assert.equal(managerMetrics(state, 'manager').accountCount, 4);
+  assert.equal(visibleAccounts(state, 'sales').length, 6);
+  assert.equal(visibleAccounts(state, 'manager').length, 11);
+  assert.equal(managerMetrics(state, 'sales').accountCount, 6);
+  assert.equal(managerMetrics(state, 'manager').accountCount, 11);
   const digest = runDailyReview(state, { now: fixedNow });
   assert.ok(digest.completed.length >= 3);
   assert.ok(digest.requiresSalesperson.some(item => item.text.toLowerCase().includes('currency')));
