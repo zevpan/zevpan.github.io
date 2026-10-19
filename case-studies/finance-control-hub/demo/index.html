@@ -15,12 +15,12 @@
         <span class="brand-mark">FC</span>
         <span><strong>Finance Control Hub</strong><small>Reconciliation workspace</small></span>
       </a>
-      <div class="workspace-label">SYNTHETIC FINANCE TEAM</div>
+        <div class="workspace-label">LOCAL FINANCE WORKSPACE</div>
       <nav class="side-nav" aria-label="Workspace">
         <button class="nav-item active" data-view="work"><span class="nav-icon">▦</span>Batch workspace</button>
-        <button class="nav-item" data-view="exceptions"><span class="nav-icon">!</span>Exception queue<span class="nav-count" id="exception-nav-count">—</span></button>
+        <button class="nav-item" data-view="exceptions"><span class="nav-icon">!</span>Exception queue<span class="nav-count" id="exception-nav-count">0</span></button>
         <button class="nav-item" data-view="sources"><span class="nav-icon">⇧</span>Source records</button>
-        <button class="nav-item" data-view="export"><span class="nav-icon">⇩</span>Export review<span class="nav-count" id="export-nav-count">—</span></button>
+        <button class="nav-item" data-view="export"><span class="nav-icon">⇩</span>Export review<span class="nav-count" id="export-nav-count">0</span></button>
         <button class="nav-item" data-view="audit"><span class="nav-icon">◷</span>Decision history</button>
       </nav>
       <div class="sidebar-bottom">
@@ -34,7 +34,7 @@
       <header class="topbar">
         <div class="crumbs"><span>Finance operations</span><span class="crumb-slash">/</span><strong>Reconciliation batch</strong></div>
         <div class="topbar-actions">
-          <span class="simulation-pill"><span></span>Simulation · synthetic data</span>
+          <span class="simulation-pill" id="data-mode-pill"><span></span>Simulation · synthetic data</span>
           <button class="text-button" data-action="reset" title="Clear local decisions and start this demo again">Reset demo</button>
         </div>
       </header>
@@ -42,29 +42,43 @@
       <div class="content-wrap">
         <section class="page-heading">
           <div>
-            <div class="eyebrow">BATCH FCH-2026-10 · IMPORT REVIEW</div>
+            <div class="eyebrow" id="batch-label">BATCH FCH-2026-10 · IMPORT REVIEW</div>
             <h1 id="page-title">Reconcile vendor invoices</h1>
             <p id="page-subtitle">Start with the batch. Review evidence before approving any financial decision.</p>
           </div>
-          <div class="batch-meta"><span class="batch-state" id="batch-state">Loading source batch…</span><span>Data through 14 Oct 2026</span></div>
+          <div class="batch-meta"><span class="batch-state" id="batch-state">Loading source batch…</span><span id="batch-date">Data through 14 Oct 2026</span></div>
         </section>
 
         <section class="command-panel" aria-labelledby="command-title">
           <div class="command-heading">
             <div class="command-icon">⌘</div>
-            <div><h2 id="command-title">Tell Finance Control Hub what you need</h2><p>Supported commands run against this loaded batch; the command router is deterministic.</p></div>
+            <div><h2 id="command-title">Tell Finance Control Hub what you need</h2><p>Describe the outcome or import finance source files. Commands run locally against this batch.</p></div>
           </div>
           <form id="command-form" class="command-form">
-            <label class="sr-only" for="command-input">Enter a finance work instruction</label>
-            <input id="command-input" type="text" autocomplete="off" placeholder="e.g. Reconcile this month's vendor invoices">
-            <button id="command-submit" class="button button-primary" type="submit">Run instruction <span>→</span></button>
+            <label class="sr-only" for="command-input">Describe a finance task</label>
+            <button id="attach-button" class="composer-icon-button" type="button" data-action="attach" aria-label="Add source files" title="Add source files">+</button>
+            <input id="command-input" type="text" autocomplete="off" placeholder="Reconcile this month's vendor invoices" aria-describedby="composer-note">
+            <button id="speech-button" class="composer-icon-button" type="button" data-action="speech" aria-label="Dictate an instruction" title="Dictate an instruction">🎙</button>
+            <button id="command-submit" class="button button-primary" type="submit"><span id="command-submit-label">Start</span><span aria-hidden="true">↑</span></button>
           </form>
+          <input id="source-file-input" class="sr-only" type="file" accept=".csv,.json,text/csv,application/json" multiple>
+          <div class="composer-toolbar">
+            <label class="composer-setting"><span>Model preference</span><select id="model-select" aria-label="Model preference"><option value="automatic">Organization default</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="gemini">Google Gemini</option><option value="enterprise">Enterprise-hosted model</option></select></label>
+            <label class="composer-setting"><span>Effort</span><select id="effort-select" aria-label="Reasoning effort"><option value="default">Default</option><option value="fast">Fast</option><option value="thorough">Thorough</option></select></label>
+            <span class="composer-note" id="composer-note">Preferences are saved here. This demo uses deterministic rules and does not call an LLM.</span>
+          </div>
+          <div class="file-drop-zone" id="file-drop-zone" tabindex="0" aria-label="Drop finance source files here">
+            <span class="drop-icon" aria-hidden="true">⇧</span><span>Drop a canonical JSON batch or four source CSV files here. Add an optional vendor-code map, or use +</span>
+          </div>
+          <div class="staged-import" id="staged-import" hidden></div>
+          <div class="import-feedback" id="import-feedback" role="status" aria-live="polite"></div>
+          <div class="local-backup-control" id="local-backup-control" hidden></div>
           <div class="command-suggestions" id="command-suggestions" aria-label="Suggested commands"></div>
           <div class="command-feedback" id="command-feedback" role="status" aria-live="polite"></div>
         </section>
 
         <section class="source-strip" id="source-strip" aria-label="Loaded source files">
-          <div class="source-strip-title"><span class="file-glyph">▤</span><div><strong>Reconciliation inputs</strong><small>Source schemas are illustrative; all records are synthetic.</small></div></div>
+          <div class="source-strip-title"><span class="file-glyph">▤</span><div><strong>Reconciliation inputs</strong><small id="source-provenance">Source schemas are illustrative; all records are synthetic.</small></div></div>
           <div class="source-files" id="source-files"></div>
           <button class="text-button source-inspect" data-view="sources">Inspect records <span>↗</span></button>
         </section>

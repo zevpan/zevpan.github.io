@@ -136,7 +136,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <div class="hero">
 <div class="kicker">CASE STUDY 01 · INTERACTIVE</div>
 <h1>Global Travel Logistics Operations Transformation</h1>
-<p class="lead">From fragmented, manually coordinated fulfilment to a unified operating model — translated into an interactive Operations Control Tower with synthetic operational scenarios.</p>
+<p class="lead">From fragmented, manually coordinated fulfilment to a unified operating model, translated into an interactive Operations Control Tower with synthetic operational scenarios.</p>
 <div class="meta">
 <span class="tag">Business Transformation</span>
 <span class="tag">Process Redesign</span>
@@ -211,7 +211,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <p class="small">The target model makes transaction routes, supplier response, lead-time risk, QC, and exception pathways measurable. Manual handling time, ROI, and post-redesign SLA improvement require a future instrumented baseline and are not claimed here.</p>
 </section>
 <section>
-<h2>Before — current operating model</h2>
+<h2>Before: current operating model</h2>
 <div class="callout">
 <strong>Core pattern</strong>
 <div class="flow">
@@ -324,7 +324,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 </section>
 
 <section>
-<h2>After — target operating model</h2>
+<h2>After: target operating model</h2>
 <p>The recommended future state follows the way modern logistics and commerce platforms separate the customer channel, transaction core, integration layer, partner execution and exception-management functions.</p>
 <div class="arch">
 <div class="layer">
@@ -350,7 +350,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <p class="small">Distributor and OTA channels should create or update orders directly in the internal platform without manual re-entry wherever integration capability exists.</p>
 </div>
 <div class="layer after">
-<div class="layer-title">3 · OMS / TMS core — system of record</div>
+<div class="layer-title">3 · OMS / TMS core: system of record</div>
 <div class="pills">
 <span class="pill">Canonical Order ID</span>
 <span class="pill">Customer &amp; itinerary</span>
@@ -641,7 +641,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 </div>
 </section>
 <section>
-<h2>Requirements — Booking Intake &amp; Normalization</h2>
+<h2>Requirements: Booking Intake &amp; Normalization</h2>
 <p>This first requirements slice translates the target architecture into implementation-ready business analysis for the point where direct and distributor bookings enter the operating system.</p>
 <h3>Business requirements</h3>
 <table>
@@ -788,7 +788,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 </div>
 </section>
 <section>
-<h2>Requirements — Supplier Dispatch &amp; Assignment</h2>
+<h2>Requirements: Supplier Dispatch &amp; Assignment</h2>
 <p>This requirements slice converts supplier selection and dispatch into a controlled workflow with explicit eligibility rules, ranked assignment, acknowledgement states, timeout handling and auditable human override.</p>
 <h3>Business requirements</h3>
 <table>
@@ -937,7 +937,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 </div>
 </section>
 <section>
-<h2>Requirements — Service-Day Communication &amp; Exception Management</h2>
+<h2>Requirements: Service-Day Communication &amp; Exception Management</h2>
 <p>This slice redesigns the highest-touch part of the current operation: routine status relaying, multi-channel service-day communication and exception firefighting. The target state is event-driven for normal execution and exception-led for human intervention.</p>
 <h3>Business requirements</h3>
 <table>
@@ -1165,7 +1165,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 </tr>
 </tbody>
 </table>
-<h3>RACI — critical decisions</h3>
+<h3>RACI: critical decisions</h3>
 <table>
 <thead><tr><th>Decision</th><th>Operations</th><th>Product / Tech</th><th>CS</th><th>Supplier</th><th>Management</th></tr></thead>
 <tbody>
@@ -1274,7 +1274,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <strong>Sequencing principle</strong>
 <p>Do not start with an AI agent. First establish a reliable system of record, explicit lifecycle states and governed rules. AI becomes valuable only after the underlying process can expose accurate context, events and decision boundaries.</p>
 </div>
-<h3>Phase 0 — Process &amp; Data Foundation</h3>
+<h3>Phase 0 - Process &amp; Data Foundation</h3>
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
@@ -1293,7 +1293,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Core entities and states are agreed; critical rules have named owners; representative orders can be expressed cleanly in the canonical model.
     </div>
 </div>
-<h3>Phase 1 — Booking + OMS/TMS Core</h3>
+<h3>Phase 1 - Booking + OMS/TMS Core</h3>
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
@@ -1312,7 +1312,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       A normal direct booking can move from booking to dispatch-ready without shared spreadsheet re-entry, with all state transitions and overrides auditable.
     </div>
 </div>
-<h3>Phase 2 — Distributor Integration</h3>
+<h3>Phase 2 - Distributor Integration</h3>
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
@@ -1331,7 +1331,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Supported OTA bookings create the same internal order structure as direct bookings with no routine manual copy / paste.
     </div>
 </div>
-<h3>Phase 3 — Supplier Dispatch &amp; Partner Execution</h3>
+<h3>Phase 3 - Supplier Dispatch &amp; Partner Execution</h3>
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
@@ -1350,7 +1350,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Routine fixed-supplier jobs can be assigned and confirmed without staff searching spreadsheets, editing emails or manually chasing normal confirmations.
     </div>
 </div>
-<h3>Phase 4 — Event-Driven Service-Day Operations</h3>
+<h3>Phase 4 - Event-Driven Service-Day Operations</h3>
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
@@ -1369,7 +1369,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Routine Ready / Picked Up / Delivered updates reach customers automatically, while unresolved exceptions appear with owner, severity and SLA state.
     </div>
 </div>
-<h3>Phase 5 — AI-Assisted Operations</h3>
+<h3>Phase 5 - AI-Assisted Operations</h3>
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
@@ -1388,7 +1388,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       AI reaches defined quality thresholds on representative test sets; high-risk actions remain human-controlled; production usage is traceable to source context and model / prompt version.
     </div>
 </div>
-<h3>Phase 6 — Process Intelligence &amp; Continuous Improvement</h3>
+<h3>Phase 6 - Process Intelligence &amp; Continuous Improvement</h3>
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
@@ -1564,8 +1564,8 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <tr><td>Average recovery cost per attributable incident</td><td>TBD</td><td>TBD</td><td>Refund / compensation records</td></tr>
 <tr><td>Supplier confirmation latency</td><td>TBD</td><td>TBD</td><td>Email / OMS/TMS timestamps</td></tr>
 <tr><td>Customer update latency</td><td>TBD</td><td>TBD</td><td>Message / event timestamps</td></tr>
-<tr><td>Implementation cost</td><td>—</td><td>TBD</td><td>Delivery estimate</td></tr>
-<tr><td>Incremental annual run cost</td><td>—</td><td>TBD</td><td>Hosting, APIs, messaging, AI usage, support</td></tr>
+<tr><td>Implementation cost</td><td>-</td><td>TBD</td><td>Delivery estimate</td></tr>
+<tr><td>Incremental annual run cost</td><td>-</td><td>TBD</td><td>Hosting, APIs, messaging, AI usage, support</td></tr>
 </tbody>
 </table>
 <h3>KPI tree</h3>
@@ -1677,7 +1677,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 </div>
 </section>
 <section>
-<h2>Prototype Scope — Demonstrable MVP</h2>
+<h2>Prototype Scope: Demonstrable MVP</h2>
 <p>The prototype should prove the operating model, not attempt to reproduce a full production logistics platform. The strongest prototype is a narrow, end-to-end workflow that shows how one booking moves through ingestion, validation, supplier dispatch, live execution, exception handling and AI-assisted Operations support.</p>
 <div class="callout blue">
 <strong>Prototype objective</strong>
@@ -1695,7 +1695,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <span class="step">Exception triggered</span><span class="arrow">→</span>
 <span class="step">AI-assisted resolution</span>
 </div>
-<h3>Screen 1 — Operations Control Tower</h3>
+<h3>Screen 1 - Operations Control Tower</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>
@@ -1714,7 +1714,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Process visibility, event-driven workflow, exception-led operations and operational prioritization.
     </div>
 </div>
-<h3>Screen 2 — Canonical Booking Record</h3>
+<h3>Screen 2 - Canonical Booking Record</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>
@@ -1733,7 +1733,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Data normalization, auditability, business rules and removal of duplicate manual entry.
     </div>
 </div>
-<h3>Screen 3 — Validation &amp; Rule Decision</h3>
+<h3>Screen 3 - Validation &amp; Rule Decision</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>
@@ -1752,7 +1752,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Deterministic automation, configurable rules and explainable decision logic.
     </div>
 </div>
-<h3>Screen 4 — Supplier Dispatch</h3>
+<h3>Screen 4 - Supplier Dispatch</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>
@@ -1771,7 +1771,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Rules-based routing, state management, fallback logic, partner integration design and human override.
     </div>
 </div>
-<h3>Screen 5 — Service-Day Timeline</h3>
+<h3>Screen 5 - Service-Day Timeline</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>
@@ -1790,7 +1790,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Event-driven operations and removal of CS as the default message relay.
     </div>
 </div>
-<h3>Screen 6 — Exception Case + AI Decision Support</h3>
+<h3>Screen 6 - Exception Case + AI Decision Support</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>
@@ -1809,7 +1809,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
       Grounded AI, retrieval, summarization, human-in-the-loop controls and decision support.
     </div>
 </div>
-<h3>Screen 7 — Process &amp; Value Dashboard</h3>
+<h3>Screen 7 - Process &amp; Value Dashboard</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>

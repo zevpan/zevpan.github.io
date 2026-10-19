@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Case Study 06 · Finance Control Hub — Zev Pan</title>
+  <title>Case Study 06 · Finance Control Hub | Zev Pan</title>
   <meta name="description" content="How Zev translated a freight-forwarding finance reconciliation problem into a synthetic, tested exception-management workbench with deterministic matching and human approval controls.">
   <link rel="stylesheet" href="../../shared/intent-model.css?v=1">
   <style>
@@ -79,6 +79,7 @@
     <section>
       <h2>Product requirements and source model</h2>
       <p class="section-intro">The demo represents the records needed to reconcile and explain a decision. Counts describe this generated test batch, not historical client files. Field names are proposed simulation schemas, not official CargoWise report definitions.</p>
+      <div class="decision-callout"><strong>Command and import:</strong> A natural-language instruction shares one intake surface with local file selection and drag-and-drop. The demo accepts a complete JSON batch or four canonical CSV sources, with an optional vendor-code map. Files are parsed and stored in this browser. The current batch is backed up before replacement and can be restored.</div>
       <div class="schema-grid">
         <article class="schema"><strong>Vendor Invoice Lines <span>4,000 rows</span></strong><p>Vendor, invoice and line IDs, invoice date, Job/MAWB/HAWB references, PO, charge description/code, currency, unit price, quantity, tax and line amount.</p></article>
         <article class="schema"><strong>CargoWise HAWB Report <span>4,095 rows</span></strong><p>House airway bill, Job ID, MAWB link, route, pieces, weight and shipment status.</p></article>
@@ -133,7 +134,7 @@
 
     <section>
       <h2>What this case demonstrates</h2>
-      <p class="section-intro">I worked from an operational requirement through future-state logic, data design, control boundaries, implementation and test criteria. AI accelerated parts of build execution; I defined the system behavior, evidence standard, exception policy and acceptance checks.</p>
+      <p class="section-intro">I worked from an operational requirement through future-state logic, data design, control boundaries, implementation and test criteria. I defined the system behavior, evidence standard, exception policy and acceptance checks.</p>
       <div class="loop">
         <div class="loop-step"><b>Diagnose</b><span>Identify cross-report search, unstable keys and exception burden.</span></div>
         <div class="loop-step"><b>Specify</b><span>Define records, mappings, tolerances, statuses and export eligibility.</span></div>

@@ -355,7 +355,7 @@
         </section>
 
         <section class="detail-section fit-section">
-          <div class="section-heading"><div><span class="section-kicker">FIT ASSESSMENT · ${esc(job.fitConfidence.toUpperCase())} CONFIDENCE</span><h3>What matches—and what to check</h3></div><span class="fit-score">${Number(job.fitScore)}<small>/100</small></span></div>
+          <div class="section-heading"><div><span class="section-kicker">FIT ASSESSMENT · ${esc(job.fitConfidence.toUpperCase())} CONFIDENCE</span><h3>What matches and what to check</h3></div><span class="fit-score">${Number(job.fitScore)}<small>/100</small></span></div>
           <div class="fit-bar-pair"><div><span>Evidence match</span><div class="mini-track"><i style="width:${fitBars.strength}%"></i></div></div><div><span>Open questions</span><div class="mini-track gap-track"><i style="width:${fitBars.gaps}%"></i></div></div></div>
           <p class="assessment-rationale">${esc(job.fitRationale)}</p>
           <div class="evidence-columns"><div><h4><span class="evidence-check">✓</span> Strengths</h4><ul>${job.strengths.map(item => `<li>${esc(item)}</li>`).join("")}</ul></div><div><h4><span class="evidence-question">?</span> Gaps to verify</h4><ul>${job.gaps.map(item => `<li>${esc(item)}</li>`).join("")}</ul></div></div>

@@ -9,7 +9,7 @@
   const CRESTLINE_ID = "crestline-q4-rates";
   const SAMPLE_TITLE = "Rate card received from Crestline Logistics, 29 Sep 2026";
   const SAMPLE_DATE = "2026-09-29";
-  const SAMPLE_BODY = "Crestline Logistics has issued a revised rate schedule effective 01 Nov 2026. Standard transfer: $47.00. Priority transfer: $75.00. Fuel surcharge removed. Written confirmation required within 14 days. [SYNTHETIC DEMO CONTENT — not a real document]";
+  const SAMPLE_BODY = "Crestline Logistics has issued a revised rate schedule effective 01 Nov 2026. Standard transfer: $47.00. Priority transfer: $75.00. Fuel surcharge removed. Written confirmation required within 14 days. [SYNTHETIC DEMO CONTENT: not a real document]";
 
   const CONNECTOR_STORAGE_KEY = "thread-connectors-demo-v1";
   const DEFAULT_DEMO_CONNECTIONS = ["microsoft-outlook", "google-sheets", "netsuite"];
@@ -118,9 +118,9 @@
     const financeSource = {
       id: "source-finance-model-sep25",
       type: "Pasted text",
-      title: "Finance costing model snapshot — 25 Sep 2026",
+      title: "Finance costing model snapshot - 25 Sep 2026",
       date: "2026-09-25",
-      body: "Q4 costing model inputs:\nStandard transfer rate: $42.00.\nPriority transfer rate: $68.00.\nFuel surcharge: Applied.\n[SYNTHETIC DEMO CONTENT — not a real document]",
+      body: "Q4 costing model inputs:\nStandard transfer rate: $42.00.\nPriority transfer rate: $68.00.\nFuel surcharge: Applied.\n[SYNTHETIC DEMO CONTENT: not a real document]",
       supportsFactIds: ["standard-rate", "priority-rate", "fuel-surcharge"],
       createdAt: "2026-09-25T08:00:00.000Z",
       createdBy: "Demo data",
@@ -129,9 +129,9 @@
     const operationsIntake = {
       id: "source-operations-intake-sep29",
       type: "Meeting note",
-      title: "Operations intake note — revised rate card received, 29 Sep 2026",
+      title: "Operations intake note - revised rate card received, 29 Sep 2026",
       date: "2026-09-29",
-      body: "Operations logged receipt of a revised Crestline Logistics rate card with an effective date of 01 Nov 2026. The rate values and surcharge treatment are awaiting Finance review.\n[SYNTHETIC DEMO CONTENT — not a real note]",
+      body: "Operations logged receipt of a revised Crestline Logistics rate card with an effective date of 01 Nov 2026. The rate values and surcharge treatment are awaiting Finance review.\n[SYNTHETIC DEMO CONTENT: not a real note]",
       supportsFactIds: ["effective-date"],
       createdAt: "2026-09-29T08:00:00.000Z",
       createdBy: "Demo data",
@@ -140,9 +140,9 @@
     const stockLedger = {
       id: "source-bin7c-ledger",
       type: "Pasted text",
-      title: "Inventory system snapshot — Bin 7C, 30 Sep 2026",
+      title: "Inventory system snapshot - Bin 7C, 30 Sep 2026",
       date: "2026-09-30",
-      body: "System quantity for bin location 7C: 360 units.\n[SYNTHETIC DEMO CONTENT — not a real record]",
+      body: "System quantity for bin location 7C: 360 units.\n[SYNTHETIC DEMO CONTENT: not a real record]",
       supportsFactIds: ["system-quantity"],
       createdAt: "2026-09-30T08:00:00.000Z",
       createdBy: "Demo data",
@@ -151,9 +151,9 @@
     const countSource = {
       id: "source-bin7c-count",
       type: "Meeting note",
-      title: "September cycle count note — Bin 7C",
+      title: "September cycle count note - Bin 7C",
       date: "2026-09-30",
-      body: "Physical cycle count for bin location 7C: 315 units. The count team did not verify the cause of the difference.\n[SYNTHETIC DEMO CONTENT — not a real record]",
+      body: "Physical cycle count for bin location 7C: 315 units. The count team did not verify the cause of the difference.\n[SYNTHETIC DEMO CONTENT: not a real record]",
       supportsFactIds: ["physical-count", "quantity-difference"],
       createdAt: "2026-09-30T09:00:00.000Z",
       createdBy: "Demo data",
@@ -166,7 +166,7 @@
       records: [
         {
           id: CRESTLINE_ID,
-          title: "Crestline Logistics — Q4 Transfer Rate Update",
+          title: "Crestline Logistics - Q4 Transfer Rate Update",
           category: "Supplier rates",
           owner: "Aisha Rahman",
           summary: "Crestline's revised Q4 rate card is expected to take effect on 01 Nov 2026. The finance costing model still lists the previous rates. Review the source evidence and record a decision before treating either set as current.",
@@ -190,7 +190,7 @@
         },
         {
           id: "bin-location-7c-variance",
-          title: "Bin Location 7C — September Stock Count Variance",
+          title: "Bin Location 7C - September Stock Count Variance",
           category: "Inventory position",
           owner: "Jen Loh",
           summary: "The September cycle count and inventory system disagree for bin location 7C. The difference is 45 units (12.5% of the system quantity). The cause is unverified, so a finance adjustment should wait for the investigation result.",
@@ -211,7 +211,7 @@
           proposals: [],
           decisions: [],
           tasks: [
-            { id: "task-bin7c-jen-check", title: "Check inbound receiving records for bin 7C — Sep", owner: "Jen Loh", dueDate: "2026-10-07", status: "open", createdAt: "2026-09-30T09:10:00.000Z", createdBy: "Demo data", completionNote: "", completedAt: "" },
+            { id: "task-bin7c-jen-check", title: "Check inbound receiving records for bin 7C - Sep", owner: "Jen Loh", dueDate: "2026-10-07", status: "open", createdAt: "2026-09-30T09:10:00.000Z", createdBy: "Demo data", completionNote: "", completedAt: "" },
             { id: "task-bin7c-marco-hold", title: "Hold variance adjustment until investigation result received", owner: "Marco Reyes", dueDate: "2026-10-07", status: "open", createdAt: "2026-09-30T09:12:00.000Z", createdBy: "Demo data", completionNote: "", completedAt: "" }
           ],
           draft: ""
@@ -617,7 +617,7 @@
       addHistory(record, "Task assigned", `${task.title} was reassigned from ${previousOwner} to ${task.owner} by ${CURRENT_USER}.`);
       transient.reassignForms.delete(task.id);
       saveState();
-      showMessage(`Task saved. In production, ${task.owner} would receive a notification. This demo records the assignment locally only — nothing was sent.`);
+      showMessage(`Task saved. In production, ${task.owner} would receive a notification. This demo records the assignment locally only. Nothing was sent.`);
       renderApp();
     });
     return form;
@@ -669,7 +669,7 @@
     });
     const switcher = node("div", { className: "inline-form" },
       node("div", { className: "form-grid" }, field("Viewing tasks for:", selector, selector.id)),
-      node("p", { className: "helper" }, "Demo view only — this is not authentication. In production, each person sees their own work after signing in.")
+      node("p", { className: "helper" }, "Demo view only. This is not authentication. In production, each person sees their own work after signing in.")
     );
     const tasks = state.records.flatMap((record) => record.tasks
       .filter((task) => task.owner === selected)
@@ -717,7 +717,7 @@
     simulateIntegrationSync(CRESTLINE_ID, ["microsoft-outlook", "google-sheets"], {
       id: "source-demo-connectors-crestline",
       type: "Simulated Outlook + Sheets sync",
-      title: "Outlook rate-card email synced — Crestline Logistics, 29 Sep 2026",
+      title: "Outlook rate-card email synced - Crestline Logistics, 29 Sep 2026",
       date: SAMPLE_DATE,
       body: SAMPLE_BODY,
       supportsFactIds: [],
@@ -731,9 +731,9 @@
     simulateIntegrationSync("bin-location-7c-variance", ["netsuite", "google-sheets"], {
       id: "source-demo-connectors-bin7c",
       type: "Simulated NetSuite + Sheets sync",
-      title: "NetSuite + cycle-count sync — Bin Location 7C, 30 Sep 2026",
+      title: "NetSuite + cycle-count sync - Bin Location 7C, 30 Sep 2026",
       date: "2026-09-30",
-      body: "NetSuite on-hand quantity: 360 units.\nWarehouse cycle count: 315 units.\nDifference: 45 units (12.5%).\nCause has not been verified.\n[SYNTHETIC DEMO CONTENT — no live inventory system was accessed]",
+      body: "NetSuite on-hand quantity: 360 units.\nWarehouse cycle count: 315 units.\nDifference: 45 units (12.5%).\nCause has not been verified.\n[SYNTHETIC DEMO CONTENT: no live inventory system was accessed]",
       supportsFactIds: ["system-quantity", "physical-count", "quantity-difference"],
       createdAt: nowIso(),
       createdBy: "Demo connector flow",
@@ -902,7 +902,7 @@
     const sourceDate = node("input", { id: `source-date-${record.id}`, type: "date", required: true, value: SAMPLE_DATE });
     const sourceBody = node("textarea", { id: `source-body-${record.id}`, required: true, maxlength: "12000", value: SAMPLE_BODY });
     const bodyHelp = node("div", { className: "helper" }, "Synthetic sample is pre-filled for one-click use. Choose another source type or edit the text to add your own synthetic source.");
-    const localEventNote = node("div", { className: "disclosure" }, "In production, Thread can receive updates from connected spreadsheets or inboxes. This demo records the event locally only — no external source was contacted.");
+    const localEventNote = node("div", { className: "disclosure" }, "In production, Thread can receive updates from connected spreadsheets or inboxes. This demo records the event locally only. No external source was contacted.");
     const sampleButton = button("Restore the synthetic sample", () => {
       sourceType.value = "Local demo event";
       sourceTitle.value = SAMPLE_TITLE;
@@ -962,7 +962,7 @@
       transient.sourceForm.delete(record.id);
       saveState();
       if (source.type === "Local demo event") {
-        showMessage("Demo: local state updated — in production this change would arrive from a connected source.");
+        showMessage("Demo: local state updated. In production this change would arrive from a connected source.");
       } else if (isSample) {
         showMessage("Synthetic sample source added. The demo did not contact an external source.");
       } else {
@@ -1242,9 +1242,9 @@
   }
 
   const DECISION_OPTIONS = [
-    "Accept new rates, effective 01 Nov 2026 — update Finance model, confirm to supplier",
-    "Dispute the increase — request extension of current rates while negotiating",
-    "Escalate before responding — seek sign-off before committing"
+    "Accept new rates, effective 01 Nov 2026 - update Finance model, confirm to supplier",
+    "Dispute the increase - request extension of current rates while negotiating",
+    "Escalate before responding - seek sign-off before committing"
   ];
 
   function decisionForm(record) {
@@ -1337,7 +1337,7 @@
       addHistory(record, "Task assigned", `${task.title} was assigned to ${task.owner} by ${CURRENT_USER}.`);
       transient.taskForm.delete(record.id);
       saveState();
-      showMessage(`Task saved. In production, ${task.owner} would receive a notification. This demo records the assignment locally only — nothing was sent.`);
+      showMessage(`Task saved. In production, ${task.owner} would receive a notification. This demo records the assignment locally only. Nothing was sent.`);
       renderApp();
     });
     return form;
@@ -1363,7 +1363,7 @@
     const draft = node("textarea", { id: `draft-${record.id}`, maxlength: "5000", placeholder: "Write a draft for a person to review and send themselves." });
     draft.value = record.draft || "";
     form.append(
-      field("Draft for you to copy and send — Thread does not send messages or contact external parties.", draft, draft.id),
+      field("Draft for you to copy and send. Thread does not send messages or contact external parties.", draft, draft.id),
       node("div", { className: "task-actions" }, node("button", { type: "submit", className: "btn" }, "Save draft locally")),
       node("div", { className: "helper" }, "There is no send action. The saved draft remains in this browser.")
     );
@@ -1390,7 +1390,7 @@
     const sections = [
       recordToolbar(record),
       hero,
-      record.sources.some((source) => source.type === "Local demo event") ? node("div", { className: "notice-card" }, "Demo: local state updated — in production this change would arrive from a connected source.") : null,
+      record.sources.some((source) => source.type === "Local demo event") ? node("div", { className: "notice-card" }, "Demo: local state updated. In production this change would arrive from a connected source.") : null,
       factsSection(record),
       conflictsSection(record),
       uncertaintySection(record),

@@ -398,7 +398,7 @@
       "lastTouchedDaysAgo": 5,
       "priorityOverride": "",
       "resumeId": "resume-transformation",
-      "resumeReason": "Start with Transformation & Change. Reframe delivery examples around discovery, client-facing facilitation, and adoption—without implying consulting experience you do not have.",
+      "resumeReason": "Start with Transformation & Change. Reframe delivery examples around discovery, client-facing facilitation, and adoption, without implying consulting experience you do not have.",
       "assessmentSource": "Synthetic profile + synthetic job description",
       "application": {
         "stage": "Researching",
@@ -631,7 +631,7 @@
       "relationshipReadiness": "Medium",
       "recommendedAction": "ASK_ROLE_INSIGHT",
       "rationale": "Her programme work is relevant, and the recent exchange gives you a natural opening. There is no evidence she can refer you; ask for role context first.",
-      "messageDraft": "Hi Mina — I saw the Business Analyst role supporting Meridian Works’ AI transformation programme. Since you lead work in this area, would you be open to sharing what the team needs most from someone in the role? No worries if you’re busy."
+      "messageDraft": "Hi Mina, I saw the Business Analyst role supporting Meridian Works’ AI transformation programme. Since you lead work in this area, would you be open to sharing what the team needs most from someone in the role? No worries if you’re busy."
     },
     {
       "id": "link-job-101-p-102",
@@ -641,7 +641,7 @@
       "relationshipReadiness": "Low",
       "recommendedAction": "RECRUITER_OUTREACH",
       "rationale": "The recruiter is role-adjacent, but there is no relationship history. Use a concise, role-specific introduction rather than a referral request.",
-      "messageDraft": "Hello Evan — I’m reviewing the Business Analyst, AI Transformation opportunity at Meridian Works. My background includes process analysis and workflow improvement. Is there a preferred way to share a concise fit summary for this role?"
+      "messageDraft": "Hello Evan, I’m reviewing the Business Analyst, AI Transformation opportunity at Meridian Works. My background includes process analysis and workflow improvement. Is there a preferred way to share a concise fit summary for this role?"
     },
     {
       "id": "link-job-201-p-201",
@@ -651,7 +651,7 @@
       "relationshipReadiness": "High",
       "recommendedAction": "DIRECT_REFERRAL_ASK",
       "rationale": "You have a recent, relevant working relationship and she is in the target function. A referral ask is reasonable, but her willingness is unknown and should not be assumed.",
-      "messageDraft": "Hi Nadia — I noticed the Business Transformation Analyst opening at Northstar Cooperative. It looks closely aligned with my process and stakeholder work. Would you feel comfortable referring me, or would a quick role-context chat be a better first step? Absolutely fine either way."
+      "messageDraft": "Hi Nadia, I noticed the Business Transformation Analyst opening at Northstar Cooperative. It looks closely aligned with my process and stakeholder work. Would you feel comfortable referring me, or would a quick role-context chat be a better first step? Absolutely fine either way."
     },
     {
       "id": "link-job-301-p-301",
@@ -661,7 +661,7 @@
       "relationshipReadiness": "Low",
       "recommendedAction": "RECONNECT_FIRST",
       "rationale": "His role is relevant, but the relationship is inactive. Reopen the conversation before asking for role help.",
-      "messageDraft": "Hi Ravi — it’s been a while since the operations forum. I’ve been exploring process-improvement roles and saw one at Lumen Logistics. How have things been going on your side?"
+      "messageDraft": "Hi Ravi, it’s been a while since the operations forum. I’ve been exploring process-improvement roles and saw one at Lumen Logistics. How have things been going on your side?"
     },
     {
       "id": "link-job-301-p-302",
@@ -671,7 +671,7 @@
       "relationshipReadiness": "Low",
       "recommendedAction": "CONNECT_FIRST",
       "rationale": "The role match is useful, but this is a second-degree path. Ask the shared contact for an introduction or send a context-rich connection request first.",
-      "messageDraft": "Hi Lena — I’m exploring process-improvement work and saw your team’s opening at Lumen Logistics. I’d value connecting and learning how the role works with Operations Excellence."
+      "messageDraft": "Hi Lena, I’m exploring process-improvement work and saw your team’s opening at Lumen Logistics. I’d value connecting and learning how the role works with Operations Excellence."
     },
     {
       "id": "link-job-401-p-401",
@@ -681,7 +681,7 @@
       "relationshipReadiness": "Medium",
       "recommendedAction": "ASK_ROLE_INSIGHT",
       "rationale": "He can explain consulting delivery expectations, but the last interaction is not recent enough to assume referral readiness.",
-      "messageDraft": "Hi Jonas — I’m looking at the Digital Transformation Consultant opening at Asteron Advisory. Would you be open to sharing how the team balances process discovery with implementation delivery?"
+      "messageDraft": "Hi Jonas, I’m looking at the Digital Transformation Consultant opening at Asteron Advisory. Would you be open to sharing how the team balances process discovery with implementation delivery?"
     },
     {
       "id": "link-job-501-p-501",
@@ -691,7 +691,7 @@
       "relationshipReadiness": "Medium",
       "recommendedAction": "ASK_ROLE_INSIGHT",
       "rationale": "She is close to the adoption side of the work. Ask about the role’s change remit before deciding whether to apply.",
-      "messageDraft": "Hi Sofia — I saw the Transformation Analyst role at Harborlight Health. You’ve worked on adoption and frontline change; would you be open to sharing what makes change work effective there?"
+      "messageDraft": "Hi Sofia, I saw the Transformation Analyst role at Harborlight Health. You’ve worked on adoption and frontline change; would you be open to sharing what makes change work effective there?"
     },
     {
       "id": "link-job-601-p-601",
@@ -701,7 +701,7 @@
       "relationshipReadiness": "Low",
       "recommendedAction": "CONNECT_FIRST",
       "rationale": "The role touches automation, but there is no direct relationship. A short connection request is more proportionate than a referral ask.",
-      "messageDraft": "Hi Aiden — I’m exploring business analysis roles that combine process improvement and automation. I noticed your work at Clearwell Services and would be glad to connect."
+      "messageDraft": "Hi Aiden, I’m exploring business analysis roles that combine process improvement and automation. I noticed your work at Clearwell Services and would be glad to connect."
     },
     {
       "id": "link-job-701-p-701",
@@ -711,7 +711,7 @@
       "relationshipReadiness": "High",
       "recommendedAction": "DIRECT_REFERRAL_ASK",
       "rationale": "Strong, recent context and close role relevance make a referral ask reasonable. Confirm she is comfortable before treating it as an available referral.",
-      "messageDraft": "Hi Grace — I saw the Process Improvement Lead opening at Brightpath Group. It looks aligned with the operating-model work we discussed. Would you be comfortable referring me, or would you prefer I send the role details first? No pressure either way."
+      "messageDraft": "Hi Grace, I saw the Process Improvement Lead opening at Brightpath Group. It looks aligned with the operating-model work we discussed. Would you be comfortable referring me, or would you prefer I send the role details first? No pressure either way."
     },
     {
       "id": "link-job-801-p-801",

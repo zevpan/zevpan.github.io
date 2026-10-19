@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Warehouse Flow & Stock Accuracy Decision Support — Zev Pan</title>
+<title>Warehouse Flow & Stock Accuracy Decision Support - Zev Pan</title>
 <meta name="description" content="An anonymized warehouse transformation case study using connected operational evidence, human-in-the-loop review and measurable decision outcomes.">
 <link rel="stylesheet" href="../../shared/intent-model.css?v=1">
 <style>
@@ -77,7 +77,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <a class="back" href="../../products/thread/index.html">Next: Thread Product Build →</a>
 </div>
 <section class="intent-model" aria-label="Warehouse decision-support intent-to-outcome model">
-  <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Find the few patterns worth a warehouse check—without deciding what to move.</h2><p>The system narrows evidence into a specific operational question. Warehouse context determines whether the finding is normal, actionable, or still uncertain.</p></div>
+  <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Find the few patterns worth a warehouse check without deciding what to move.</h2><p>The system narrows evidence into a specific operational question. Warehouse context determines whether the finding is normal, actionable, or still uncertain.</p></div>
   <div class="intent-case-command"><small>EXAMPLE COMMAND</small><blockquote>“Find the inventory patterns that need a warehouse review and tell me what evidence is missing.”</blockquote></div>
   <div class="intent-case-grid">
     <article class="intent-case-card"><small>Agent plan</small><strong>Rank · explain · request context</strong><span>Evidence Analyst compares activity, concentration, and time-window stability; Finding Analyst frames a specific check; Work Planner keeps a human owner on the case.</span></article>
@@ -91,7 +91,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 
 <section><h2>AS-IS process architecture</h2><p>The current operating model spans goods receipt, put-away, Admin planning, physical picking, QC / staging / outbound and cycle-count control. System information and physical warehouse reality do not always contain the same context, so the analysis explicitly separates information flow from physical flow.</p><div class="diagram"><img src="../../assets/warehouse-as-is-process.png" alt="Anonymized AS-IS warehouse process swimlane"></div><a class="btn" href="../../assets/warehouse-as-is-process.png">Open AS-IS diagram full size →</a></section>
 
-<section><h2>What remained to validate</h2><p>The discovery work deliberately separated known process facts from validation questions.</p><div class="grid2"><div class="card"><strong>Outbound / QC</strong>Exact GI → QC sequence and control point; how picking and QC exceptions are corrected and closed.</div><div class="card"><strong>Admin / Picking</strong>How work is assigned to pickers and which tracking-spreadsheet fields are actually used for planning and follow-up.</div><div class="card"><strong>Inventory Control</strong>Cycle-count selection logic and how variance moves from investigation to adjustment.</div><div class="card"><strong>Data & Decision</strong>Which timestamps can reliably measure outcomes and which decisions belong to the operator versus the principal / customer.</div></div><p class="small">These are validation items — not assumed problems.</p></section>
+<section><h2>What remained to validate</h2><p>The discovery work deliberately separated known process facts from validation questions.</p><div class="grid2"><div class="card"><strong>Outbound / QC</strong>Exact GI → QC sequence and control point; how picking and QC exceptions are corrected and closed.</div><div class="card"><strong>Admin / Picking</strong>How work is assigned to pickers and which tracking-spreadsheet fields are actually used for planning and follow-up.</div><div class="card"><strong>Inventory Control</strong>Cycle-count selection logic and how variance moves from investigation to adjustment.</div><div class="card"><strong>Data & Decision</strong>Which timestamps can reliably measure outcomes and which decisions belong to the operator versus the principal / customer.</div></div><p class="small">These are validation items - not assumed problems.</p></section>
 
 <section>
 <div class="portfolio-kicker">Synthetic prototype scenarios</div>
