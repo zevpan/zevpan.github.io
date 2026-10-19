@@ -2,8 +2,8 @@ import { addInteraction, generateProposal, parseRequirements } from './sales-eng
 
 export const integrationRegistry = [
   { id: 'crm', label: 'CRM', mode: 'Browser-local adapter', connected: false },
-  { id: 'catalog', label: 'Product catalog', mode: 'Example catalog adapter', connected: false },
-  { id: 'inventory', label: 'ERP and inventory', mode: 'Dated snapshot adapter', connected: false },
+  { id: 'catalog', label: 'Product catalog', mode: 'Illustrative industrial catalog', connected: false },
+  { id: 'inventory', label: 'Data sources and delivery planning', mode: 'Example readiness adapter', connected: false },
   { id: 'email', label: 'Email', mode: 'Not connected', connected: false },
   { id: 'whatsapp', label: 'Business WhatsApp', mode: 'Not connected', connected: false },
   { id: 'language-model', label: 'Language model', mode: 'Local extraction rules', connected: false },
@@ -27,7 +27,7 @@ export function createDemoAdapters(readState) {
       }
     },
     catalog: {
-      name: 'Example product catalog',
+      name: 'Illustrative industrial catalog',
       connected: false,
       lookup(productId) {
         return current().products.find(item => item.id === productId) || null;
@@ -39,7 +39,7 @@ export function createDemoAdapters(readState) {
       }
     },
     inventory: {
-      name: 'Dated example snapshot',
+      name: 'Site readiness and delivery capacity example',
       connected: false,
       availability(productId) {
         const product = current().products.find(item => item.id === productId) || null;
@@ -71,7 +71,7 @@ export function createDemoAdapters(readState) {
     external: {
       email: { connected: false, send() { throw new Error('Email is not connected. Record a draft or follow-up in the local workspace.'); } },
       whatsapp: { connected: false, send() { throw new Error('Business WhatsApp is not connected. No message was sent.'); } },
-      erp: { connected: false, lookup() { throw new Error('ERP and inventory are represented by dated example snapshots.'); } },
+      erp: { connected: false, lookup() { throw new Error('Industrial data sources and delivery systems are represented by example records.'); } },
       languageModel: { connected: false, run() { throw new Error('No external language model provider is configured.'); } },
       gamma: { connected: false, generate() { throw new Error('No external proposal provider is configured.'); } },
       n8n: { connected: false, run() { throw new Error('No external workflow automation connection is configured.'); } }
