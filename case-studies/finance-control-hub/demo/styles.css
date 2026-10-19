@@ -73,11 +73,32 @@ h1 { margin: 6px 0 5px; color: var(--navy); font-size: 27px; line-height: 1.15; 
 .command-form { display: flex; gap: 8px; }
 .command-form input { width: 100%; min-width: 0; height: 38px; border: 1px solid #d9e1eb; border-radius: 8px; outline: none; padding: 0 12px; color: #24364e; background: #fbfcfe; font-size: 11px; }
 .command-form input:focus, .note-field:focus, .search-input:focus, .po-field:focus, .source-select:focus { border-color: #78a4df; box-shadow: 0 0 0 3px rgba(23,105,210,.11); }
+.composer-icon-button { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border: 1px solid #d9e1eb; border-radius: 8px; color: #435a76; background: #fff; font-size: 20px; font-weight: 500; }
+.composer-icon-button:hover { color: var(--blue); border-color: #9db6d5; background: #f7faff; }
+.composer-toolbar { display: flex; align-items: center; gap: 12px; margin-top: 9px; }
+.composer-setting { display: flex; align-items: center; gap: 6px; color: #738197; font-size: 9px; white-space: nowrap; }
+.composer-setting select { max-width: 178px; height: 29px; border: 1px solid #d9e1eb; border-radius: 7px; padding: 0 7px; color: #34445a; background: #fff; font-size: 9px; }
+.composer-note { margin-left: auto; color: #8591a0; font-size: 8px; text-align: right; }
+.file-drop-zone { display: flex; align-items: center; gap: 8px; min-height: 36px; margin-top: 9px; border: 1px dashed #c9d5e3; border-radius: 8px; padding: 6px 10px; color: #6a7a90; background: #fbfcfe; font-size: 9px; cursor: pointer; }
+.file-drop-zone:hover, .file-drop-zone.is-over { border-color: #6a99d2; color: #2d5f9d; background: #f3f8ff; }
+.drop-icon { color: #4f78a9; font-size: 14px; font-weight: 900; }
+.staged-import:not([hidden]) { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 9px; border: 1px solid #d7e3f1; border-radius: 9px; padding: 10px; background: #f8fbff; }
+.staged-files { display: flex; flex-wrap: wrap; gap: 7px; min-width: 0; }
+.staged-file { display: flex; align-items: center; gap: 7px; padding: 6px 8px; border: 1px solid #e2e9f2; border-radius: 7px; background: #fff; }
+.staged-file-icon { display: grid; width: 17px; height: 17px; place-items: center; border-radius: 50%; color: #26704d; background: #e8f6ee; font-size: 9px; font-weight: 900; }
+.staged-file strong, .staged-file small { display: block; max-width: 210px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.staged-file strong { color: #3d4d62; font-size: 9px; }
+.staged-file small { color: #8793a3; font-size: 8px; }
+.import-hint { flex: 1; margin: 0; color: #718197; font-size: 9px; }
+.import-feedback { margin-top: 5px; color: #547293; font-size: 9px; }
+.import-feedback:empty { display: none; }
+.local-backup-control:not([hidden]) { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; border-radius: 7px; padding: 6px 9px; color: #718197; background: #f5f7fa; font-size: 8px; }
 .button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 34px; border: 1px solid #d5dce5; border-radius: 7px; padding: 0 11px; background: #fff; color: #34445a; font-size: 10px; font-weight: 800; white-space: nowrap; }
 .button:hover { border-color: #9db6d5; background: #f8fbff; }
 .button-primary { border-color: var(--blue); background: var(--blue); color: #fff; }
 .button-primary:hover { border-color: #0f58b6; background: #0f58b6; color: #fff; }
 .button-danger { border-color: #e6c8c5; color: var(--red); }
+.button-danger:hover { border-color: #dfaaa4; background: #fff8f7; color: #8f2823; }
 .button-small { min-height: 28px; padding: 0 8px; font-size: 9px; }
 .command-suggestions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 9px; }
 .suggestion { border: 1px solid transparent; border-radius: 99px; padding: 5px 8px; background: #f5f7fa; color: #607087; font-size: 9px; }
@@ -249,8 +270,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .command-panel { padding: 12px; }
   .command-heading { align-items: flex-start; }
   .command-heading p { line-height: 1.4; }
-  .command-form { flex-direction: column; }
-  .command-form .button { width: 100%; min-height: 36px; }
+  .command-form { flex-direction: row; gap: 6px; }
+  .command-form input { min-width: 0; flex: 1; }
+  .command-form .button { min-height: 38px; padding: 0 10px; }
+  .composer-toolbar { align-items: flex-start; flex-wrap: wrap; gap: 7px 12px; }
+  .composer-setting { flex-wrap: wrap; }
+  .composer-setting select { max-width: 142px; }
+  .composer-note { flex: 1 0 100%; margin-left: 0; text-align: left; }
+  .staged-import:not([hidden]) { align-items: stretch; flex-direction: column; }
+  .local-backup-control:not([hidden]) { align-items: flex-start; flex-direction: column; }
   .source-strip { flex-wrap: wrap; align-items: flex-start; gap: 8px; }
   .source-strip-title { flex: 1 0 100%; }
   .source-files { order: 2; flex: 1 1 100%; overflow-x: auto; }
@@ -269,6 +297,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 @media (max-width: 420px) {
   .topbar-actions .simulation-pill { display: none; }
+  .command-form { gap: 5px; }
+  .command-form input { padding: 0 8px; font-size: 10px; }
+  .command-form .button { gap: 4px; padding: 0 8px; }
+  .composer-icon-button { width: 34px; height: 36px; }
+  .composer-setting { align-items: flex-start; flex-direction: column; gap: 3px; }
+  .composer-setting select { max-width: 145px; }
   .run-steps { grid-template-columns: 1fr; }
   .ready-state { align-items: stretch; flex-direction: column; }
   .ready-state > .button { width: 100%; }

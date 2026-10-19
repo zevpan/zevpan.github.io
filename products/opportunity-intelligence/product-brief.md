@@ -1,4 +1,4 @@
-# Focusline — product brief
+# Focusline: product brief
 
 ## Primary user
 
@@ -6,7 +6,7 @@ A serious professional job seeker managing several plausible roles at once, with
 
 ## Core job to be done
 
-When several opportunities compete for my attention, help me understand which are worth pursuing, what evidence supports that view, and what I should do next—while keeping the final decision mine.
+When several opportunities compete for my attention, help me understand which are worth pursuing, what evidence supports that view, and what I should do next, while keeping the final decision mine.
 
 ## Decisions the product improves
 

@@ -179,7 +179,7 @@ function dispatch(){
  const list=state.orders.filter(o=>o.status!=="COMPLETED"&&o.status!=="IN_SERVICE");
  view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Routing rule:</b> check supplier eligibility before ranking, then track acknowledgement and fallback as explicit workflow states.</div>'+
  '<div class="panel"><div class="panel-head"><h3>Dispatch Queue</h3><span>Eligibility before ranking</span></div><table><thead><tr><th>Order</th><th>Market</th><th>Assigned supplier</th><th>Dispatch state</th><th>Status</th></tr></thead><tbody>'+
- list.map(o=>'<tr class="click" onclick="openOrder(\''+o.id+'\')"><td><b>'+o.id+'</b></td><td>'+o.market+'</td><td>'+(o.supplier||"—")+'</td><td>'+o.dispatch+'</td><td>'+pill(o)+'</td></tr>').join("")+
+ list.map(o=>'<tr class="click" onclick="openOrder(\''+o.id+'\')"><td><b>'+o.id+'</b></td><td>'+o.market+'</td><td>'+(o.supplier||"-")+'</td><td>'+o.dispatch+'</td><td>'+pill(o)+'</td></tr>').join("")+
  '</tbody></table></div>'
 }
 

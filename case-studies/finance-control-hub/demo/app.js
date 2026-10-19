@@ -6,12 +6,19 @@ import {
   normalizeIdentifier,
   reconcileBatch
 } from "./engine.js";
+import { prepareFinanceImport } from "./file-import.js";
 
 const $ = function (selector, parent) { return (parent || document).querySelector(selector); };
 const $$ = function (selector, parent) { return Array.from((parent || document).querySelectorAll(selector)); };
 const STORE_KEY = "fch-demo-state-v1";
 const currencyFormat = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 let source = null;
+let sourceMode = "synthetic";
+let stagedImport = null;
+let stagedFileMap = new Map();
+let speechRecognition = null;
+let reconciliationWorker = null;
+let activeRunResolve = null;
 let lineById = new Map();
 let accrualById = new Map();
 let state = {
@@ -27,6 +34,7 @@ let state = {
   sourcePage: 1,
   selectedId: null,
   running: false,
+  preferences: { model: "automatic", effort: "default" },
   run: null,
   runAt: null,
   decisions: {},
@@ -102,7 +110,7 @@ function escapeHtml(value) {
 }
 
 function money(value, currency) {
-  if (value == null || value === "") return "—";
+  if (value == null || value === "") return "Not available";
   return currencyFormat.format(Number(value)) + " " + String(currency || "");
 }
 
@@ -123,6 +131,7 @@ if (restored) {
   state.audit = Array.isArray(restored.audit) ? restored.audit.slice(0, 150) : [];
   state.runAt = restored.runAt || null;
   state.groupByVendor = Boolean(restored.groupByVendor);
+  state.preferences = Object.assign({ model: "automatic", effort: "default" }, restored.preferences || {});
   if (restored.completed) state.run = { restored: true };
 }
 
@@ -134,7 +143,8 @@ function persist() {
       decisions: state.decisions,
       exportedIds: state.exportedIds,
       audit: state.audit.slice(0, 150),
-      groupByVendor: state.groupByVendor
+      groupByVendor: state.groupByVendor,
+      preferences: state.preferences
     }));
   } catch (_) {
     toast("This browser could not save local demo decisions. Keep the tab open to retain them.");
@@ -240,7 +250,7 @@ function setView(view) {
 }
 
 function displayTime(iso) {
-  if (!iso) return "—";
+  if (!iso) return "Not available";
   try {
     return new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
   } catch (_) {
@@ -259,7 +269,63 @@ function updateSourceFiles() {
   $("#source-files").innerHTML = fileData.map(function (item) {
     return '<div class="source-file"><strong>' + escapeHtml(item[0]) + '</strong><small>' + Number(item[1]).toLocaleString() + ' records</small></div>';
   }).join("");
+  const mode = $("#data-mode-pill");
+  if (mode) mode.innerHTML = '<span></span>' + (sourceMode === "imported" ? "Local import · browser only" : "Simulation · synthetic data");
+  const batchLabel = $("#batch-label");
+  if (batchLabel) batchLabel.textContent = sourceMode === "imported" ? "LOCAL IMPORT · REVIEW" : "BATCH FCH-2026-10 · IMPORT REVIEW";
+  const batchDate = $("#batch-date");
+  if (batchDate) batchDate.textContent = sourceMode === "imported" ? "Files stay in this browser" : "Data through 14 Oct 2026";
+  const provenance = $("#source-provenance");
+  if (provenance) provenance.textContent = sourceMode === "imported" ? "Local source files. Not uploaded or connected to CargoWise." : "Source schemas are illustrative; all records are synthetic.";
   $("#batch-state").textContent = state.run ? "Reconciliation complete" : "Source batch ready";
+}
+
+function renderComposerSettings() {
+  const model = $("#model-select");
+  const effort = $("#effort-select");
+  if (model && model.value !== state.preferences.model) model.value = state.preferences.model;
+  if (effort && effort.value !== state.preferences.effort) effort.value = state.preferences.effort;
+  const submitLabel = $("#command-submit-label");
+  if (submitLabel) submitLabel.textContent = state.running ? "Stop" : "Start";
+  const submit = $("#command-submit");
+  if (submit) {
+    submit.classList.toggle("button-primary", !state.running);
+    submit.classList.toggle("button-danger", state.running);
+    submit.setAttribute("aria-label", state.running ? "Stop the current reconciliation" : "Start the requested finance task");
+  }
+}
+
+function renderStagedImport(result) {
+  const panel = $("#staged-import");
+  const feedback = $("#import-feedback");
+  if (!panel || !feedback) return;
+  if (!result) {
+    panel.hidden = true;
+    panel.innerHTML = "";
+    feedback.textContent = "";
+    return;
+  }
+  panel.hidden = false;
+  const files = result.staged.map(function (item) {
+    return '<div class="staged-file"><span class="staged-file-icon">✓</span><span><strong>' + escapeHtml(item.name) + '</strong><small>' + escapeHtml(item.type) + ' · ' + Number(item.count).toLocaleString() + ' records</small></span></div>';
+  }).join("");
+  const missing = result.missing && result.missing.length
+    ? '<p class="import-hint">Add the remaining source files: ' + result.missing.map(function (type) { return escapeHtml(type); }).join(", ") + '.</p>'
+    : '<p class="import-hint">Files are parsed in this browser. Nothing is uploaded to an external service.</p>';
+  panel.innerHTML = '<div class="staged-files">' + files + '</div>' + missing + (result.complete
+    ? '<button type="button" class="button button-primary" data-action="load-import">Use this local batch</button>'
+    : '<button type="button" class="button" data-action="clear-import">Clear staged files</button>');
+  feedback.textContent = result.complete ? "Batch is ready to load after confirmation." : "Source files recognized. Add the missing CSV sources or choose a complete JSON batch.";
+}
+
+function renderBackupControl() {
+  const panel = $("#local-backup-control");
+  if (!panel) return;
+  const backupId = localStorage.getItem("fch-latest-backup-id");
+  panel.hidden = !backupId;
+  panel.innerHTML = backupId
+    ? '<span>Previous batch and review decisions are backed up in this browser.</span><button type="button" class="text-button" data-action="restore-backup">Restore previous batch</button>'
+    : "";
 }
 
 function renderSuggestions() {
@@ -276,7 +342,7 @@ function renderRunBanner() {
     return;
   }
   if (state.running) {
-    banner.innerHTML = '<div class="loading-state"><span class="loader"></span><div><strong>Reconciliation is running locally</strong><small>Validating source fields, normalizing references and comparing invoice lines with accrual candidates.</small></div></div>';
+    banner.innerHTML = '<div class="loading-state"><span class="loader"></span><div><strong>Reconciliation is running locally</strong><small>Validating source fields, normalizing references and comparing invoice lines in a cancellable background worker.</small></div></div>';
     return;
   }
   if (!state.run) {
@@ -397,7 +463,7 @@ function renderTableRow(line) {
   const accrual = relatedAccrual(line, result);
   const refs = [line.hawbReference, line.mawbReference].filter(Boolean).join(" · ") || line.jobReference || "Reference missing";
   const invoiceAmount = line.lineAmount == null ? "Missing amount" : money(line.lineAmount, line.currency);
-  const accrualValue = accrual ? money(accrual.accruedAmount, accrual.currency) : "—";
+  const accrualValue = accrual ? money(accrual.accruedAmount, accrual.currency) : "Not available";
   return '<tr class="data-row ' + (state.selectedId === id ? "selected" : "") + '" data-line-id="' + escapeHtml(id) + '">' +
     '<td><span class="invoice-primary">' + escapeHtml(line.invoiceNumber || "(invoice number missing)") + '</span><span class="invoice-secondary">' + escapeHtml(id) + ' · ' + escapeHtml(line.vendor) + '</span></td>' +
     '<td>' + escapeHtml(refs) + '</td>' +
@@ -535,8 +601,8 @@ function renderInspector() {
     '<div class="detail-grid" style="margin-top:10px">' +
       '<div class="detail-field"><small>Invoice amount</small><strong>' + escapeHtml(money(line.lineAmount, line.currency)) + '</strong></div>' +
       '<div class="detail-field"><small>PO reference</small><strong>' + escapeHtml(line.poReference || "Missing") + '</strong></div>' +
-      '<div class="detail-field"><small>Job / HAWB</small><strong>' + escapeHtml(line.jobReference || "—") + ' / ' + escapeHtml(line.hawbReference || "—") + '</strong></div>' +
-      '<div class="detail-field"><small>MAWB / charge</small><strong>' + escapeHtml(line.mawbReference || "—") + ' / ' + escapeHtml(line.vendorChargeCode) + '</strong></div>' +
+      '<div class="detail-field"><small>Job / HAWB</small><strong>' + escapeHtml(line.jobReference || "Not available") + ' / ' + escapeHtml(line.hawbReference || "Not available") + '</strong></div>' +
+      '<div class="detail-field"><small>MAWB / charge</small><strong>' + escapeHtml(line.mawbReference || "Not available") + ' / ' + escapeHtml(line.vendorChargeCode) + '</strong></div>' +
     '</div>' +
     '<div class="detail-section"><h3>Why the engine routed it</h3><div class="reason-box"><strong>' + escapeHtml(statusNames[result.status] || result.status) + ':</strong> ' + escapeHtml(result.reason) + '</div></div>' +
     '<div class="detail-section"><h3>Evidence checked</h3>' + evidence + '</div>' +
@@ -613,7 +679,7 @@ function renderSourceView() {
   const shown = rows.slice(start, start + state.pageSize);
   const tableRows = shown.map(function (row) {
     return "<tr>" + definition.fields.map(function (field) {
-      return "<td>" + escapeHtml(row[field] == null ? "—" : row[field]) + "</td>";
+      return "<td>" + escapeHtml(row[field] == null ? "Not available" : row[field]) + "</td>";
     }).join("") + "</tr>";
   }).join("");
   $("#workspace-content").innerHTML = '<section class="content-panel"><div class="export-head"><div><h2>Loaded source files</h2><p>Backlog snapshot · generated with a fixed seed · original operational records were not used.</p></div><span class="status-badge">Synthetic · seed ' + escapeHtml(source.metadata.seed) + '</span></div>' +
@@ -647,7 +713,7 @@ function renderExportView() {
     const decision = decisionFor(line.invoiceLineId);
     const accrualId = decision && decision.accrualIds && decision.accrualIds.length ? decision.accrualIds[0] : decision && decision.accrualId || result.matchedAccrualIds[0];
     const accrual = accrualById.get(accrualId);
-    return '<tr><td>' + escapeHtml(line.invoiceNumber) + '</td><td>' + escapeHtml(line.invoiceLineId) + '</td><td>' + escapeHtml(line.jobReference) + '</td><td>' + escapeHtml(accrual && accrual.poReference || line.poReference || "—") + '</td><td class="amount">' + escapeHtml(money(line.lineAmount, line.currency)) + '</td><td><span class="status-badge">' + escapeHtml(decision && decision.status === "APPROVED" ? "Human approved" : statusNames[result.status] || result.status) + '</span></td></tr>';
+    return '<tr><td>' + escapeHtml(line.invoiceNumber) + '</td><td>' + escapeHtml(line.invoiceLineId) + '</td><td>' + escapeHtml(line.jobReference) + '</td><td>' + escapeHtml(accrual && accrual.poReference || line.poReference || "Not available") + '</td><td class="amount">' + escapeHtml(money(line.lineAmount, line.currency)) + '</td><td><span class="status-badge">' + escapeHtml(decision && decision.status === "APPROVED" ? "Human approved" : statusNames[result.status] || result.status) + '</span></td></tr>';
   }).join("");
   const exportDone = eligible.length === 0 && state.exportedIds.length > 0;
   $("#workspace-content").innerHTML = '<section class="content-panel">' +
@@ -675,10 +741,12 @@ function renderAuditView() {
 
 function renderApp() {
   if (source) updateSourceFiles();
+  renderComposerSettings();
+  renderBackupControl();
   renderRunBanner();
   const runMetrics = state.run && state.run.metrics;
-  $("#exception-nav-count").textContent = runMetrics ? unresolvedCount().toLocaleString() : "—";
-  $("#export-nav-count").textContent = runMetrics ? getEligibleLines().length.toLocaleString() : "—";
+  $("#exception-nav-count").textContent = runMetrics ? unresolvedCount().toLocaleString() : "0";
+  $("#export-nav-count").textContent = runMetrics ? getEligibleLines().length.toLocaleString() : "0";
   $$(".nav-item").forEach(function (button) { button.classList.toggle("active", button.dataset.view === state.view); });
   renderSuggestions();
   if (!source) return;
@@ -688,26 +756,263 @@ function renderApp() {
   else renderWorkView();
 }
 
-async function runReconciliation() {
+function runReconciliation() {
   if (!source || state.running) return;
   state.running = true;
-  renderRunBanner();
-  await new Promise(function (resolve) { requestAnimationFrame(function () { resolve(); }); });
-  const computed = reconcileBatch(source);
-  state.run = computed;
+  renderApp();
+  return new Promise(function (resolve) {
+    activeRunResolve = resolve;
+    let worker;
+    try {
+      worker = new Worker(new URL("./reconciliation-worker.js", import.meta.url), { type: "module" });
+    } catch (error) {
+      state.running = false;
+      activeRunResolve = null;
+      renderApp();
+      $("#command-feedback").textContent = "This browser could not start a background worker. No records were changed.";
+      resolve(false);
+      return;
+    }
+    reconciliationWorker = worker;
+    worker.onmessage = function (event) {
+      if (reconciliationWorker !== worker) return;
+      worker.terminate();
+      reconciliationWorker = null;
+      state.running = false;
+      activeRunResolve = null;
+      if (event.data.type === "error") {
+        renderApp();
+        $("#command-feedback").textContent = "Reconciliation stopped with an error: " + event.data.message;
+        toast("Reconciliation could not be completed.");
+        resolve(false);
+        return;
+      }
+      const computed = event.data.result;
+      state.run = computed;
+      state.runAt = new Date().toISOString();
+      state.view = "work";
+      state.filter = "REVIEW";
+      state.query = "";
+      state.sort = "priority";
+      const next = firstReviewLine();
+      state.selectedId = next ? next.invoiceLineId : null;
+      audit("RUN", "Deterministic reconciliation completed", Number(computed.metrics.matched).toLocaleString() + " automatic matches; " + Number(computed.metrics.exceptions).toLocaleString() + " lines routed for Finance review; " + Number(computed.metrics.alreadyExported).toLocaleString() + " prior exports excluded.", "FCH-2026-10");
+      persist();
+      renderApp();
+      $("#command-feedback").textContent = "Reconciliation completed using deterministic rules. No external system or model API was called.";
+      toast("Reconciliation completed. Review the prioritized exception queue.");
+      resolve(true);
+    };
+    worker.onerror = function () {
+      if (reconciliationWorker !== worker) return;
+      worker.terminate();
+      reconciliationWorker = null;
+      state.running = false;
+      activeRunResolve = null;
+      renderApp();
+      $("#command-feedback").textContent = "The local reconciliation worker failed. No results were committed.";
+      toast("Reconciliation could not be completed.");
+      resolve(false);
+    };
+    try {
+      worker.postMessage({ type: "reconcile", source: source });
+    } catch (error) {
+      worker.terminate();
+      reconciliationWorker = null;
+      state.running = false;
+      activeRunResolve = null;
+      renderApp();
+      $("#command-feedback").textContent = "The batch could not be sent to the local worker. No records were changed.";
+      resolve(false);
+    }
+  });
+}
+
+function stopReconciliation() {
+  if (!state.running) return;
+  if (reconciliationWorker) reconciliationWorker.terminate();
+  reconciliationWorker = null;
   state.running = false;
-  state.runAt = new Date().toISOString();
-  state.view = "work";
-  state.filter = "REVIEW";
-  state.query = "";
-  state.sort = "priority";
-  const next = firstReviewLine();
-  state.selectedId = next ? next.invoiceLineId : null;
-  audit("RUN", "Deterministic reconciliation completed", Number(computed.metrics.matched).toLocaleString() + " automatic matches; " + Number(computed.metrics.exceptions).toLocaleString() + " lines routed for Finance review; " + Number(computed.metrics.alreadyExported).toLocaleString() + " prior exports excluded.", "FCH-2026-10");
+  audit("RUN", "Reconciliation stopped", "The background worker was cancelled before results were applied.", "FCH-2026-10");
   persist();
   renderApp();
-  $("#command-feedback").textContent = "Reconciliation completed using deterministic rules. No external system or LLM API was called.";
-  toast("Reconciliation completed. Review the prioritized exception queue.");
+  $("#command-feedback").textContent = "Stopped before results were committed. The batch is unchanged.";
+  toast("Reconciliation stopped. No result was applied.");
+  if (activeRunResolve) activeRunResolve(false);
+  activeRunResolve = null;
+}
+
+function openImportDb() {
+  return new Promise(function (resolve, reject) {
+    if (!window.indexedDB) return reject(new Error("This browser does not support local batch storage."));
+    const request = window.indexedDB.open("finance-control-hub-local", 1);
+    request.onupgradeneeded = function () {
+      if (!request.result.objectStoreNames.contains("batches")) request.result.createObjectStore("batches", { keyPath: "id" });
+    };
+    request.onsuccess = function () { resolve(request.result); };
+    request.onerror = function () { reject(request.error || new Error("Could not open local batch storage.")); };
+  });
+}
+
+async function getLocalBatch(id) {
+  const db = await openImportDb();
+  return new Promise(function (resolve, reject) {
+    const request = db.transaction("batches", "readonly").objectStore("batches").get(id);
+    request.onsuccess = function () { db.close(); resolve(request.result && request.result.source || null); };
+    request.onerror = function () { db.close(); reject(request.error); };
+  });
+}
+
+async function putLocalBatch(id, batch) {
+  const db = await openImportDb();
+  return new Promise(function (resolve, reject) {
+    const request = db.transaction("batches", "readwrite").objectStore("batches").put({ id: id, source: batch, savedAt: new Date().toISOString() });
+    request.onsuccess = function () { db.close(); resolve(true); };
+    request.onerror = function () { db.close(); reject(request.error); };
+  });
+}
+
+async function clearLocalBatch(id) {
+  const db = await openImportDb();
+  return new Promise(function (resolve, reject) {
+    const request = db.transaction("batches", "readwrite").objectStore("batches").delete(id);
+    request.onsuccess = function () { db.close(); resolve(true); };
+    request.onerror = function () { db.close(); reject(request.error); };
+  });
+}
+
+async function backupCurrentBatch() {
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const backupId = "backup-" + stamp;
+  await putLocalBatch(backupId, source);
+  localStorage.setItem("fch-local-review-backup-" + stamp, JSON.stringify({
+    decisions: state.decisions,
+    exportedIds: state.exportedIds,
+    audit: state.audit,
+    runAt: state.runAt,
+    completed: Boolean(state.run)
+  }));
+  localStorage.setItem("fch-latest-backup-id", backupId);
+  const backupKeys = Object.keys(localStorage).filter(function (key) { return key.startsWith("fch-local-review-backup-"); }).sort();
+  backupKeys.slice(0, Math.max(0, backupKeys.length - 3)).forEach(function (key) { localStorage.removeItem(key); });
+  return backupId;
+}
+
+async function restorePreviousBatch() {
+  const backupId = localStorage.getItem("fch-latest-backup-id");
+  if (!backupId) return;
+  if (!window.confirm("Restore the previous batch and its saved review decisions? The active batch will be backed up first.")) return;
+  try {
+    const previousSource = await getLocalBatch(backupId);
+    const previousState = JSON.parse(localStorage.getItem("fch-local-review-backup-" + backupId.slice("backup-".length)) || "{}");
+    if (!previousSource) throw new Error("The saved batch could not be found.");
+    await backupCurrentBatch();
+    await putLocalBatch("current", previousSource);
+    source = previousSource;
+    sourceMode = source.metadata && source.metadata.sourceKind === "local-import" ? "imported" : "synthetic";
+    lineById = new Map(source.invoices.map(function (line) { return [line.invoiceLineId, line]; }));
+    accrualById = new Map(source.accrueCost.map(function (row) { return [row.accrualReference, row]; }));
+    state.decisions = previousState.decisions || {};
+    state.exportedIds = previousState.exportedIds || [];
+    state.audit = Array.isArray(previousState.audit) ? previousState.audit.slice(0, 150) : [];
+    state.runAt = previousState.runAt || null;
+    state.run = null;
+    state.view = "work";
+    state.filter = "REVIEW";
+    state.page = 1;
+    state.selectedId = null;
+    audit("SOURCE", "Previous local batch restored", "The prior source bundle and its review state were restored from the browser backup.", "Local backup");
+    persist();
+    renderApp();
+    if (previousState.completed) await runReconciliation();
+    $("#command-feedback").textContent = "Previous batch and saved review decisions restored from this browser.";
+    toast("Previous batch restored.");
+  } catch (error) {
+    $("#import-feedback").textContent = "Could not restore the previous batch: " + (error && error.message || "local backup unavailable.");
+    toast("Restore failed. The active batch is unchanged.");
+  }
+}
+
+async function stageFiles(files) {
+  const inputFiles = Array.from(files || []);
+  if (!inputFiles.length) return;
+  if (inputFiles.some(function (file) { return String(file.name || "").toLowerCase().endsWith(".json"); })) stagedFileMap.clear();
+  inputFiles.forEach(function (file) { stagedFileMap.set(file.name + "|" + file.size, file); });
+  $("#import-feedback").textContent = "Reading source files on this device…";
+  try {
+    stagedImport = await prepareFinanceImport(Array.from(stagedFileMap.values()));
+    renderStagedImport(stagedImport);
+  } catch (error) {
+    stagedImport = null;
+    stagedFileMap.clear();
+    $("#staged-import").hidden = true;
+    $("#import-feedback").textContent = error && error.message || "The files could not be read.";
+    toast("Import validation failed. The current batch is unchanged.");
+  }
+}
+
+async function loadStagedImport() {
+  if (!stagedImport || !stagedImport.complete || !stagedImport.source) return;
+  const confirmed = window.confirm("Load these files as the active batch? The current batch and review decisions will be backed up in this browser first. No file will be uploaded.");
+  if (!confirmed) return;
+  try {
+    await backupCurrentBatch();
+    await putLocalBatch("current", stagedImport.source);
+    source = stagedImport.source;
+    sourceMode = "imported";
+    lineById = new Map(source.invoices.map(function (line) { return [line.invoiceLineId, line]; }));
+    accrualById = new Map(source.accrueCost.map(function (row) { return [row.accrualReference, row]; }));
+    state.view = "work";
+    state.filter = "REVIEW";
+    state.page = 1;
+    state.query = "";
+    state.selectedId = null;
+    state.run = null;
+    state.runAt = null;
+    state.decisions = {};
+    state.exportedIds = [];
+    audit("SOURCE", "Local source batch loaded", Number(source.invoices.length).toLocaleString() + " invoice lines and " + Number(source.accrueCost.length).toLocaleString() + " accrual rows. The previous batch and decisions were backed up in this browser.", "Local import");
+    persist();
+    renderStagedImport(null);
+    renderApp();
+    $("#command-feedback").textContent = "Local batch loaded. Files remain in this browser and are not uploaded.";
+    toast("Local batch loaded. Existing review decisions were preserved in a backup.");
+  } catch (error) {
+    $("#import-feedback").textContent = "Could not safely load the files: " + (error && error.message || "local backup failed.");
+    toast("Import stopped. The active batch was not replaced.");
+  }
+}
+
+function startDictation() {
+  if (speechRecognition) {
+    speechRecognition.stop();
+    return;
+  }
+  const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Speech) {
+    toast("Speech input is not supported in this browser. You can still type an instruction.");
+    return;
+  }
+  const recognition = new Speech();
+  speechRecognition = recognition;
+  recognition.lang = navigator.language || "en-US";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  $("#speech-button").textContent = "■";
+  $("#speech-button").setAttribute("aria-label", "Stop dictation");
+  recognition.onresult = function (event) {
+    const transcript = event.results && event.results[0] && event.results[0][0] && event.results[0][0].transcript;
+    if (transcript) $("#command-input").value = transcript;
+  };
+  recognition.onerror = function () { toast("Speech input could not start. Check browser microphone permission or type the instruction."); };
+  recognition.onend = function () {
+    if (speechRecognition !== recognition) return;
+    speechRecognition = null;
+    $("#speech-button").textContent = "🎙";
+    $("#speech-button").setAttribute("aria-label", "Dictate an instruction");
+  };
+  try { recognition.start(); }
+  catch (_) { speechRecognition = null; toast("Speech input could not start. Type the instruction instead."); }
 }
 
 function firstReviewLine() {
@@ -948,7 +1253,7 @@ function resetDemo() {
   const confirmed = window.confirm("Clear this browser's Finance Control Hub review decisions and restart the synthetic demo?");
   if (!confirmed) return;
   localStorage.removeItem(STORE_KEY);
-  location.reload();
+  clearLocalBatch("current").catch(function () {}).finally(function () { location.reload(); });
 }
 
 function commandInput(text) {
@@ -999,6 +1304,11 @@ $("#app").addEventListener("click", function (event) {
   if (!actionButton) return;
   const action = actionButton.dataset.action;
   if (action === "run") runReconciliation();
+  else if (action === "attach") $("#source-file-input").click();
+  else if (action === "speech") startDictation();
+  else if (action === "load-import") loadStagedImport();
+  else if (action === "clear-import") { stagedImport = null; stagedFileMap.clear(); renderStagedImport(null); }
+  else if (action === "restore-backup") restorePreviousBatch();
   else if (action === "page-prev") { state.page = Math.max(1, state.page - 1); renderQueueRows(); }
   else if (action === "page-next") { state.page += 1; renderQueueRows(); }
   else if (action === "source-prev") { state.sourcePage = Math.max(1, state.sourcePage - 1); renderApp(); }
@@ -1028,8 +1338,32 @@ $("#app").addEventListener("click", function (event) {
 
 $("#command-form").addEventListener("submit", function (event) {
   event.preventDefault();
+  if (state.running) { stopReconciliation(); return; }
   const text = $("#command-input").value.trim();
   executeCommand(text);
+});
+
+$("#source-file-input").addEventListener("change", function (event) {
+  stageFiles(event.target.files);
+  event.target.value = "";
+});
+
+const dropZone = $("#file-drop-zone");
+dropZone.addEventListener("dragover", function (event) {
+  event.preventDefault();
+  dropZone.classList.add("is-over");
+});
+dropZone.addEventListener("dragleave", function (event) {
+  if (!dropZone.contains(event.relatedTarget)) dropZone.classList.remove("is-over");
+});
+dropZone.addEventListener("drop", function (event) {
+  event.preventDefault();
+  dropZone.classList.remove("is-over");
+  stageFiles(event.dataTransfer.files);
+});
+dropZone.addEventListener("click", function () { $("#source-file-input").click(); });
+dropZone.addEventListener("keydown", function (event) {
+  if (event.key === "Enter" || event.key === " ") { event.preventDefault(); $("#source-file-input").click(); }
 });
 
 $("#app").addEventListener("input", function (event) {
@@ -1052,17 +1386,36 @@ $("#app").addEventListener("change", function (event) {
   if (event.target.id === "sort-select") {
     state.sort = event.target.value;
     renderQueueRows();
+  } else if (event.target.id === "model-select") {
+    state.preferences.model = event.target.value;
+    persist();
+  } else if (event.target.id === "effort-select") {
+    state.preferences.effort = event.target.value;
+    persist();
   }
 });
 
 async function boot() {
   try {
-    const response = await fetch("./data/source-data.json", { cache: "force-cache" });
-    if (!response.ok) throw new Error("Source file returned " + response.status + ".");
-    source = await response.json();
+    let syntheticSource = null;
+    try {
+      const localBatch = await getLocalBatch("current");
+      if (localBatch) {
+        source = localBatch;
+        sourceMode = "imported";
+      }
+    } catch (_) {
+      $("#import-feedback").textContent = "Local batch storage is unavailable in this browser. The synthetic batch is ready.";
+    }
+    if (!source) {
+      const response = await fetch("./data/source-data.json", { cache: "force-cache" });
+      if (!response.ok) throw new Error("Source file returned " + response.status + ".");
+      syntheticSource = await response.json();
+      source = syntheticSource;
+    }
     lineById = new Map(source.invoices.map(function (line) { return [line.invoiceLineId, line]; }));
     accrualById = new Map(source.accrueCost.map(function (row) { return [row.accrualReference, row]; }));
-    audit("SOURCE", "Synthetic source batch loaded", source.metadata.invoiceLineCount.toLocaleString() + " invoice lines; " + source.metadata.hawbRecordCount.toLocaleString() + " HAWB rows; " + source.metadata.mawbRecordCount.toLocaleString() + " MAWB rows; " + source.metadata.accrueCostRecordCount.toLocaleString() + " accruals.", "FCH-2026-10");
+    audit("SOURCE", sourceMode === "imported" ? "Local source batch loaded" : "Synthetic source batch loaded", source.metadata.invoiceLineCount.toLocaleString() + " invoice lines; " + source.metadata.hawbRecordCount.toLocaleString() + " HAWB rows; " + source.metadata.mawbRecordCount.toLocaleString() + " MAWB rows; " + source.metadata.accrueCostRecordCount.toLocaleString() + " accruals.", sourceMode === "imported" ? "Local import" : "FCH-2026-10");
     if (state.run) state.run = reconcileBatch(source);
     persist();
     renderApp();

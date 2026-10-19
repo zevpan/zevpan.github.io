@@ -1,8 +1,8 @@
-# Zev Pan — AI Business Analysis & Transformation Portfolio
+# Zev Pan | AI Business Analysis & Transformation Portfolio
 
 I redesign messy work into governed operating systems.
 
-I analyze fragmented workflows, define requirements and decision logic, and prototype practical improvements with process design, automation, and AI—keeping people responsible for consequential decisions.
+I analyze fragmented workflows, define requirements and decision logic, and prototype practical improvements with process design, automation, and AI, keeping people responsible for consequential decisions.
 
 **Portfolio:** https://zevpan.github.io/
 
