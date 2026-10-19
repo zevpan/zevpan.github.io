@@ -248,12 +248,14 @@
       paint(plannedRoute, "PLANNING", null);
       setState("PLANNING");
       await wait(130);
+      if (currentRun !== runSequence) return;
       setState("EXECUTING");
       for (let index = 0; index < steps.length; index += 1) {
         if (currentRun !== runSequence) return;
         steps[index].status = "active";
         paint(plannedRoute, "EXECUTING", null);
         await wait(125);
+        if (currentRun !== runSequence) return;
         steps[index].status = "done";
         paint(plannedRoute, "EXECUTING", null);
       }
