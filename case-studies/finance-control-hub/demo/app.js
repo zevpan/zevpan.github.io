@@ -13,7 +13,7 @@ const $$ = function (selector, parent) { return Array.from((parent || document).
 const STORE_KEY = "fch-demo-state-v1";
 const currencyFormat = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 let source = null;
-let sourceMode = "synthetic";
+let sourceMode = "generated";
 let stagedImport = null;
 let stagedFileMap = new Map();
 let speechRecognition = null;
@@ -276,13 +276,13 @@ function updateSourceFiles() {
     return '<div class="source-file"><strong>' + escapeHtml(item[0]) + '</strong><small>' + Number(item[1]).toLocaleString() + ' records</small></div>';
   }).join("");
   const mode = $("#data-mode-pill");
-  if (mode) mode.innerHTML = '<span></span>' + (sourceMode === "imported" ? "Local import · browser only" : "Simulation · synthetic data");
+  if (mode) mode.innerHTML = '<span></span>' + (sourceMode === "imported" ? "Local import · browser only" : "Generated demo data");
   const batchLabel = $("#batch-label");
   if (batchLabel) batchLabel.textContent = sourceMode === "imported" ? "LOCAL IMPORT · REVIEW" : "BATCH FCH-2026-10 · IMPORT REVIEW";
   const batchDate = $("#batch-date");
   if (batchDate) batchDate.textContent = sourceMode === "imported" ? "Files stay in this browser" : "Data through 14 Oct 2026";
   const provenance = $("#source-provenance");
-  if (provenance) provenance.textContent = sourceMode === "imported" ? "Local source files. Not uploaded or connected to CargoWise." : "Source schemas are illustrative; all records are synthetic.";
+  if (provenance) provenance.textContent = sourceMode === "imported" ? "Local source files. Not uploaded or connected to CargoWise." : "Source schemas are illustrative; records were generated for this demo.";
   $("#batch-state").textContent = state.run ? "Reconciliation complete" : "Source batch ready";
 }
 
@@ -344,7 +344,7 @@ function renderSuggestions() {
 function renderRunBanner() {
   const banner = $("#run-banner");
   if (!source) {
-    banner.innerHTML = '<div class="loading-state"><span class="loader"></span><div><strong>Loading source data</strong><small>Waiting for the synthetic finance batch.</small></div></div>';
+    banner.innerHTML = '<div class="loading-state"><span class="loader"></span><div><strong>Loading source data</strong><small>Waiting for the finance demo batch.</small></div></div>';
     return;
   }
   if (state.running) {
@@ -673,7 +673,7 @@ function sourceDefinition() {
 
 function renderSourceView() {
   $("#page-title").textContent = "Source records";
-  $("#page-subtitle").textContent = "Inspect representative rows from the synthetic input bundle; source schemas are illustrative.";
+  $("#page-subtitle").textContent = "Inspect representative rows from the demo input bundle; source schemas are illustrative.";
   const definition = sourceDefinition();
   const query = state.sourceQuery.trim().toLowerCase();
   const rows = definition.rows.filter(function (row) {
@@ -688,7 +688,7 @@ function renderSourceView() {
       return "<td>" + escapeHtml(row[field] == null ? "Not available" : row[field]) + "</td>";
     }).join("") + "</tr>";
   }).join("");
-  $("#workspace-content").innerHTML = '<section class="content-panel"><div class="export-head"><div><h2>Loaded source files</h2><p>Backlog snapshot · generated with a fixed seed · original operational records were not used.</p></div><span class="status-badge">Synthetic · seed ' + escapeHtml(source.metadata.seed) + '</span></div>' +
+  $("#workspace-content").innerHTML = '<section class="content-panel"><div class="export-head"><div><h2>Loaded source files</h2><p>Backlog snapshot · generated with a fixed seed · original operational records were not used.</p></div><span class="status-badge">Generated demo · seed ' + escapeHtml(source.metadata.seed) + '</span></div>' +
     '<div class="source-tabs">' + [
       ["invoices", "Vendor invoices (" + Number(source.invoices.length).toLocaleString() + ")"],
       ["hawb", "HAWB (" + Number(source.hawbReport.length).toLocaleString() + ")"],
@@ -727,7 +727,7 @@ function renderExportView() {
     (state.run ? "Preview of eligible lines. One invoice line may expand to multiple export rows for an approved grouped accrual." : "Run reconciliation before preparing an export.") + '</p></div>' +
     (state.run ? '<span class="status-badge">' + eligible.length.toLocaleString() + ' source lines · ' + rowCount.toLocaleString() + ' mapped rows</span>' : "") + '</div>' +
     (state.run ? '<div class="export-warning"><strong>Illustrative only:</strong> no official CargoWise EDI template was provided or publicly verified for this prototype. The CSV mapping is a demo artifact, not production-compatible. No posting or external file upload occurs.</div>' : "") +
-    (state.run && eligible.length ? '<label class="export-check"><input id="export-attestation" type="checkbox"><span>I reviewed the eligible records and understand this is a synthetic, illustrative file. Releasing it downloads locally and does not post to CargoWise.</span></label>' : "") +
+    (state.run && eligible.length ? '<label class="export-check"><input id="export-attestation" type="checkbox"><span>I reviewed the eligible records and understand this is an illustrative demo file. Releasing it downloads locally and does not post to CargoWise.</span></label>' : "") +
     (state.run && eligible.length ? '<button class="button button-primary" data-action="release-export" disabled>Approve & download illustrative CSV ↓</button>' : "") +
     (exportDone ? '<div class="ready-state" style="margin:12px 0"><div class="ready-copy"><span class="ready-icon">✓</span><div><strong>All eligible lines in this local batch have already been exported.</strong><small>Reset the demo to replay; this does not affect an external system.</small></div></div></div>' : "") +
     (state.run && eligible.length ? '<div class="table-scroll export-table-wrap" style="margin-top:13px"><table class="source-table"><thead><tr><th>Invoice</th><th>Source line</th><th>Job ID</th><th>PO</th><th>Amount</th><th>Validation</th></tr></thead><tbody>' + previewRows + '</tbody></table></div><div class="table-footer"><span>' + Math.min(eligible.length, 25) + ' of ' + eligible.length.toLocaleString() + ' eligible invoice lines shown · file output contains ' + rowCount.toLocaleString() + ' rows</span><span>Release requires approval</span></div>' : "") +
@@ -915,7 +915,7 @@ async function restorePreviousBatch() {
     await backupCurrentBatch();
     await putLocalBatch("current", previousSource);
     source = previousSource;
-    sourceMode = source.metadata && source.metadata.sourceKind === "local-import" ? "imported" : "synthetic";
+    sourceMode = source.metadata && source.metadata.sourceKind === "local-import" ? "imported" : "generated";
     lineById = new Map(source.invoices.map(function (line) { return [line.invoiceLineId, line]; }));
     accrualById = new Map(source.accrueCost.map(function (row) { return [row.accrualReference, row]; }));
     state.decisions = previousState.decisions || {};
@@ -1258,7 +1258,7 @@ function releaseExport() {
 }
 
 function resetDemo() {
-  const confirmed = window.confirm("Clear this browser's Finance Control Hub review decisions and restart the synthetic demo?");
+  const confirmed = window.confirm("Clear this browser's Finance Control Hub review decisions and restart the demo?");
   if (!confirmed) return;
   localStorage.removeItem(STORE_KEY);
   clearLocalBatch("current").catch(function () {}).finally(function () { location.reload(); });
@@ -1415,7 +1415,7 @@ $("#app").addEventListener("change", function (event) {
 
 async function boot() {
   try {
-    let syntheticSource = null;
+    let seedSource = null;
     try {
       const localBatch = await getLocalBatch("current");
       if (localBatch) {
@@ -1423,23 +1423,23 @@ async function boot() {
         sourceMode = "imported";
       }
     } catch (_) {
-      $("#import-feedback").textContent = "Local batch storage is unavailable in this browser. The synthetic batch is ready.";
+      $("#import-feedback").textContent = "Local batch storage is unavailable in this browser. The demo batch is ready.";
     }
     if (!source) {
       const response = await fetch("./data/source-data.json", { cache: "force-cache" });
       if (!response.ok) throw new Error("Source file returned " + response.status + ".");
-      syntheticSource = await response.json();
-      source = syntheticSource;
+      seedSource = await response.json();
+      source = seedSource;
     }
     lineById = new Map(source.invoices.map(function (line) { return [line.invoiceLineId, line]; }));
     accrualById = new Map(source.accrueCost.map(function (row) { return [row.accrualReference, row]; }));
-    audit("SOURCE", sourceMode === "imported" ? "Local source batch loaded" : "Synthetic source batch loaded", source.metadata.invoiceLineCount.toLocaleString() + " invoice lines; " + source.metadata.hawbRecordCount.toLocaleString() + " HAWB rows; " + source.metadata.mawbRecordCount.toLocaleString() + " MAWB rows; " + source.metadata.accrueCostRecordCount.toLocaleString() + " accruals.", sourceMode === "imported" ? "Local import" : "FCH-2026-10");
+    audit("SOURCE", sourceMode === "imported" ? "Local source batch loaded" : "Demo source batch loaded", source.metadata.invoiceLineCount.toLocaleString() + " invoice lines; " + source.metadata.hawbRecordCount.toLocaleString() + " HAWB rows; " + source.metadata.mawbRecordCount.toLocaleString() + " MAWB rows; " + source.metadata.accrueCostRecordCount.toLocaleString() + " accruals.", sourceMode === "imported" ? "Local import" : "FCH-2026-10");
     if (state.run) state.run = reconcileBatch(source);
     persist();
     renderApp();
   } catch (error) {
     $("#batch-state").textContent = "Source load failed";
-    $("#workspace-content").innerHTML = '<div class="error-state"><span class="ready-icon">!</span><div><strong>Could not load the synthetic batch</strong><small>' + escapeHtml(error && error.message || "Source data unavailable.") + ' Reload this page or check the demo data file.</small></div></div>';
+    $("#workspace-content").innerHTML = '<div class="error-state"><span class="ready-icon">!</span><div><strong>Could not load the demo batch</strong><small>' + escapeHtml(error && error.message || "Source data unavailable.") + ' Reload this page or check the demo data file.</small></div></div>';
   }
 }
 

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Warehouse Flow & Stock Accuracy Decision Support - Zev Pan</title>
+<title>Warehouse Management System | Zev Pan</title>
 <meta name="description" content="An anonymized warehouse transformation case study using connected operational evidence, human-in-the-loop review and measurable decision outcomes.">
 <link rel="stylesheet" href="../../shared/intent-model.css?v=1">
 <style>
@@ -60,15 +60,17 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 .evidence-map .map-arrow{display:grid;place-items:center;color:#8993a4;font-weight:900}
 .snapshot-note{background:#fff7d6;border:1px solid #f1d49a;border-radius:14px;padding:15px 17px;font-size:12px;color:#5e4a18}
 @media(max-width:760px){.evidence-band{grid-template-columns:1fr 1fr}.evidence-map{grid-template-columns:1fr}.evidence-map .map-arrow{transform:rotate(90deg)}}
+
+@media (min-width: 1440px) { .sitebar-inner, main { max-width: clamp(1160px, 80vw, 1440px); } }
 </style></head><body>
-<header class="sitebar"><div class="sitebar-inner"><a class="brand" href="../../index.html">Zev Pan</a><nav class="nav"><a href="../../index.html">All Case Studies</a><a href="prototype.html">Launch interactive demo</a><a href="../travel-logistics-transformation/index.html">Travel Logistics</a><a href="../prospecting-operations/index.html">Prospecting Operations</a></nav></div></header>
+<header class="sitebar"><div class="sitebar-inner"><a class="brand" href="../../index.html">Zev Pan</a><nav class="nav"><a href="../../index.html">All Case Studies</a><a href="prototype.html">Launch interactive demo</a><a href="../travel-logistics-transformation/index.html">Logistics OMS</a><a href="../prospecting-operations/index.html">AI Sales CRM</a></nav></div></header>
 <main>
-<div class="hero"><div class="kicker">CASE STUDY 03 · INTERACTIVE</div><h1>Warehouse Flow & Stock Accuracy Decision Support</h1><p class="lead">Connecting recorded warehouse evidence with physical operating context. The public workspace uses synthetic examples to show why time-window stability and human context matter before a stock or location decision.</p><div class="meta"><span class="tag">Process Analysis</span><span class="tag">Warehouse Operations</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Support</span><span class="tag">PoV Design</span></div></div>
+<div class="hero"><div class="kicker">CASE STUDY 03 · INTERACTIVE</div><h1>Warehouse Management System</h1><p class="lead">Connecting recorded warehouse evidence with physical operating context. The public workspace uses examples to show why time-window stability and human context matter before a stock or location decision.</p><div class="meta"><span class="tag">Process Analysis</span><span class="tag">Warehouse Operations</span><span class="tag">Human-in-the-Loop AI</span><span class="tag">Decision Support</span><span class="tag">PoV Design</span></div></div>
 
 <div class="portfolio-kicker">Architecture · Governance · Working Prototype</div>
 <div class="project-strip">
   <div class="project-item"><b>Zev’s contribution</b><span>Mapped evidence to reviewable checks and human decision points.</span></div>
-  <div class="project-item"><b>System</b><span>Synthetic prototype for candidate review and process learning.</span></div>
+  <div class="project-item"><b>System</b><span>Interactive decision-support prototype for operational review and process learning.</span></div>
   <div class="project-item"><b>Demonstrates</b><span>Process analysis · decision support · validation · human control.</span></div>
 </div>
 <div class="project-actions">
@@ -85,7 +87,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
     <article class="intent-case-card"><small>Bounded execution</small><strong>Surface evidence, not a stock adjustment</strong><span>Calculate and rank review candidates, explain why each surfaced, and keep data limitations visible. No inventory or location record is changed by the agent layer.</span></article>
     <article class="intent-case-card"><small>Human review</small><strong>Decide with physical context</strong><span>Warehouse leads confirm normal behavior, investigate, or approve a physical move or adjustment after checking operational constraints.</span></article>
   </div>
-  <div class="intent-case-note"><strong>Returned outcome:</strong> a specific review case, supporting evidence, open question, owner, and a record of the later decision and result. Public cases are synthetic and browser-local.</div>
+  <div class="intent-case-note"><strong>Returned outcome:</strong> a specific review case, supporting evidence, open question, owner, and a record of the later decision and result. Public cases are invented and stored in this browser.</div>
 </section>
 <section><h2>Transformation objective</h2><div class="callout green"><strong>Can connected warehouse evidence support better operational decisions?</strong><br>The objective is not a dashboard. The target is a useful operational decision with a measurable result.</div></section>
 
@@ -94,7 +96,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <section><h2>What remained to validate</h2><p>The discovery work deliberately separated known process facts from validation questions.</p><div class="grid2"><div class="card"><strong>Outbound / QC</strong>Exact GI → QC sequence and control point; how picking and QC exceptions are corrected and closed.</div><div class="card"><strong>Admin / Picking</strong>How work is assigned to pickers and which tracking-spreadsheet fields are actually used for planning and follow-up.</div><div class="card"><strong>Inventory Control</strong>Cycle-count selection logic and how variance moves from investigation to adjustment.</div><div class="card"><strong>Data & Decision</strong>Which timestamps can reliably measure outcomes and which decisions belong to the operator versus the principal / customer.</div></div><p class="small">These are validation items - not assumed problems.</p></section>
 
 <section>
-<div class="portfolio-kicker">Synthetic prototype scenarios</div>
+<div class="portfolio-kicker">Prototype scenarios</div>
 <h2>Three patterns make the review decision concrete</h2>
 <p>The examples below are invented for the public demo. They illustrate how an evidence layer can distinguish a stable pick face, sequential relocation between periods, and persistent multi-location activity without publishing private warehouse aggregates.</p>
 <div class="evidence-map">
@@ -102,9 +104,9 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <div class="map-arrow">→</div>
   <div class="node"><b>Temporal relocation</b><span>Locations change between periods; ask about replenishment or layout history before classifying simultaneous dispersion.</span></div>
   <div class="map-arrow">→</div>
-  <div class="node"><b>Persistent dispersion</b><span>Activity remains distributed within the synthetic review window; ask an operator about overflow, replenishment, or physical constraints.</span></div>
+  <div class="node"><b>Persistent dispersion</b><span>Activity remains distributed within the review window; ask an operator about overflow, replenishment, or physical constraints.</span></div>
 </div>
-<div class="callout green" style="margin-top:16px"><strong>Evidence boundary</strong><br>Public prototype counts and case details are synthetic. No warehouse export, product identifier, operator record, order, or derived business aggregate is included.</div>
+<div class="callout green" style="margin-top:16px"><strong>Evidence boundary</strong><br>Public prototype counts and case details are generated for this demo. No warehouse export, product identifier, operator record, order, or derived business aggregate is included.</div>
 </section>
 
 <section><h2>What a useful finding must explain</h2><div class="grid3"><div class="card"><strong>Why it caught attention</strong>Show the pattern that differs from comparable warehouse evidence.</div><div class="card"><strong>Where / when to look</strong>Point to the relevant SKU, location and period so relocation is not confused with simultaneous dispersion.</div><div class="card"><strong>What to check</strong>Convert the signal into a concrete warehouse question rather than an automatic conclusion.</div></div><p class="small">Worth checking does not mean something is wrong. The output is a specific check, not an automatic decision.</p></section>
@@ -119,7 +121,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 
 <section><h2>Measurement before value claims</h2><div class="callout amber"><strong>Select case → baseline → take action → measure result → prove value.</strong><br>Operational improvement is measured first. Business value is discussed after evidence exists.</div></section>
 
-<section><h2>Interactive prototype</h2><div class="callout green"><strong>Working synthetic demo</strong><br>The warehouse decision workspace uses invented stable-location, temporal-relocation, and persistent-dispersion scenarios. Each produces a different review question before human context is added.</div><p>The prototype also includes QC process validation and explicitly preserves unknowns instead of inventing the missing operating sequence.</p><a class="btn" href="prototype.html">Launch interactive prototype →</a></section>
+<section><h2>Interactive prototype</h2><div class="callout green"><strong>Working demo</strong><br>The warehouse decision workspace uses invented stable-location, temporal-relocation, and persistent-dispersion scenarios. Each produces a different review question before human context is added.</div><p>The prototype also includes QC process validation and explicitly preserves unknowns instead of inventing the missing operating sequence.</p><a class="btn" href="prototype.html">Launch interactive prototype →</a></section>
 
-<footer>Public narrative abstracts private source records and derived aggregates. Company, product, operator, and customer identities in the prototype are synthetic.</footer>
+<footer>Public narrative abstracts private source records and derived aggregates. Company, product, operator, and customer identities in the prototype are invented.</footer>
 </main></body></html>

@@ -45,7 +45,7 @@
 <rect x="422" y="208" width="760" height="638" rx="16" class="zone"/>
 <text x="440" y="232" class="t h2 muted">B. TRANSFORMATION LAYER</text>
 
-<text x="452" y="268" class="t b">WAREHOUSE TRACK — DECISION SUPPORT</text>
+<text x="452" y="268" class="t b">WAREHOUSE TRACK :  DECISION SUPPORT</text>
 <rect x="452" y="282" width="700" height="64" rx="10" class="box blue"/>
 <text x="470" y="307" class="t b">1. Ingest Historical / Operational Evidence</text>
 <text x="470" y="328" class="t s">Picking activity · SKU movement · location history · outbound QC data · approved rules</text>
@@ -63,7 +63,7 @@
 <text x="470" y="579" class="t b">4. Human Warehouse Decision</text>
 <text x="470" y="600" class="t s">Keep · relocate candidate · investigate · confirm expected QC exception · record reason</text>
 
-<text x="452" y="654" class="t b">FINANCE TRACK — WORKFLOW AUTOMATION</text>
+<text x="452" y="654" class="t b">FINANCE TRACK :  WORKFLOW AUTOMATION</text>
 <rect x="452" y="668" width="700" height="64" rx="10" class="box amber"/>
 <text x="470" y="693" class="t b">1. Read PO Item Batch</text>
 <text x="470" y="714" class="t s">Working model: 1,000+ items per PO · structured source data</text>

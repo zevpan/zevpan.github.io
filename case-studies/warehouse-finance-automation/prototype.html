@@ -25,7 +25,7 @@ table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:10px;bor
 <div class="app">
 <aside>
 <div class="logo">Operations Automation</div>
-<div class="ws">Acme Industrial Operations · synthetic prototype</div>
+<div class="ws">Acme Industrial Operations · local prototype</div>
 <nav>
 <button class="active" data-view="home">Overview</button>
 <button data-view="runner">High-Runner Inbound</button>
@@ -45,10 +45,10 @@ table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:10px;bor
 <div class="track fn"><h3>Finance Workflow Automation</h3><p>Large repetitive batches are validated, transformed and entered into one existing finance system automatically.</p><div class="note">The target finance system remains the system of record. Humans handle only exceptions.</div></div>
 </div>
 <div class="metrics" style="margin-top:16px">
-<div class="metric"><b>100</b><span>synthetic high-runner candidates in review set</span></div>
+<div class="metric"><b>100</b><span>High Runner candidates in review set</span></div>
 <div class="metric"><b>5</b><span>warehouse candidates escalated for human review</span></div>
-<div class="metric"><b>96%</b><span>synthetic finance batch ready after validation</span></div>
-<div class="metric"><b>4%</b><span>synthetic finance rows routed to exception review</span></div>
+<div class="metric"><b>96%</b><span>finance batch ready after validation</span></div>
+<div class="metric"><b>4%</b><span>finance rows routed to exception review</span></div>
 </div>
 </section>
 
@@ -78,9 +78,9 @@ table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:10px;bor
 
 <section id="finance" class="panel">
 <div class="card"><h3>Finance Batch Entry Automation</h3>
-<p class="small">Working assumption: a PO may contain 1,000+ items requiring repetitive entry into the existing finance system. The figures below are synthetic for demonstration.</p>
+<p class="small">Working assumption: a PO may contain 1,000+ items requiring repetitive entry into the existing finance system. The figures below are invented demo values.</p>
 <div class="metrics">
-<div class="metric"><b>1,240</b><span>synthetic items in one PO batch</span></div>
+<div class="metric"><b>1,240</b><span>items in one PO batch</span></div>
 <div class="metric"><b>1,191</b><span>validated and ready</span></div>
 <div class="metric"><b>31</b><span>missing / invalid fields</span></div>
 <div class="metric"><b>18</b><span>duplicates or target-system rejects</span></div>
@@ -147,15 +147,15 @@ window.AgentCommandSurface.mount({
  product:"Operations Automation Workspace",
  placeholder:"What should the operations team review or prepare?",
  suggestions:["What should the operations team review today?","Show the largest finance exceptions","Review high-runner inbound candidates","Open the outbound QC control gap"],
- fallback:["Review the synthetic exception queue","Open a warehouse review","Inspect the finance batch"],
+ fallback:["Review the exception queue","Open a warehouse review","Inspect the finance batch"],
  resolve(text){
   const q=text.toLowerCase();
-  let target="exceptions", title="Prioritize the synthetic exception queue", facts=["FIN-88254 · required charge mapping is missing","FIN-88312 · target-system rejection requires correction","OB-240918-27 · outbound QC checkpoint needs confirmation","SKU AX-184 · physical context is needed before a slotting decision."], checked="4 illustrative exception records";
-  if(/high.runner|slotting|warehouse|sku|inbound/.test(q)){target="runner";title="Review the high-runner inbound scenario";facts=["AX-184 · activity appears across multiple sample locations","Physical size, route, replenishment and layout still need a warehouse check."];checked="100 synthetic high-runner candidates · 1 featured case";}
-  else if(/\bqc\b|quality|outbound/.test(q)){target="qc";title="Review the outbound QC control gap";facts=["OB-240918-27 · the sample extract does not establish if verification happened or was missed","The QC owner must confirm the control point and exception path."];checked="1 synthetic process-validation case";}
-  else if(/finance|batch|po|invoice|validated|entry/.test(q)){target="finance";title="Review the finance batch validation";facts=["1,191 of 1,240 sample items are shown as validated","31 rows have missing or invalid fields","18 rows are marked duplicate or rejected","No rows were submitted to an external finance system."];checked="1,240 synthetic finance rows";}
-  else if(/audit|history|what changed/.test(q)){target="audit";title="Inspect the synthetic audit trail";facts=["The sample records validation, review prompts and human decisions","All statuses are fixtures in this browser prototype."];checked="4 illustrative audit entries";}
-  return{objective:title,steps:[{agent:"Operations Orchestrator",task:"Translate the instruction into a supported workspace view."},{agent:"Exception Analyst",task:"Review synthetic workflow state and identify the decision boundary."},{agent:"Work Planner",task:"Open the relevant queue or evidence surface."}],run(){showView(target);return{title,summary:"The workspace is showing the relevant synthetic records for review.",facts,confidence:"High for the authored fixture state",checked,freshness:"Illustrative browser-only prototype",assumptions:["All quantities and records shown here are synthetic"],exception:"This prototype does not update a warehouse or finance system.",sources:["Local scenario records","Authored validation rules"]};}};
+  let target="exceptions", title="Prioritize the exception queue", facts=["FIN-88254 · required charge mapping is missing","FIN-88312 · target-system rejection requires correction","OB-240918-27 · outbound QC checkpoint needs confirmation","SKU AX-184 · physical context is needed before a slotting decision."], checked="4 illustrative exception records";
+  if(/high.runner|slotting|warehouse|sku|inbound/.test(q)){target="runner";title="Review the high-runner inbound scenario";facts=["AX-184 · activity appears across multiple sample locations","Physical size, route, replenishment and layout still need a warehouse check."];checked="100 High Runner candidates · 1 featured case";}
+  else if(/\bqc\b|quality|outbound/.test(q)){target="qc";title="Review the outbound QC control gap";facts=["OB-240918-27 · the sample extract does not establish if verification happened or was missed","The QC owner must confirm the control point and exception path."];checked="1 process-validation case";}
+  else if(/finance|batch|po|invoice|validated|entry/.test(q)){target="finance";title="Review the finance batch validation";facts=["1,191 of 1,240 sample items are shown as validated","31 rows have missing or invalid fields","18 rows are marked duplicate or rejected","No rows were submitted to an external finance system."];checked="1,240 finance rows";}
+  else if(/audit|history|what changed/.test(q)){target="audit";title="Inspect the audit trail";facts=["The sample records validation, review prompts and human decisions","All statuses are fixtures in this browser prototype."];checked="4 illustrative audit entries";}
+  return{objective:title,steps:[{agent:"Operations Orchestrator",task:"Translate the instruction into a supported workspace view."},{agent:"Exception Analyst",task:"Review workflow state and identify the decision boundary."},{agent:"Work Planner",task:"Open the relevant queue or evidence surface."}],run(){showView(target);return{title,summary:"The workspace is showing the relevant demo records for review.",facts,confidence:"High for the authored fixture state",checked,freshness:"Illustrative browser-only prototype",assumptions:["All quantities and records shown here are illustrative"],exception:"This prototype does not update a warehouse or finance system.",sources:["Local scenario records","Authored validation rules"]};}};
  }
 });
 }

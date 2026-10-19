@@ -1,8 +1,8 @@
-# Focusline: product brief
+# Focusline · AI Job Search Agent
 
 ## Primary user
 
-A serious professional job seeker managing several plausible roles at once, with limited time and a need to balance role fit, career direction, application effort, and relevant relationships. The demo profile and all records are synthetic.
+A serious professional job seeker managing several plausible roles at once, with limited time and a need to balance role fit, career direction, application effort, and relevant relationships. The preloaded profile and records are invented examples.
 
 ## Core job to be done
 
@@ -24,7 +24,7 @@ When several opportunities compete for my attention, help me understand which ar
 - Company/career value is shown as evidence-based signals and remains editable by the user.
 - Relationship readiness is contextual guidance, not a prediction of someone’s willingness to refer.
 - No message, connection request, referral ask, or application is sent by the demo.
-- The demo uses synthetic jobs, people, resume variants, and interaction histories. User-created records stay in that browser’s local storage.
+- The demo uses example jobs, people, resume variants, and interaction histories. User-created records stay in that browser’s local storage.
 
 ## Primary journey
 
@@ -34,7 +34,7 @@ Review the attention queue → open an opportunity → inspect fit and career-va
 
 - Prioritized inbox with search, stage filters, and neglected-opportunity detection.
 - Opportunity detail with fit evidence, gaps, confidence, career-value signals, and score breakdown.
-- Company-linked synthetic contacts with relationship state and an overridable action recommendation.
+- Company-linked example contacts with relationship state and an overridable action recommendation.
 - Resume-variant selection with actionable tailoring notes.
 - Browser-local opportunity creation, stage progression, notes, snoozing, and activity history.
 - A visible distinction between deterministic rules, simulated AI analysis, and human decisions.
@@ -43,7 +43,7 @@ Review the attention queue → open an opportunity → inspect fit and career-va
 
 - **Priority inbox:** ranked active roles plus a separate attention filter for due or quiet work.
 - **Opportunities:** full pipeline with stage filtering and a contextual opportunity brief.
-- **People:** synthetic contacts shown in the context of each linked opportunity.
+- **People:** example contacts shown in the context of each linked opportunity.
 - **Activity:** local audit trail of user decisions and changes.
 
 The JSON fixture is the replaceable data boundary. `Job` holds the posting, fit evidence, career-value signals, selected resume, and `Application`. `Person` holds identity, network state, and interaction history. `JobPersonLink` holds role-specific referral relevance, relationship readiness, action guidance, and draft text; one person can have different guidance for different roles. `Resume` holds a variant summary and tailoring prompts. The browser adapter derives dates and priority, then persists the editable workspace in local storage.
@@ -73,4 +73,4 @@ The default priority score weights role fit at 50%, career value at 40%, and tim
 
 1. **Evidence:** current job trackers already offer pipelines, resume support, and contact fields. **Inference:** another tracker or isolated match score would be weak differentiation. **Decision:** make the core interaction a justified attention decision connected to a next action.
 2. **Evidence:** a reachable network contact does not establish referral readiness. **Inference:** putting network access inside the quality score could overvalue a contact. **Decision:** rank jobs without network access; use relationship state only to shape the action recommendation.
-3. **Evidence:** the public product must not expose private LinkedIn material. **Decision:** synthetic data only, local persistence, and no live sending or integration.
+3. **Evidence:** the public product must not expose private LinkedIn material. **Decision:** invented demo records only, local persistence, and no live sending or integration.

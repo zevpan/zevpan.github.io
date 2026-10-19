@@ -116,8 +116,8 @@
       syncApplication(job);
     });
     data.activity = [
-      { id: "evt-seed-1", time: new Date().toISOString(), kind: "workspace", title: "Synthetic search profile loaded", detail: "Role focus and score weights are editable in Search profile." },
-      { id: "evt-seed-2", time: new Date(Date.now() - 3600000).toISOString(), kind: "assessment", title: "Opportunity assessments prepared", detail: "All fit notes and career-value signals are synthetic demo examples." }
+      { id: "evt-seed-1", time: new Date().toISOString(), kind: "workspace", title: "Search profile loaded", detail: "Role focus and score weights are editable in Search profile." },
+      { id: "evt-seed-2", time: new Date(Date.now() - 3600000).toISOString(), kind: "assessment", title: "Opportunity assessments prepared", detail: "Fit and career-value signals are estimates, not verified outcomes." }
     ];
     return data;
   }
@@ -432,7 +432,7 @@
       if (!query) return true;
       return [person.name, person.company, person.role, person.relationshipState, person.networkState].join(" ").toLowerCase().includes(query.toLowerCase());
     }).sort((a, b) => String(a.name).localeCompare(b.name));
-    $("#queue-hint").textContent = "People are synthetic. Readiness is an estimate from relationship context, not a promise of help.";
+    $("#queue-hint").textContent = "Readiness is estimated from relationship context, not a promise of help.";
     if (!people.length) {
       container.innerHTML = `<div class="empty-state"><div class="empty-icon">◎</div><h3>No people match</h3><p>Try another name, company, or role.</p></div>`;
       renderDetail(null);
@@ -454,7 +454,7 @@
   }
 
   function renderActivity(container) {
-    $("#queue-hint").textContent = "Activity is stored locally in this browser. Synthetic seed entries are identified as demo content.";
+    $("#queue-hint").textContent = "Activity is stored locally in this browser. Seed entries are identified as demo content.";
     const events = state.activity || [];
     if (!events.length) {
       container.innerHTML = `<div class="empty-state"><div class="empty-icon">↺</div><h3>No activity yet</h3><p>Decisions and changes will appear here.</p></div>`;
@@ -585,7 +585,7 @@
       referralState: "Not assessed", nextAction: { label: "Review the original posting and confirm role scope", dueDate: dateFromOffset(1), dueInDays: 1, owner: "You", type: "research" },
       resumeId: matchingResume.id,
       resumeReason: `The ${matchingResume.name} variant is the closest starting point for this role family. Review each claim before using it.`,
-      assessmentSource: "Local keyword comparison · synthetic profile", outcome: ""
+      assessmentSource: "Local keyword comparison · editable profile", outcome: ""
     };
   }
 
@@ -730,7 +730,7 @@
             objective: "Add a role and check the available evidence",
             steps: [
               { agent: "Opportunity Analyst", task: "Create a local opportunity record and compare role text with the editable search profile." },
-              { agent: "Network Analyst", task: "Check the synthetic people records for an exact company match." },
+              { agent: "Network Analyst", task: "Check the people records for an exact company match." },
               { agent: "Resume Agent", task: "Choose a starting resume variant from the role family." }
             ],
             run: () => {
@@ -750,7 +750,7 @@
                 const id = `link-${added.id}-${person.id}`;
                 const readiness = person.relationshipStrength === "Strong" ? "High" : person.relationshipStrength === "Warm" ? "Medium" : "Low";
                 const action = readiness === "High" ? "ASK_ROLE_INSIGHT" : person.networkState.startsWith("2nd") ? "CONNECT_FIRST" : "RECONNECT_FIRST";
-                state.jobPersonLinks.push({ id, jobId: added.id, personId: person.id, referralRelevance: "Medium", relationshipReadiness: readiness, recommendedAction: action, rationale: "Exact company match in the synthetic network. Check role relevance and relationship context before any outreach.", messageDraft: "" });
+                state.jobPersonLinks.push({ id, jobId: added.id, personId: person.id, referralRelevance: "Medium", relationshipReadiness: readiness, recommendedAction: action, rationale: "Exact company match in the network. Check role relevance and relationship context before any outreach.", messageDraft: "" });
               });
               addActivity("opportunity", `Opportunity added · ${company}`, `${roleTitle} · local comparison prepared from the supplied role title`);
               setView("opportunities");
@@ -758,12 +758,12 @@
               return {
                 title: `${company} · ${roleTitle}`,
                 summary: "The role is now in your opportunity list. Fit and resume matching are local estimates; company career value remains unverified until you review the role scope.",
-                facts: [`Local fit estimate: ${added.fitScore}/100 · ${added.fitConfidence.toLowerCase()} confidence`, `${related.length} synthetic network contact${related.length === 1 ? "" : "s"} matched by exact company`, `Starting resume: ${resumeById(added.resumeId).name}`],
+                facts: [`Local fit estimate: ${added.fitScore}/100 · ${added.fitConfidence.toLowerCase()} confidence`, `${related.length} network contact${related.length === 1 ? "" : "s"} matched by exact company`, `Starting resume: ${resumeById(added.resumeId).name}`],
                 confidence: "Medium · role description not supplied",
-                checked: "1 new role · synthetic network records",
+                checked: "1 new role · network records",
                 freshness: "Created now · role text still needs review",
                 assumptions: ["Company match is exact-name only", "Career value is not an employer reputation rating"],
-                sources: ["Focusline opportunity list", "Synthetic People records", "Resume variants"],
+                sources: ["Focusline opportunity list", "People records", "Resume variants"],
                 action: { label: "Review the new opportunity", run: () => focusJobFromCommand(added.id) }
               };
             }
@@ -791,7 +791,7 @@
                 checked: `${activeJobs().length} active opportunities · ${state.jobs.filter(job => job.stage !== "Closed" && job.nextAction).length} next actions`,
                 freshness: "Dates are recalculated for this browser session",
                 assumptions: ["Only records in this local demo were checked"],
-                sources: ["Opportunity records", "Application next actions", "Synthetic relationship links"],
+                sources: ["Opportunity records", "Application next actions", "Relationship links"],
                 action: best ? { label: "Review the first opportunity", run: () => focusJobFromCommand(best.id) } : null
               };
             }
@@ -814,8 +814,8 @@
                 confidence: job?.fitConfidence || "Not assessed",
                 checked: job ? `1 job description · ${state.profile.skillSignals.length} profile signals` : "No role record checked",
                 freshness: job?.assessmentSource || "Local sample",
-                assumptions: job ? ["Role descriptions and candidate evidence are synthetic demo inputs", "Fit is not a hiring probability"] : [],
-                sources: ["Synthetic job description", "Editable search profile", "Priority weights"],
+                assumptions: job ? ["Role descriptions and candidate evidence are demo inputs", "Fit is not a hiring probability"] : [],
+                sources: ["Job description", "Editable search profile", "Priority weights"],
                 action: job ? { label: "Review the evidence in the workspace", run: () => focusJobFromCommand(job.id) } : null
               };
             }
@@ -828,14 +828,14 @@
           return {
             objective: `Check relationship options for ${job?.company || "the selected role"}`,
             steps: [
-              { agent: "Network Analyst", task: "Match synthetic people to the role's company and function." },
+              { agent: "Network Analyst", task: "Match people to the role's company and function." },
               { agent: "Relationship Agent", task: "Check connection state, interaction recency, and job-specific referral relevance." },
               ...(wantsAsk ? [{ agent: "Drafting Agent", task: "Prepare a low-pressure draft for human review; do not send it." }] : [])
             ],
             run: () => {
               if (job) { selectedJobId = job.id; setView("inbox"); }
-              if (contact?.missingName) return { title: `No synthetic contact named ${contact.missingName}`, summary: "No relationship was selected or changed. Search the People view or name a contact from this sample.", confidence: "Low · identity not matched", checked: job ? `1 job · ${(state.jobPersonLinks || []).filter(link => link.jobId === job.id).length} linked people` : "No role record checked", freshness: "Synthetic sample", exception: "An unmatched name is not treated as a contact or a referral lead.", sources: ["Synthetic People records", "Job-person links"] };
-              if (!job || !contact) return { title: "No job-specific contact found", summary: "The current sample has no linked contact for this opportunity. Network access does not change the opportunity ranking.", confidence: "Medium · sample coverage only", checked: job ? `1 role · ${state.people.length} synthetic people` : "No role record checked", freshness: "Synthetic sample", exception: "No matching person is not evidence that no real-world contact exists.", sources: ["Synthetic People records", "Job-person links"] };
+              if (contact?.missingName) return { title: `No contact named ${contact.missingName}`, summary: "No relationship was selected or changed. Search the People view or name a contact from this sample.", confidence: "Low · identity not matched", checked: job ? `1 job · ${(state.jobPersonLinks || []).filter(link => link.jobId === job.id).length} linked people` : "No role record checked", freshness: "Sample", exception: "An unmatched name is not treated as a contact or a referral lead.", sources: ["People records", "Job-person links"] };
+              if (!job || !contact) return { title: "No job-specific contact found", summary: "The current sample has no linked contact for this opportunity. Network access does not change the opportunity ranking.", confidence: "Medium · sample coverage only", checked: job ? `1 role · ${state.people.length} people` : "No role record checked", freshness: "Sample", exception: "No matching person is not evidence that no real-world contact exists.", sources: ["People records", "Job-person links"] };
               const action = contactAction(contact.link);
               const suggested = ACTION_LABELS[action];
               const approval = wantsAsk && contact.link.messageDraft && action !== "SKIP" ? {
@@ -850,9 +850,9 @@
                 facts: [`${contact.person.role} · ${contact.person.company}`, `${contact.person.networkState} · ${contact.person.relationshipState}`, `Last interaction: ${contact.person.latestInteractionDays === null ? "not recorded" : `${contact.person.latestInteractionDays} days ago`}`, `Relationship readiness: ${contact.link.relationshipReadiness} · role relevance: ${contact.link.referralRelevance}`, action === "DIRECT_REFERRAL_ASK" ? "A referral is possible to ask about; willingness is unknown." : `Suggested action: ${suggested}`],
                 confidence: `${contact.link.relationshipReadiness} readiness · guidance, not certainty`,
                 checked: `1 job · ${(state.jobPersonLinks || []).filter(link => link.jobId === job.id).length} job-specific contact record${(state.jobPersonLinks || []).filter(link => link.jobId === job.id).length === 1 ? "" : "s"}`,
-                freshness: `Interaction summary is ${contact.person.latestInteractionDays === null ? "not available" : `${contact.person.latestInteractionDays} days old in the synthetic sample`}`,
+                freshness: `Interaction summary is ${contact.person.latestInteractionDays === null ? "not available" : `${contact.person.latestInteractionDays} days old in the sample`}`,
                 assumptions: ["Recorded relationship context is incomplete", "Referral willingness is unknown"],
-                sources: ["Synthetic People records", "Job-person relevance links", "Interaction summaries"],
+                sources: ["People records", "Job-person relevance links", "Interaction summaries"],
                 approval,
                 action: { label: "Open this role and contact", run: () => focusJobFromCommand(job.id) }
               };
@@ -869,7 +869,7 @@
           return {
             objective: `Prepare a grounded resume strategy for ${job?.company || "the selected role"}`,
             steps: [
-              { agent: "Resume Agent", task: "Select the closest synthetic resume variant using the role family and saved search profile." },
+              { agent: "Resume Agent", task: "Select the closest resume variant using the role family and saved search profile." },
               { agent: "Opportunity Analyst", task: "Identify evidence to foreground and claims that still need verification." },
               { agent: "Application Agent", task: "Update the local next step without submitting an application." }
             ],
@@ -881,7 +881,7 @@
                 addActivity("plan", `Resume strategy prepared · ${job.company}`, `${resume.name} · local tailoring checklist only; no application submitted`);
                 selectedJobId = job.id;
                 setView("inbox");
-                return { title: resume.name, summary: resume.summary, facts: [...resume.tailoring, `Next action: ${job.nextAction.label}`, "Every example and claim still needs your verification."], confidence: "Medium · based on synthetic job scope", checked: `1 role · ${state.resumes.length} resume variants`, freshness: "Synthetic resume library", assumptions: ["The selected variant is a starting point", "No resume document was edited or submitted"], sources: ["Resume variants", "Role-family match", "Opportunity next action"], action: { label: "Review the resume panel", run: () => focusJobFromCommand(job.id, "resume") } };
+                return { title: resume.name, summary: resume.summary, facts: [...resume.tailoring, `Next action: ${job.nextAction.label}`, "Verify every claim before using it."], confidence: "Medium · based on job scope", checked: `1 role · ${state.resumes.length} resume variants`, freshness: "Example resume library", assumptions: ["The selected variant is a starting point", "No resume document was edited or submitted"], sources: ["Resume variants", "Role-family match", "Opportunity next action"], action: { label: "Review the resume panel", run: () => focusJobFromCommand(job.id, "resume") } };
               }
               return { title: "Select a role first", summary: "Open an opportunity so the resume strategy can be matched to a specific job.", confidence: "Not assessed", checked: "No role selected", freshness: "Local sample", action: { label: "Open the priority inbox", run: () => setView("inbox") } };
             }
@@ -908,7 +908,7 @@
               { agent: "Application Agent", task: "Check application stages and dated next actions for an interview." },
               { agent: "Opportunity Analyst", task: "Gather the role's fit evidence and open questions for review." }
             ],
-            run: () => interview ? { title: `${interview.company} · ${interview.roleTitle}`, summary: "Interview preparation checklist ready from the role record.", facts: [...interview.strengths, ...interview.gaps.map(gap => `Verify · ${gap}`)], confidence: "Medium · synthetic role evidence", checked: "1 interview-stage opportunity", freshness: "Browser-local application record", sources: ["Application stage", "Role fit notes"], action: { label: "Open the interview role", run: () => focusJobFromCommand(interview.id) } } : { title: "No interview is recorded for tomorrow", summary: "No active opportunity in this demo is in the Interview stage. Nothing was changed.", confidence: "High for the local application stages", checked: `${state.jobs.length} application records`, freshness: "Browser-local sample", exception: "The demo cannot inspect your real calendar or employer messages.", sources: ["Application stages", "Local next actions"] }
+            run: () => interview ? { title: `${interview.company} · ${interview.roleTitle}`, summary: "Interview preparation checklist ready from the role record.", facts: [...interview.strengths, ...interview.gaps.map(gap => `Verify · ${gap}`)], confidence: "Medium · role evidence", checked: "1 interview-stage opportunity", freshness: "Browser-local application record", sources: ["Application stage", "Role fit notes"], action: { label: "Open the interview role", run: () => focusJobFromCommand(interview.id) } } : { title: "No interview is recorded for tomorrow", summary: "No active opportunity in this demo is in the Interview stage. Nothing was changed.", confidence: "High for the local application stages", checked: `${state.jobs.length} application records`, freshness: "Browser-local sample", exception: "The demo cannot inspect your real calendar or employer messages.", sources: ["Application stages", "Local next actions"] }
           };
         }
         return null;

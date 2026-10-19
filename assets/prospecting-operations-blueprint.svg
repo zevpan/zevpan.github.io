@@ -10,7 +10,7 @@
 </defs>
 <rect width="1600" height="1160" fill="#f6f4ef"/>
 <text x="40" y="45" class="t h2 muted">AI TRANSFORMATION BLUEPRINT</text>
-<text x="40" y="88" class="t h1">AI-Assisted Prospecting Operations System</text>
+<text x="40" y="88" class="t h1">AI Sales CRM</text>
 <text x="40" y="116" class="t m muted">From fragmented relationship data to a governed, capacity-aware decision system that preserves human control.</text>
 <rect x="40" y="135" width="1520" height="42" rx="10" class="box"/>
 <text x="58" y="160" class="t m"><tspan font-weight="700">Business objective:</tspan> Maintain trustworthy relationship state, allocate limited weekly attention, and prevent stale follow-up.</text>
@@ -65,7 +65,7 @@
 <rect x="292" y="870" width="235" height="84" rx="10" class="box"/><text x="308" y="895" class="t b">RBAC</text><text x="308" y="915" class="t s">Operator · Ops Admin · AI/Product</text><text x="308" y="932" class="t s">Admin · Business Owner</text>
 <rect x="544" y="870" width="235" height="84" rx="10" class="box"/><text x="560" y="895" class="t b">DNC / Suppression</text><text x="560" y="915" class="t s">Fail-closed · higher precedence</text><text x="560" y="932" class="t s">than ranking or AI</text>
 <rect x="796" y="870" width="235" height="84" rx="10" class="box"/><text x="812" y="895" class="t b">AI Governance</text><text x="812" y="915" class="t s">Model/prompt versioning · eval</text><text x="812" y="932" class="t s">set · shadow mode · release gates</text>
-<rect x="1048" y="870" width="235" height="84" rx="10" class="box"/><text x="1064" y="895" class="t b">Privacy</text><text x="1064" y="915" class="t s">Data minimization · controlled</text><text x="1064" y="932" class="t s">exports · synthetic public examples</text>
+<rect x="1048" y="870" width="235" height="84" rx="10" class="box"/><text x="1064" y="895" class="t b">Privacy</text><text x="1064" y="915" class="t s">Data minimization · controlled</text><text x="1064" y="932" class="t s">exports · generated public records</text>
 <rect x="1300" y="870" width="260" height="84" rx="10" class="box"/><text x="1316" y="895" class="t b">Observability</text><text x="1316" y="915" class="t s">Data · queue · capacity · AI</text><text x="1316" y="932" class="t s">quality · workflow reliability</text>
 </g>
 

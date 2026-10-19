@@ -919,7 +919,7 @@ L 805.0572 407.196
 " clip-path="url(#pfde1260bb4)" style="fill: none; stroke: #53606f; stroke-linecap: square"/>
    </g>
    <g id="text_1">
-    <!-- ANONYMIZED WAREHOUSE — AS-IS PROCESS FLOW -->
+    <!-- ANONYMIZED WAREHOUSE :  AS-IS PROCESS FLOW -->
     <g style="fill: #173152" transform="translate(335.00625 39.856875) scale(0.2 -0.2)">
      <defs>
       <path id="DejaVuSans-Bold-41" d="M 3419 850 
@@ -6058,7 +6058,7 @@ z
 " style="fill: #53606f; stroke: #53606f; stroke-width: 1.15; stroke-linecap: round"/>
    </g>
    <g id="text_109">
-    <!-- VALIDATION ITEMS — NOT ASSUMED PROBLEMS: QC/GI sequence · exception closure · picker assignment · tracking-spreadsheet fields · cycle-count selection · variance approval · reliable timestamps · decision rights. -->
+    <!-- VALIDATION ITEMS :  NOT ASSUMED PROBLEMS: QC/GI sequence · exception closure · picker assignment · tracking-spreadsheet fields · cycle-count selection · variance approval · reliable timestamps · decision rights. -->
     <g style="fill: #5a5131" transform="translate(117.6012 681.893625) scale(0.06 -0.06)">
      <defs>
       <path id="DejaVuSans-41" d="M 2188 4044 

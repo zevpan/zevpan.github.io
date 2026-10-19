@@ -55,15 +55,15 @@ If a command is unsupported, a source is missing, or a required record is ambigu
 
 | Product | User intent | Bounded specialist work | Existing systems / data | Human control |
 |---|---|---|---|---|
-| Focusline | “Find the opportunities I should focus on today.” | Opportunity, company, network, relationship, and resume analysis as needed | Job and application records, resume variants, synthetic relationship history | Pursuit decision and any outreach or application submission |
+| Focusline · AI Job Search Agent | “Find the opportunities I should focus on today.” | Opportunity, company, network, relationship, and resume analysis as needed | Job and application records, resume variants, preloaded relationship history | Pursuit decision and any outreach or application submission |
 | Thread | “Check this supplier change against the finance model.” | Retrieve source context, compare values, identify missing confirmation, prepare review | Documents, spreadsheets, messages, existing finance and operations records | Accepting a changed value, contacting a supplier, or changing a record |
-| Prospecting operations | “Reconcile this export and surface safe follow-ups.” | Match identity, reconcile current exports, preserve interaction history, check eligibility | LinkedIn exports, interaction log, Google Sheets, workflow engine | Ambiguous identity and relationship outreach |
+| AI Sales CRM | “Reconcile this export and surface safe follow-ups.” | Match identity, reconcile current exports, preserve interaction history, check eligibility | LinkedIn exports, interaction log, Google Sheets, workflow engine | Ambiguous identity and relationship outreach |
 | Travel operations | “What needs intervention today?” | Validate required data, check SLA and exceptions, prepare a dispatch | Canonical order, routing rules, supplier system | Supplier dispatch and customer communication |
-| Warehouse flow | “What should the warehouse review first?” | Rank evidence-backed candidates and explain variance | Inventory history, counts, warehouse records | Physical movement, stock adjustment, and financial posting |
+| Warehouse Management System | “What should the warehouse review first?” | Rank evidence-backed candidates and explain variance | Inventory history, counts, warehouse records | Physical movement, stock adjustment, and financial posting |
 
 ## Demo implementation boundary
 
-The public site uses a shared browser component for command entry, staged work, evidence, exceptions, and approval. Product adapters route supported commands to deterministic demo functions and synthetic local state. This is an interaction prototype, not a live multi-agent service: no LLM, LinkedIn, email, supplier, CRM, ERP, Google, or n8n connection is called by the public demos. A production backend can replace the local adapters without changing the interaction contract.
+The public site uses a shared browser component for command entry, staged work, evidence, exceptions, and approval. Product adapters route supported commands to deterministic demo functions and browser-local example data. This is an interaction prototype, not a live multi-agent service: no LLM, LinkedIn, email, supplier, CRM, ERP, Google, or n8n connection is called by the public demos. A production backend can replace the local adapters without changing the interaction contract.
 
 The key invariant is: **language for intent, structured UI for cognition, agents for bounded execution, and humans for consequential decisions.**
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Case Study 06 · Finance Control Hub | Zev Pan</title>
-  <meta name="description" content="How Zev translated a freight-forwarding finance reconciliation problem into a synthetic, tested exception-management workbench with deterministic matching and human approval controls.">
+  <meta name="description" content="How Zev translated a freight-forwarding finance reconciliation problem into an illustrative, tested exception-management workbench with deterministic matching and human approval controls.">
   <link rel="stylesheet" href="../../shared/intent-model.css?v=1">
   <style>
     :root{--ink:#172b4d;--navy:#0f1f3d;--text:#26364c;--muted:#5e6c84;--line:#dfe1e6;--soft:#f7f8fa;--blue:#0c66e4;--blue-soft:#e9f2ff;--green:#216e4e;--green-soft:#e8f6ee;--amber:#80570d;--amber-soft:#fff7df;--red:#93423a}
@@ -27,7 +27,9 @@
     footer{padding-top:24px;color:#78869a;font-size:10px}.footer-row{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
     @media(max-width:780px){main{padding:22px 16px 55px}.nav{align-items:flex-start;flex-direction:column}.hero{padding:25px 0}.hero h1{font-size:39px}.lead{font-size:16px}.two-col,.three-col{grid-template-columns:1fr}.workflow{grid-template-columns:1fr 1fr}.loop{grid-template-columns:1fr 1fr}.metric-row{grid-template-columns:1fr 1fr}.architecture{grid-template-columns:1fr 1fr}.schema-grid{grid-template-columns:1fr}.rule-table-wrap{overflow:auto}.rule-table{min-width:620px}}
     @media(max-width:400px){.workflow{grid-template-columns:1fr}.loop{grid-template-columns:1fr}.hero-actions .button{width:100%}.metric-row{gap:6px}}
-  </style>
+
+@media (min-width: 1440px) { .nav, main { max-width: clamp(1100px, 75vw, 1360px); } }
+</style>
 </head>
 <body>
   <header class="sitebar"><div class="nav">
@@ -36,12 +38,12 @@
   </div></header>
   <main>
     <header class="hero">
-      <div class="kicker">CASE STUDY 06 · FINANCE PROCESS TRANSFORMATION · SYNTHETIC PROOF OF CONCEPT</div>
+      <div class="kicker">CASE STUDY 06 · FINANCE PROCESS TRANSFORMATION · DEMO PROOF OF CONCEPT</div>
       <h1>Finance Control Hub</h1>
       <p class="lead">I translated a freight-forwarding finance reconciliation problem into a tested operations workbench: deterministic matching for defensible records, a prioritized queue for exceptions, and human approval before an illustrative import file is released.</p>
       <div class="meta"><span class="tag">Business Analysis</span><span class="tag">Finance Operations</span><span class="tag">Process Improvement</span><span class="tag">Data Modelling</span><span class="tag">Deterministic Reconciliation</span><span class="tag">Human Controls</span></div>
       <div class="hero-actions"><a class="button primary" href="demo/index.html">Open interactive workbench →</a><a class="button" href="../../index.html#work">Back to Zev’s selected work</a></div>
-      <div class="disclosure"><strong>Evidence and privacy:</strong> The workflow was inspired by an operational finance problem. The original financial files were not provided; all vendors, invoice lines, references, amounts and test records in this public demo are synthetic. The prototype was not deployed to the originating business, and no private people or messages appear here.</div>
+      <div class="disclosure"><strong>Evidence and privacy:</strong> The workflow was inspired by an operational finance problem. The original financial files were not provided; all vendors, invoice lines, references, amounts and test records in this public demo were generated for this case study. The prototype was not deployed to the originating business, and no private people or messages appear here.</div>
     </header>
 
     <section id="problem">
@@ -110,7 +112,7 @@
       <h2>Validation against generated ground truth</h2>
       <p class="section-intro">A fixed-seed generator creates coherent shipment, invoice and accrual relationships. A separate test fixture records intended outcomes; the production reconciliation engine never reads the answer key.</p>
       <div class="metric-row">
-        <div class="metric"><strong>4,000</strong><span>synthetic invoice lines evaluated</span></div>
+        <div class="metric"><strong>4,000</strong><span>invoice lines evaluated</span></div>
         <div class="metric"><strong>3,405</strong><span>unique exact or tolerance matches · 85.1%</span></div>
         <div class="metric"><strong>545</strong><span>exceptions routed for Finance review</span></div>
         <div class="metric"><strong>50</strong><span>prior-export rows excluded from re-export</span></div>
@@ -145,7 +147,7 @@
       <div class="capability-list"><span>Business requirements</span><span>Process redesign</span><span>Data modelling</span><span>Finance workflow controls</span><span>AI decision boundaries</span><span>Operational UX</span><span>Automated testing</span><span>Human-in-the-loop governance</span></div>
     </section>
 
-    <footer><div class="footer-row"><span>Case Study 06 · Finance Control Hub · Synthetic proof of concept · Zev Pan</span><span><a href="../../index.html#work">Return to portfolio</a> · <a href="demo/index.html">Open demo</a></span></div></footer>
+    <footer><div class="footer-row"><span>Case Study 06 · Finance Control Hub · Proof of concept · Zev Pan</span><span><a href="../../index.html#work">Return to portfolio</a> · <a href="demo/index.html">Open demo</a></span></div></footer>
   </main>
 </body>
 </html>

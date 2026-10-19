@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Thread - AX Memory + AX Workspace | Zev Pan</title>
-<meta name="description" content="Thread is an AX Memory and AX Workspace product concept for source-linked context, intent-led task planning, and human review across existing tools. The public demo uses synthetic local data.">
+<title>Thread · Team Workspace | Zev Pan</title>
+<meta name="description" content="Thread is an AX Memory and AX Workspace product concept for source-linked context, intent-led task planning, and human review across existing tools. The public demo uses browser-local demo data.">
 <link rel="stylesheet" href="../../shared/intent-model.css?v=1">
 <style>
 :root{--ink:#172b4d;--dark:#0f1f3d;--muted:#5e6c84;--line:#dfe1e6;--soft:#f7f8fa;--blue:#0c66e4;--blue-soft:#e9f2ff;--green:#216e4e;--green-soft:#dcfff1;--amber:#674100;--amber-soft:#fff7d6;--shadow:0 18px 44px rgba(9,30,66,.09)}
@@ -13,10 +13,12 @@
 .integration-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:14px;align-items:stretch}.integration-stat{padding:22px;border-radius:15px;background:linear-gradient(145deg,#0f1f3d,#20395e);color:#fff;box-shadow:var(--shadow)}.integration-stat strong{display:block;font-size:46px;line-height:1;letter-spacing:-.05em}.integration-stat b{display:block;margin-top:9px;font-size:12px}.integration-stat span{display:block;margin-top:7px;color:#c3d0e1;font-size:10px;line-height:1.5}.integration-stat small{display:inline-flex;margin-top:17px;padding:5px 8px;border:1px solid #56708f;border-radius:999px;color:#d2e2f5;font-size:9px;font-weight:850;letter-spacing:.04em;text-transform:uppercase}.integration-content{display:grid;gap:12px}.integration-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.integration-card{min-height:102px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff}.integration-card b{display:block;color:var(--dark);font-size:12px}.integration-card span{display:block;margin-top:5px;color:var(--muted);font-size:10px;line-height:1.5}.integration-architecture{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--soft);font-size:10px;font-weight:800}.integration-architecture span{padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:#fff}.integration-architecture b{color:var(--blue)}.integration-note{margin:12px 0 0;color:var(--muted);font-size:10px}@media(max-width:850px){.integration-layout{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr}.workflow{grid-template-columns:repeat(3,1fr)}.teams{grid-template-columns:repeat(2,1fr)}.build{align-items:flex-start;flex-direction:column}.build .actions{margin-left:0}}
 @media(max-width:760px){.links{display:none}}@media(max-width:620px){.integration-grid{grid-template-columns:1fr 1fr}.notice{font-size:11px}.nav{padding:10px 16px}.links{display:none}.wrap{padding:0 18px}.hero{padding:55px 0 38px}.hero h1{font-size:39px}.hero p{font-size:15px}.hero-visual{padding:15px}.workflow{grid-template-columns:1fr 1fr}.section{padding:50px 0}.section h2{font-size:29px}.pillars,.scenarios,.control-grid{grid-template-columns:1fr}.integration-grid{grid-template-columns:1fr}.teams{grid-template-columns:1fr 1fr}.build{padding:20px}.build .actions{flex-wrap:wrap}.build .button{white-space:normal}footer{display:block}footer span{display:block;margin:5px 0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+@media (min-width: 1440px) { .nav, .wrap { max-width: clamp(1160px, 80vw, 1440px); } }
 </style>
 </head>
 <body>
-<div class="notice">Working MVP with synthetic data. State is saved in this browser only.</div>
+<div class="notice">Working MVP. Demo state is saved in this browser only.</div>
 <header class="bar">
   <nav class="nav" aria-label="Main navigation">
     <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true">T</span>Thread</a>
@@ -31,11 +33,11 @@
         <div>
           <div class="eyebrow">Product Build · Static MVP</div>
           <h1>Operational context that stays attached to the work.</h1>
-          <p>Thread is a product concept for Operations, Finance, and Warehouse teams. AX Memory organizes source-backed context and decisions. AX Workspace gives people a place to review evidence, make decisions, and track what happens next. <strong>Zev’s contribution:</strong> I designed the source-linked context model, review workflow, and decision boundaries, then built this browser-local MVP. The demo uses synthetic records; integrations are concepts, not live connections.</p>
+          <p>Thread is a product concept for Operations, Finance, and Warehouse teams. AX Memory organizes source-backed context and decisions. AX Workspace gives people a place to review evidence, make decisions, and track what happens next. <strong>Zev’s contribution:</strong> I designed the source-linked context model, review workflow, and decision boundaries, then built this browser-local MVP. The demo uses invented records; integrations are concepts, not live connections.</p>
           <div class="actions"><a class="button primary" href="demo/index.html">Explore the working demo →</a><a class="button" href="#how-it-works">See the workflow</a></div>
         </div>
-        <div class="hero-visual" aria-label="Example operational work requiring human review">
-          <div class="visual-head"><strong>Today · Needs a decision</strong><span class="badge">SYNTHETIC DEMO</span></div>
+        <div class="hero-visual" aria-label="Operational work requiring human review">
+          <div class="visual-head"><strong>Today · Needs a decision</strong><span class="badge">LOCAL WORKSPACE</span></div>
           <div class="visual-copy">A source changes the context. People review the evidence and own the decision.</div>
           <div class="work-items">
             <div class="work-item"><b>Crestline Logistics · Q4 transfer rates</b><span>Finance model: $42 / $68 · New card: $47 / $75 · Decision pending</span></div>
@@ -44,7 +46,7 @@
         </div>
       </div>
       <div class="workflow" aria-label="Thread workflow">
-        <div class="step"><b>01 · Source</b><span>Add a synthetic note or local event.</span></div>
+        <div class="step"><b>01 · Source</b><span>Add a sample note or local event.</span></div>
         <div class="step"><b>02 · Compare</b><span>See the source excerpt beside current context.</span></div>
         <div class="step"><b>03 · Review</b><span>Accept, correct, reject, or defer a proposal.</span></div>
         <div class="step"><b>04 · Decide</b><span>Record an immutable decision with a note.</span></div>
@@ -54,18 +56,18 @@
 
     <section class="intent-model" aria-label="Thread intent-to-outcome operating model">
       <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Ask across work context. Get back the decision, evidence, and next step.</h2><p>Thread’s command layer retrieves source-linked context and routes bounded analysis across existing systems. AX Memory preserves what the organization knows; AX Workspace remains where people review, decide, and follow through.</p></div>
-      <div class="intent-case-command"><small>EXAMPLE COMMAND</small><blockquote>“Check this supplier rate update against the finance model and prepare the review.”</blockquote></div>
+      <div class="intent-case-command"><small>DEMO COMMAND</small><blockquote>“Check this supplier rate update against the finance model and prepare the review.”</blockquote></div>
       <div class="intent-case-grid">
         <article class="intent-case-card"><small>Agent plan</small><strong>Retrieve · compare · plan</strong><span>Context Retrieval Agent finds source facts; Change Analyst identifies conflicts and missing evidence; Task Planner keeps review work assigned.</span></article>
         <article class="intent-case-card"><small>Tools + data</small><strong>Existing sources stay in place</strong><span>Simulated Outlook, Sheets, source documents, AX Memory records, and browser-local tasks. Integrations are a product target, not connected in this demo.</span></article>
         <article class="intent-case-card"><small>Bounded execution</small><strong>Evidence and proposals</strong><span>Retrieve, summarize, calculate, compare, and prepare a reviewable update. Do not silently replace a system-of-record value.</span></article>
         <article class="intent-case-card"><small>Human review</small><strong>Confirm the record and any communication</strong><span>People accept, correct, or reject proposed facts; supplier responses and finance changes require explicit human decision.</span></article>
       </div>
-      <div class="intent-case-note"><strong>Architecture:</strong> a provider-neutral orchestration layer can route different bounded tasks to an organization-selected model. The public demo uses synthetic local rules and does not call an LLM or a live enterprise system.</div>
+      <div class="intent-case-note"><strong>Architecture:</strong> a provider-neutral orchestration layer can route different bounded tasks to an organization-selected model. The public demo uses local rules and does not call an LLM or a live enterprise system.</div>
     </section>
 
     <section class="section" id="memory">
-      <div class="section-head"><div class="eyebrow">AX Memory</div><h2>The governed knowledge layer.</h2><p>AX Memory is the product model for persistent team context: what the team currently knows, where it came from, what changed, and what remains uncertain. The records in this MVP are synthetic and local to one browser; team-wide shared memory would require a backend.</p></div>
+      <div class="section-head"><div class="eyebrow">AX Memory</div><h2>The governed knowledge layer.</h2><p>AX Memory is the product model for persistent team context: what the team currently knows, where it came from, what changed, and what remains uncertain. The records in this MVP are invented and local to one browser; team-wide shared memory would require a backend.</p></div>
       <div class="pillars">
         <article class="pillar"><div class="letter" aria-hidden="true">M</div><h3>Source-linked facts</h3><p>Each current value points back to its source and keeps the earlier value when a person reviews a change.</p><ul class="list"><li>Provenance and confirmation details</li><li>Conflicts shown side by side</li><li>Unverified items stay visible until resolved</li></ul></article>
         <article class="pillar"><div class="letter" aria-hidden="true">H</div><h3>Decision history</h3><p>Decisions are appended with the person, time, and optional rationale. A later decision can supersede an earlier entry without erasing it.</p><ul class="list"><li>Readable source and review history</li><li>Open tasks tied to a context record</li><li>Browser-local persistence in this MVP</li></ul></article>
@@ -97,7 +99,7 @@
         <article class="pillar"><div class="letter" aria-hidden="true">W</div><h3>Four working views</h3><p>Today prioritizes decisions and due work. My Work filters tasks by a demo team member. Context holds the records. History shows readable changes.</p></article>
         <article class="pillar"><div class="letter" aria-hidden="true">↔</div><h3>Review before changing context</h3><p>Pre-written sample proposals are clearly identified. People can accept, correct, reject, or mark a proposal “Not sure yet.” Context updates only after review.</p></article>
       </div>
-      <div class="teams" aria-label="Teams represented in the synthetic demo">
+      <div class="teams" aria-label="Teams represented in the demo">
         <div class="team"><b>Operations</b><span>Review incoming operational context</span></div>
         <div class="team"><b>Finance</b><span>Check costing and adjustment impacts</span></div>
         <div class="team"><b>Warehouse</b><span>Investigate physical and system differences</span></div>
@@ -106,10 +108,10 @@
     </section>
 
     <section class="section" id="how-it-works">
-      <div class="section-head"><div class="eyebrow">Synthetic scenarios</div><h2>Two operational records show the workflow.</h2><p>Every company, location, amount, and record in the public demo is invented for this example and independent of the prospecting case study.</p></div>
+      <div class="section-head"><div class="eyebrow">Illustrative scenarios</div><h2>Two operational records show the workflow.</h2><p>Every company, location, amount, and record in the public demo is invented for the prototype and independent of the prospecting case study.</p></div>
       <div class="scenarios">
         <article class="scenario"><small>Operations + Finance</small><h3>Crestline Logistics · Q4 Transfer Rate Update</h3><p>A finance model lists the previous rates while a revised rate card proposes changes effective 01 Nov 2026. The demo asks a person to compare the evidence and record a decision.</p><ul><li>Source dated 29 Sep; written confirmation requested within 14 days</li><li>Internal review due 05 Oct; supplier response task due 12 Oct</li><li>Finance update task is due 30 Oct, before the effective date</li></ul></article>
-        <article class="scenario"><small>Warehouse + Finance</small><h3>Bin Location 7C · September Stock Count Variance</h3><p>The synthetic system quantity is 360 units and the physical count is 315. The cause is unverified; a finance adjustment should wait for the investigation result.</p><ul><li>45 unit difference, or 12.5% of system quantity</li><li>Receiving and movement records need a human check</li><li>No finance notification or adjustment is made by the demo</li></ul></article>
+        <article class="scenario"><small>Warehouse + Finance</small><h3>Bin Location 7C · September Stock Count Variance</h3><p>The demo system quantity is 360 units and the physical count is 315. The cause is unverified; a finance adjustment should wait for the investigation result.</p><ul><li>45 unit difference, or 12.5% of system quantity</li><li>Receiving and movement records need a human check</li><li>No finance notification or adjustment is made by the demo</li></ul></article>
       </div>
     </section>
 
@@ -120,16 +122,16 @@
         <article class="control"><h3>No AI is running</h3><p>The sample proposals are pre-written for this demo. Manually added sources do not trigger automated extraction.</p></article>
         <article class="control"><h3>No external actions</h3><p>The demo does not send messages, contact suppliers, update files, sync a team workspace, or deliver notifications.</p></article>
       </div>
-      <div class="boundary"><strong>Working MVP with synthetic data. State is saved in this browser only.</strong> There is no backend, multi-user state, real-time sync, authentication or permissions, server-side audit, live source connector, notification delivery, or running AI in this demo.</div>
+      <div class="boundary"><strong>Working MVP. Demo state is saved in this browser only.</strong> There is no backend, multi-user state, real-time sync, authentication or permissions, server-side audit, live source connector, notification delivery, or running AI in this demo.</div>
     </section>
 
     <section class="section" style="border-bottom:0;padding-bottom:35px">
       <div class="build">
-        <div><div class="eyebrow" style="color:#9ec5ff">Try AX Workspace</div><h2>Review the source. Make the decision. Track the work.</h2><p>The demo starts with two synthetic operational context records and a task assigned to Zev. Reset returns the browser to the clean seed state.</p></div>
+        <div><div class="eyebrow" style="color:#9ec5ff">Try AX Workspace</div><h2>Review the source. Make the decision. Track the work.</h2><p>The demo starts with two operational context records and a task assigned to Zev. Reset returns the browser to the clean seed state.</p></div>
         <div class="actions"><a class="button primary" href="demo/index.html">Launch Thread demo →</a></div>
       </div>
     </section>
-    <footer><span>Thread is a product build by Zev Pan. Public scenarios and data are synthetic.</span><span><a href="../../index.html">Back to portfolio</a></span></footer>
+    <footer><span>Thread is a product build by Zev Pan. Public scenarios are illustrative.</span><span><a href="../../index.html">Back to portfolio</a></span></footer>
   </div>
 </main>
 </body>

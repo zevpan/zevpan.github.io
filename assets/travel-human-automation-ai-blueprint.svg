@@ -173,7 +173,7 @@ z
 " clip-path="url(#p56457125aa)" style="fill: #eee8ff; stroke: #7b66b3; stroke-width: 1.1; stroke-linejoin: miter"/>
    </g>
    <g id="text_1">
-    <!-- GLOBAL TRAVEL LOGISTICS — HUMAN / AUTOMATION / AI BLUEPRINT -->
+    <!-- LOGISTICS OMS :  HUMAN / AUTOMATION / AI BLUEPRINT -->
     <g style="fill: #173152" transform="translate(238.342188 39.856875) scale(0.2 -0.2)">
      <defs>
       <path id="DejaVuSans-Bold-47" d="M 4781 347 
@@ -1877,7 +1877,7 @@ z
     </g>
    </g>
    <g id="text_9">
-    <!-- PRIORITY 1 — STRUCTURE THE CORE -->
+    <!-- PRIORITY 1 :  STRUCTURE THE CORE -->
     <g style="fill: #27313d" transform="translate(178.030047 308.503963) scale(0.07 -0.07)">
      <defs>
       <path id="DejaVuSans-Bold-31" d="M 750 831 
@@ -2048,7 +2048,7 @@ z
     </g>
    </g>
    <g id="text_11">
-    <!-- PRIORITY 2 — AUTOMATE OPERATIONS -->
+    <!-- PRIORITY 2 :  AUTOMATE OPERATIONS -->
     <g style="fill: #27313d" transform="translate(548.651094 308.503963) scale(0.07 -0.07)">
      <defs>
       <path id="DejaVuSans-Bold-32" d="M 1844 884 
@@ -2298,7 +2298,7 @@ z
     </g>
    </g>
    <g id="text_13">
-    <!-- PRIORITY 3 — ADD AI -->
+    <!-- PRIORITY 3 :  ADD AI -->
     <g style="fill: #27313d" transform="translate(957.221437 308.503963) scale(0.07 -0.07)">
      <defs>
       <path id="DejaVuSans-Bold-33" d="M 2981 2516 
@@ -3021,7 +3021,7 @@ z
     </g>
    </g>
    <g id="text_25">
-    <!-- AI should consume governed system rules and context — not invent business decisions. -->
+    <!-- AI should consume governed system rules and context :  not invent business decisions. -->
     <g style="fill: #173152" transform="translate(418.289234 681.802859) scale(0.083 -0.083)">
      <defs>
       <path id="DejaVuSans-Bold-73" d="M 3272 3391 

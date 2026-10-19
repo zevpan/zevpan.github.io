@@ -1,6 +1,6 @@
 # Finance Control Hub · Case Study 06
 
-Interactive synthetic finance reconciliation proof of concept for the Zev Pan portfolio.
+Interactive finance reconciliation proof of concept for the Zev Pan portfolio, using generated demonstration records.
 
 - Case study: index.html
 - Demo: demo/index.html
@@ -11,7 +11,7 @@ Interactive synthetic finance reconciliation proof of concept for the Zev Pan po
 - Test-only expected outcomes: ../../test/fixtures/finance-ground-truth.json
 - Automated checks: ../../test/finance-control-hub.test.mjs
 
-## Synthetic source schemas
+## Demo source schemas
 
 All identifiers, vendors, currencies, amounts and shipment relationships are invented. The file schemas are proposed for this simulation; they are not official CargoWise report formats.
 
@@ -36,7 +36,7 @@ The generated batch contains 4,000 vendor invoice lines, 4,095 HAWB rows, 512 MA
 8. Reserve auto-matched and grouped accrual references so a source accrual cannot be allocated to another automatic match.
 9. Exclude source records marked exported. After the local CSV download, the same demo records are excluded from a second export.
 
-The ±0.05 tolerance is a configurable synthetic demo default, not an accounting policy recommendation. No exchange-rate conversion is inferred.
+The ±0.05 tolerance is a configurable demo default, not an accounting policy recommendation. No exchange-rate conversion is inferred.
 
 ## Command registry
 
