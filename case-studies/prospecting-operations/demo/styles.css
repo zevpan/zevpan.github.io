@@ -465,6 +465,9 @@ h2, h3, h4 { color: #172b4d; }
   .rfq-layout { grid-template-columns: minmax(240px,.8fr) minmax(0,1.2fr); }
   .proposal-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
+@media (max-width: 1649px) {
+  .quote-detail-grid { grid-template-columns: minmax(0,1fr); }
+}
 @media (max-width: 1080px) {
   .app-shell { display: block; }
   .sidebar { position: sticky; top: 36px; z-index: 35; height: auto; min-height: 0; display: flex; flex-direction: row; align-items: center; gap: 12px; padding: 7px 12px; overflow: hidden; border-right: 0; border-bottom: 1px solid var(--line); }
