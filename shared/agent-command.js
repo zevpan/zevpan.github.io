@@ -62,7 +62,7 @@
         <div class="agent-command-suggestions" aria-label="Suggested commands"><span>Try a command</span>${suggestions.map((suggestion) => `<button class="agent-command-suggestion" type="button" data-agent-suggestion="${escapeHTML(suggestion)}">${escapeHTML(suggestion)}</button>`).join("")}</div>
         <div class="agent-command-foot">
           <div class="agent-command-flow" aria-label="Dream, plan, execute, review, iterate"><b>Dream</b><i>→</i><b>Plan</b><i>→</i><b>Execute</b><i>→</i><b>Review</b><i>→</i><b>Iterate</b></div>
-          <span class="agent-command-local">Local demo actions · model choice is a preference only · no external action</span>
+          <span class="agent-command-local">Local demo actions · model and effort save as preferences only · no LLM or external service is connected</span>
         </div>
         <section class="agent-run" data-agent-run aria-label="Command execution evidence" aria-live="polite" hidden></section>
       </section>`;
