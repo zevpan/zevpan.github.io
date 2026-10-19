@@ -784,7 +784,7 @@
               setView("inbox");
               setFilter(attention.length ? "attention" : "active");
               return {
-                title: attention.length ? `${attention.length} opportunity${attention.length === 1 ? "" : "ies"} need attention` : "No overdue opportunity is recorded",
+                title: attention.length ? `${attention.length} ${attention.length === 1 ? "opportunity" : "opportunities"} need attention` : "No overdue opportunity is recorded",
                 summary: best ? `${best.company} · ${best.roleTitle} is the first item to review. Priority remains based on your profile; due dates identify urgency separately.` : "Your active opportunity queue is empty. Add a role to begin a search.",
                 facts: best ? [`Next action: ${best.nextAction?.label || "Choose a next step"}`, `Priority score: ${priorityScore(best)}/100 · fit ${best.fitScore} · career value ${careerScore(best)} · timing ${best.timingScore}`, `${attention.length} active role${attention.length === 1 ? "" : "s"} currently due or quiet`] : ["No active roles are available in this sample"],
                 confidence: "High for recorded dates · not a hiring prediction",
