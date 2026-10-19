@@ -34,7 +34,7 @@ let state = {
   sourcePage: 1,
   selectedId: null,
   running: false,
-  preferences: { model: "automatic", effort: "default" },
+  preferences: { model: "default", effort: "default" },
   run: null,
   runAt: null,
   decisions: {},
@@ -131,7 +131,13 @@ if (restored) {
   state.audit = Array.isArray(restored.audit) ? restored.audit.slice(0, 150) : [];
   state.runAt = restored.runAt || null;
   state.groupByVendor = Boolean(restored.groupByVendor);
-  state.preferences = Object.assign({ model: "automatic", effort: "default" }, restored.preferences || {});
+  state.preferences = Object.assign({ model: "default", effort: "default" }, restored.preferences || {});
+  const modelAliases = { automatic: "default", openai: "default", anthropic: "default", gemini: "default", enterprise: "default" };
+  const effortAliases = { fast: "instant", thorough: "high" };
+  state.preferences.model = modelAliases[state.preferences.model] || state.preferences.model;
+  state.preferences.effort = effortAliases[state.preferences.effort] || state.preferences.effort;
+  if (!["default", "gpt-6-astra", "gpt-6-1-sol", "gpt-6-sol", "gpt-6-luna"].includes(state.preferences.model)) state.preferences.model = "default";
+  if (!["default", "instant", "high", "max"].includes(state.preferences.effort)) state.preferences.effort = "default";
   if (restored.completed) state.run = { restored: true };
 }
 
@@ -998,18 +1004,20 @@ function startDictation() {
   recognition.lang = navigator.language || "en-US";
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
-  $("#speech-button").textContent = "■";
+  $("#speech-button").innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="5" width="10" height="10" rx="1"/></svg>';
   $("#speech-button").setAttribute("aria-label", "Stop dictation");
+  $("#speech-button").setAttribute("aria-pressed", "true");
   recognition.onresult = function (event) {
     const transcript = event.results && event.results[0] && event.results[0][0] && event.results[0][0].transcript;
-    if (transcript) $("#command-input").value = transcript;
+    if (transcript) $("#command-input").value = `${$("#command-input").value.trim()}${$("#command-input").value.trim() ? " " : ""}${transcript}`;
   };
   recognition.onerror = function () { toast("Speech input could not start. Check browser microphone permission or type the instruction."); };
   recognition.onend = function () {
     if (speechRecognition !== recognition) return;
     speechRecognition = null;
-    $("#speech-button").textContent = "🎙";
+    $("#speech-button").innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="2.5" width="6" height="10" rx="3"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v3M7 18h6"/></svg>';
     $("#speech-button").setAttribute("aria-label", "Dictate an instruction");
+    $("#speech-button").setAttribute("aria-pressed", "false");
   };
   try { recognition.start(); }
   catch (_) { speechRecognition = null; toast("Speech input could not start. Type the instruction instead."); }
@@ -1348,22 +1356,29 @@ $("#source-file-input").addEventListener("change", function (event) {
   event.target.value = "";
 });
 
-const dropZone = $("#file-drop-zone");
-dropZone.addEventListener("dragover", function (event) {
-  event.preventDefault();
-  dropZone.classList.add("is-over");
+const composer = $("#command-composer");
+const dropOverlay = $("#file-drop-overlay");
+["dragenter", "dragover"].forEach(function (type) {
+  composer.addEventListener(type, function (event) {
+    if (!Array.from(event.dataTransfer && event.dataTransfer.types || []).includes("Files")) return;
+    event.preventDefault();
+    composer.classList.add("is-dragging");
+    dropOverlay.setAttribute("aria-hidden", "false");
+  });
 });
-dropZone.addEventListener("dragleave", function (event) {
-  if (!dropZone.contains(event.relatedTarget)) dropZone.classList.remove("is-over");
-});
-dropZone.addEventListener("drop", function (event) {
+composer.addEventListener("dragleave", function (event) {
+  if (!Array.from(event.dataTransfer && event.dataTransfer.types || []).includes("Files")) return;
   event.preventDefault();
-  dropZone.classList.remove("is-over");
+  if (composer.contains(event.relatedTarget)) return;
+  composer.classList.remove("is-dragging");
+  dropOverlay.setAttribute("aria-hidden", "true");
+});
+composer.addEventListener("drop", function (event) {
+  if (!event.dataTransfer || !event.dataTransfer.files.length) return;
+  event.preventDefault();
+  composer.classList.remove("is-dragging");
+  dropOverlay.setAttribute("aria-hidden", "true");
   stageFiles(event.dataTransfer.files);
-});
-dropZone.addEventListener("click", function () { $("#source-file-input").click(); });
-dropZone.addEventListener("keydown", function (event) {
-  if (event.key === "Enter" || event.key === " ") { event.preventDefault(); $("#source-file-input").click(); }
 });
 
 $("#app").addEventListener("input", function (event) {
