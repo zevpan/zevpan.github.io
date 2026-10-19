@@ -1,58 +1,56 @@
-# Zev Pan · Intent-driven work systems
+# Zev Pan — AI Business Analysis & Transformation Portfolio
 
-Portfolio and interactive prototypes for AI-enabled business transformation, product design, process redesign, and human-controlled workflow automation.
+I redesign messy work into governed operating systems.
 
-**Portfolio:** <https://zevpan.github.io/>
+I analyze fragmented workflows, define requirements and decision logic, and prototype practical improvements with process design, automation, and AI—keeping people responsible for consequential decisions.
 
-## Portfolio thesis
+**Portfolio:** https://zevpan.github.io/
 
-Software is moving from interfaces people must operate toward systems that can act on outcomes people express. The portfolio explores a credible operating model: people set intent and policy; an orchestrator plans bounded work; specialist agents use existing tools and data; evidence, exceptions, and proposed actions return for human review.
+**Roles of interest:** AI Business Analyst · Business Analyst · Business Transformation · Digital Transformation · Process Improvement · AI Implementation
 
-The interface still matters. Natural language sets direction; structured screens help people scan, compare, correct, and approve; agents carry out the bounded work.
+## What I can do
 
-## Featured work
+| Work | Evidence in the portfolio |
+|---|---|
+| Diagnose | Current-state workflow and handoff analysis; bottleneck, failure, and exception mapping |
+| Design | Requirements, acceptance criteria, data models, operating rules, ownership, and human/automation/AI boundaries |
+| Build | Workflow orchestration, AI-assisted decision support, and interactive product prototypes |
+| Govern | Deterministic gates, review paths, exception handling, auditability, testing, and workflow health |
 
-| Project | Product / transformation question | Live public experience |
+## Selected work
+
+| Project | Zev’s contribution | What it demonstrates |
 |---|---|---|
-| Focusline | Which job deserves attention, who could help, and what is the next grounded step? | [Opportunity workspace demo](products/opportunity-intelligence/demo/index.html) · [Case study](case-studies/opportunity-intelligence/index.html) |
-| Thread | What does the organization know about this change, what evidence is missing, and who decides? | [Thread demo](products/thread/demo/index.html) · [Product build](products/thread/index.html) |
-| Prospecting operations | How should identity, interaction history, and follow-up eligibility be reconciled safely? | [Relationship operations demo](case-studies/prospecting-operations/demo/index.html) · [Case study](case-studies/prospecting-operations/index.html) |
-| Travel logistics | Which operational work can proceed by rule, and what must wait for a person? | [Control Tower demo](case-studies/travel-logistics-transformation/demo/index.html) · [Case study](case-studies/travel-logistics-transformation/index.html) |
-| Warehouse flow | Which evidence-backed variance should be investigated before changing physical or financial state? | [Decision workspace prototype](case-studies/warehouse-flow-stock-accuracy/prototype.html) · [Case study](case-studies/warehouse-flow-stock-accuracy/index.html) |
+| Travel logistics operations | Mapped workflows and failure points; defined requirements, routing, controls, and a synthetic control-tower prototype | Process analysis, operating-model design, workflow orchestration, governance |
+| Prospecting operations | Designed reconciliation, relationship state, AI analysis gates, and safe next-action rules | Data modelling, deterministic controls, AI boundaries, auditability |
+| Warehouse flow and stock accuracy | Designed evidence-led review paths and human decision points | Process improvement, decision support, validation, human control |
+| Thread · operational context workspace | Designed source-linked context and review flows; built a browser-local MVP | Information architecture, decision records, workflow UX |
+| Focusline · opportunity intelligence | Defined the job-search journey, prioritization logic, relationship-readiness boundaries, and validation criteria | Product analysis, prioritization, explainability, human control |
 
-## Shared operating model
+## How I approach AI-enabled transformation
 
-```text
-Human intent + policy
-        ↓
-Provider-neutral orchestration and task planning
-        ↓
-Specialist agents for bounded responsibilities
-        ↓
-Existing tools, systems of record, APIs, files, and data
-        ↓
-Business actions, proposed changes, and artifacts
-        ↓
-Evidence, exceptions, and human approval where required
-        ↓
-Finished outcome and auditable business state
-```
+I start with the business objective, current process, policy, data, and decision rights. Stable state changes, calculations, and eligibility checks belong in explicit rules. Language models assist with ambiguous information and synthesis. People retain authority over consequential decisions and external actions.
 
-See [the operating-model architecture](docs/agentic-operating-model.md) for the responsibility boundaries and implementation seams. The conceptual LLM gateway is provider-agnostic: an organization can select suitable commercial or hosted models by policy. The public prototypes do not require a specific model provider.
+The intelligence layer should be model-provider agnostic and work through tools and systems the organization already uses. Natural language can express intent; structured interfaces remain valuable for scanning, comparison, correction, and approval.
+
+## Ownership and use of AI
+
+I define the outcome, constraints, requirements, and acceptance criteria. AI can accelerate research, analysis, design, and implementation. I inspect the evidence, make product and process decisions, test the result, and own acceptance.
 
 ## Demo behavior and privacy
 
 - Public fixtures use invented people, companies, jobs, orders, operational records, and interaction histories.
-- The command surface routes to authored, local demo scenarios; it does not make live LLM calls.
-- Interactions update browser-local demo state only. Approval buttons never send a message, submit an application, contact a supplier, or update an external system.
-- Tool and data labels describe the scenario’s simulated sources, not connected integrations.
-- No personal LinkedIn messages, private contacts, credentials, or application data belong in this repository.
+- Command surfaces route to authored local scenarios; they do not call a live LLM.
+- Interactions update browser-local demo state only.
+- Approval controls never send messages, submit applications, contact suppliers, or update external systems.
+- Product pages describe simulated data sources, not connected integrations.
+- The public repository should not contain real LinkedIn messages, private contacts, credentials, or application records.
 
 ## Implementation
 
-The portfolio is a static GitHub Pages site using semantic HTML, CSS, and vanilla JavaScript. `shared/agent-command.js` and `shared/agent-command.css` provide the common command, execution-evidence, exception, and approval pattern. Each product supplies its own bounded local routes and existing structured workspace. `shared/intent-model.css` styles the reusable architecture and case-study model.
+The site is a static GitHub Pages portfolio built with semantic HTML, CSS, and vanilla JavaScript. Shared command and architecture styles support consistent interaction patterns across demos while each project keeps its own workflow and structured review interface.
 
-### Local checks
+Local checks used for the demos:
 
 ```bash
 git diff --check
@@ -62,5 +60,3 @@ node --check products/thread/demo/app.js
 node --check case-studies/prospecting-operations/demo/app.js
 node --check case-studies/travel-logistics-transformation/demo/app.js
 ```
-
-The warehouse prototype includes inline JavaScript and is checked through the browser demo flow.
