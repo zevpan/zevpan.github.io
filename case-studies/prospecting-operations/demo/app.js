@@ -12,10 +12,10 @@ import {
   reviseQuote,
   runDailyReview,
   visibleAccounts
-} from './sales-engine.mjs';
+} from './sales-engine.mjs?v=crm-workspace-3';
 import { createDemoAdapters, integrationRegistry } from './adapters.mjs';
 
-const STORAGE_KEY = 'ai-sales-crm-demo-v3';
+const STORAGE_KEY = 'ai-sales-crm-demo-v4';
 const $ = selector => document.querySelector(selector);
 const escapeHtml = value => String(value == null ? '' : value)
   .replace(/&/g, '&amp;')
@@ -27,7 +27,7 @@ const escapeHtml = value => String(value == null ? '' : value)
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (saved && saved.schemaVersion === 3) return saved;
+    if (saved && saved.schemaVersion === 4) return saved;
   } catch (error) {
     console.warn('Could not restore this demo session.', error);
   }
