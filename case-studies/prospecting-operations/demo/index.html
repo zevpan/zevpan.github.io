@@ -2,43 +2,58 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f7fa">
 <title>AI Sales CRM · Interactive Demo</title>
-<meta name="description" content="An interactive workflow demo for importing relationship data, reconciling records, and reviewing next actions.">
-<link rel="stylesheet" href="styles.css?v=workflow-4">
-<link rel="stylesheet" href="../../../shared/agent-command.css?v=2">
+<meta name="description" content="Explore an agent-powered sales workspace for customer conversations, RFQs, governed quotations, proposals and team visibility.">
+<link rel="stylesheet" href="styles.css?v=rfq-workbench-1">
 </head>
 <body>
-<div class="demo-strip"><strong>Interactive case-study demo</strong><span>Example CSV scenario · local preview · no messages sent</span><a href="../index.html">Back to case study</a></div>
-<div class="shell">
+<div class="demo-banner"><strong>Interactive product demo</strong><span>Example account records · browser-local workflow · no external messages sent</span><a href="../index.html">Back to case study</a></div>
+<div class="app-shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">AX</div><div><strong>AX Workspace</strong><small>AI Sales CRM</small></div></div>
-    <div class="nav-label">Operations</div>
-    <nav aria-label="AI Sales CRM workspace">
-      <button class="nav active" data-view="workspace"><span class="nav-icon">⌂</span><span>Workspace</span></button>
-      <button class="nav" data-view="imports"><span class="nav-icon">⇧</span><span>Imports</span></button>
-      <button class="nav" data-view="runs"><span class="nav-icon">↻</span><span>Flow runs</span></button>
-      <button class="nav" data-view="people"><span class="nav-icon">◎</span><span>People Master</span></button>
-      <button class="nav" data-view="actions"><span class="nav-icon">✓</span><span>Next actions</span></button>
-      <button class="nav" data-view="evidence"><span class="nav-icon">≡</span><span>Data model</span></button>
-      <button class="nav" data-view="audit"><span class="nav-icon">⌁</span><span>Activity log</span></button>
+    <a class="brand" href="../index.html" aria-label="AI Sales CRM case study">
+      <span class="brand-mark">AX</span>
+      <span class="brand-copy"><b>AX Workspace</b><small>AI Sales CRM</small></span>
+    </a>
+    <div class="nav-label">Sales workspace</div>
+    <nav class="side-nav" aria-label="AI Sales CRM workspace">
+      <button class="nav-item active" data-nav-view="overview"><span class="nav-icon">⌂</span><span>Overview</span></button>
+      <button class="nav-item" data-nav-view="pipeline"><span class="nav-icon">◎</span><span>Accounts and pipeline</span></button>
+      <button class="nav-item" data-nav-view="rfqs"><span class="nav-icon">R</span><span>RFQ workbench</span></button>
+      <button class="nav-item" data-nav-view="quotes"><span class="nav-icon">Q</span><span>Quotations</span></button>
+      <button class="nav-item" data-nav-view="proposals"><span class="nav-icon">P</span><span>Proposals</span></button>
+      <button class="nav-item" data-nav-view="approvals"><span class="nav-icon">✓</span><span>Approvals</span></button>
+      <button class="nav-item" data-nav-view="products"><span class="nav-icon">▦</span><span>Product catalog</span></button>
+      <button class="nav-item" data-nav-view="team"><span class="nav-icon">⌘</span><span>Team view</span></button>
+      <button class="nav-item" data-nav-view="activity"><span class="nav-icon">↻</span><span>Execution history</span></button>
     </nav>
-    <div class="bottom"><span>DEMO SESSION · RESETS ON REFRESH</span><button id="reset">Reset demo session</button></div>
+    <div class="sidebar-note">
+      <b>Less admin. More selling.</b>
+      <p>Customer context, commercial controls and follow-through stay connected.</p>
+      <button data-nav-view="rfqs">Start with an RFQ</button>
+    </div>
+    <div class="sidebar-bottom">
+      <span id="storage-label" class="storage-label">Example workspace · saved in this browser</span>
+      <button class="reset-btn" data-action="reset">Reset demo workspace</button>
+    </div>
   </aside>
   <main class="main">
-    <div class="topbar">
-      <div class="crumb"><span class="workspace-dot"></span>AX Workspace <span>/</span> AI Sales CRM</div>
-      <div class="top-actions"><label class="search"><span>⌕</span><input id="globalSearch" type="search" placeholder="Search People Master" aria-label="Search People Master"><kbd>/</kbd></label><a class="top-link" href="../index.html">Case study ↗</a><div class="user" aria-label="Demo operator">Z</div></div>
-    </div>
-    <header class="page-head">
-      <div><div class="eyebrow">AI SALES CRM</div><h1 id="title">AI Sales CRM workspace</h1><p id="subtitle">Move exported data through reconciliation, relationship records, and next actions.</p></div>
-      <div id="capacityPill" class="mode">Sample data · no messages sent</div>
+    <header class="topbar">
+      <div class="breadcrumb"><span class="breadcrumb-dot"></span><span>AX Workspace</span><span>/</span><b>AI Sales CRM</b></div>
+      <div class="top-controls">
+        <label class="search-wrap" aria-label="Search accounts and opportunities"><span aria-hidden="true">⌕</span><input id="global-search" type="search" placeholder="Search accounts" aria-label="Search accounts and opportunities"><kbd>/</kbd></label>
+        <label class="role-wrap"><span>Role</span><select id="role-switch" aria-label="Switch demo role"><option value="sales">Salesperson · Zev Pan</option><option value="manager">Sales Manager</option></select></label>
+      </div>
     </header>
-    <div id="agent-command-host"></div>
-    <section id="view" aria-live="polite"></section>
+    <header class="page-heading">
+      <div><span class="eyebrow">AI SALES CRM</span><h1 id="page-title">Sales workspace</h1><p id="page-description">Customer work first. The system keeps records, quotations and approvals in step.</p></div>
+      <span class="workspace-mode">Example company rules · no live integrations</span>
+    </header>
+    <section id="view" aria-live="polite" aria-busy="false"></section>
   </main>
 </div>
-<script src="../../../shared/agent-command.js?v=3"></script>
-<script src="app.js?v=workflow-6"></script>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script type="module" src="app.js?v=rfq-workbench-1"></script>
 </body>
 </html>

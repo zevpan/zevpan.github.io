@@ -1,362 +1,745 @@
-const SAMPLE_BATCH = {
-  id: "IMPORT-042",
-  name: "LinkedIn export bundle · sample",
-  status: "READY",
-  sample: true,
-  files: [
-    {name:"Connections.csv", type:"Connections", rows:[
-      { "First Name":"Avery","Last Name":"Goh","Company":"Lumen Works","Position":"Operations Lead","URL":"https://www.linkedin.com/in/sample-avery"},
-      { "First Name":"Sarah","Last Name":"Lim","Company":"Vector Labs","Position":"VP Customer Success","URL":"https://www.linkedin.com/in/sample-sarah"},
-      { "First Name":"Maya","Last Name":"Chen","Company":"Arcadia Systems","Position":"Head of Operations","URL":"https://www.linkedin.com/in/sample-maya"},
-      { "First Name":"Priya","Last Name":"Nair","Company":"Helix Advisory","Position":"COO","URL":"https://www.linkedin.com/in/sample-priya-new"}
-    ]},
-    {name:"Invitations.csv", type:"Invitations", rows:[
-      {Direction:"OUTBOUND", inviteeProfileUrl:"https://www.linkedin.com/in/sample-avery", "Sent At":"2026-09-28"},
-      {Direction:"ACCEPTED", inviteeProfileUrl:"https://www.linkedin.com/in/sample-avery", "Sent At":"2026-09-30"}
-    ]}
-  ]
-};
+import {
+  DEMO_TODAY,
+  confirmQuoteForCustomer,
+  createInitialState,
+  customerQuoteHtml,
+  decideApproval,
+  formatMoney,
+  managerMetrics,
+  markProposalReady,
+  processCustomerBrief,
+  proposalHtml,
+  reviseQuote,
+  runDailyReview,
+  visibleAccounts
+} from './sales-engine.mjs';
+import { createDemoAdapters, integrationRegistry } from './adapters.mjs';
 
-const SEED = {
-  batch: SAMPLE_BATCH,
-  people: [
-    {id:"P-1042",name:"Maya Chen",title:"Head of Operations",company:"Arcadia Systems",url:"https://www.linkedin.com/in/sample-maya",state:"OUTBOUND_LAST",lastInteraction:"12 Sep · Outbound message",nextAction:"Follow-up due",source:"Connections Raw",dnc:false,notes:"Discussed manual reconciliation; asked for an integration approach."},
-    {id:"P-1091",name:"Daniel Wong",title:"Commercial Director",company:"Northstar Freight",url:"https://www.linkedin.com/in/sample-daniel",state:"RECONNECT_DUE",lastInteraction:"02 Sep · Reconnect requested",nextAction:"Review reconnect",source:"People Master",dnc:false,notes:"Asked to reconnect after budget review."},
-    {id:"P-1130",name:"Sarah Lim",title:"VP Customer Success",company:"Vector Labs",url:"https://www.linkedin.com/in/sample-sarah",state:"OPPORTUNITY",lastInteraction:"16 Sep · Meeting note",nextAction:"Review opportunity",source:"Interaction Log",dnc:false,notes:"Mentioned a consolidation project and asked about handoff continuity."},
-    {id:"P-1188",name:"Priya Nair",title:"COO",company:"Helix Advisory",url:"",state:"IDENTITY_REVIEW",lastInteraction:"Today · Match conflict",nextAction:"Resolve identity",source:"Connections Raw",dnc:false,notes:"A new profile resembles this record, but its profile URL and company context differ."}
-  ],
-  interactions: [
-    {id:"I-3081",personId:"P-1042",date:"12 Sep",channel:"LinkedIn",direction:"Outbound",type:"Message",summary:"Shared a workflow example; no newer response in the master record."},
-    {id:"I-3095",personId:"P-1091",date:"02 Sep",channel:"LinkedIn",direction:"Inbound",type:"Reconnect request",summary:"Requested a follow-up after budget review."},
-    {id:"I-3122",personId:"P-1130",date:"16 Sep",channel:"Meeting note",direction:"Internal",type:"Opportunity signal",summary:"Asked how teams preserve context across handoffs."}
-  ],
-  actions: [
-    {id:"ACT-2201",personId:"P-1042",type:"LinkedIn follow-up",reason:"Outbound message is still the latest recorded interaction; follow-up window is open.",suggested:"Review the follow-up draft against the latest relationship context.",confidence:"Medium",status:"OPEN",due:"Due today",evidence:["Latest interaction: outbound message on 12 Sep","No newer inbound event in People Master","No Do Not Contact flag"]},
-    {id:"ACT-2202",personId:"P-1091",type:"Reconnect",reason:"A reconnect date was recorded after the contact requested later follow-up.",suggested:"Review the reconnect context before contacting.",confidence:"High",status:"OPEN",due:"Reconnect date reached",evidence:["Reconnect request recorded on 02 Sep","No later interaction in the imported history"]},
-    {id:"ACT-2203",personId:"P-1130",type:"Opportunity review",reason:"A meeting note contains a project signal that needs human qualification.",suggested:"Review the project timing and decide whether to advance the opportunity.",confidence:"Medium",status:"OPEN",due:"Review needed",evidence:["Consolidation project mentioned","Human qualification required"]}
-  ],
-  runs: [],
-  audit: [
-    {time:"Before sample run",actor:"Source record",event:"follow_up.open",detail:"ACT-2201 is based on the existing People Master and Interaction Log."}
-  ],
-  sequence: 42,
-  runResult: null,
-  currentView:"workspace",
-  selectedPerson:null,
-  selectedAction:null,
-  search:""
-};
-let state = structuredClone(SEED);
+const STORAGE_KEY = 'ai-sales-crm-demo-v2';
 const $ = selector => document.querySelector(selector);
-const view = $("#view");
-const title = $("#title");
-const subtitle = $("#subtitle");
-const escapeHTML = value => String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
-const titleCase = value => String(value || "").toLowerCase().replace(/(^|[_\s])\w/g, match => match.toUpperCase()).replace(/_/g," ");
-const personFor = id => state.people.find(person => person.id === id);
-function setHead(text, sub){title.textContent=text;subtitle.textContent=sub;}
-function safeStatus(text){return '<span class="state-chip">'+escapeHTML(titleCase(text))+'</span>';}
-function initials(name){return String(name||"?").split(/\s+/).map(x=>x[0]||"").join("").slice(0,2).toUpperCase();}
-function setView(name){state.currentView=name;state.selectedPerson=null;state.selectedAction=null;render();}
-function render(){
-  document.querySelectorAll(".nav").forEach(button=>button.classList.toggle("active",button.dataset.view===state.currentView));
-  $("#capacityPill").textContent=(state.batch.sample?"Sample scenario · no messages sent":"Local data · no messages sent");
-  const route={workspace:workspace,imports:imports,runs:runs,people:people,actions:actions,evidence:evidence,audit:audit};
-  (route[state.currentView]||workspace)();
-  const search=$("#globalSearch");
-  if(search && search.value!==state.search)search.value=state.search;
-}
-function workflowSteps(){
-  const complete=state.batch.status==="COMPLETE";
-  const steps=[
-    ["01","Import exports",state.batch.files.length+" files · "+state.batch.files.reduce((n,f)=>n+f.rows.length,0)+" rows",true],
-    ["02","Run reconciliation",complete?"Completed · "+state.runs[0].id:"Ready to process",complete],
-    ["03","Update relationship data",complete?"People Master + Interaction Log updated":"Waiting for run",complete],
-    ["04","Refresh next actions",complete?"Queue reconciled from new events":"Waiting for run",complete]
-  ];
-  return '<div class="process-steps">'+steps.map((step,i)=>'<div class="process-step '+(step[3]?"complete":"")+'"><div class="process-top"><span class="step-no">'+step[0]+'</span><span class="step-mark">'+(step[3]?"✓":"·")+'</span></div><b>'+step[1]+'</b><span>'+step[2]+'</span>'+(i<steps.length-1?'<span class="step-connector" aria-hidden="true"></span>':'')+'</div>').join("")+'</div>';
-}
-function batchSummary(){
- const total=state.batch.files.reduce((n,f)=>n+f.rows.length,0);
- return '<div class="batch-top"><div><div class="eyebrow">CURRENT IMPORT BATCH · '+escapeHTML(state.batch.id)+'</div><h2>'+escapeHTML(state.batch.name)+'</h2><p>'+state.batch.files.map(file=>escapeHTML(file.name)+" · "+file.rows.length+" rows").join(" &nbsp; / &nbsp; ")+'</p></div><span class="status-pill '+(state.batch.status==="COMPLETE"?"done":"ready")+'">'+(state.batch.status==="COMPLETE"?"Processed":"Ready to process")+'</span></div><div class="batch-bottom"><span>'+total+' source rows · files stay in this browser</span>'+(state.batch.status==="READY"?'<button class="btn primary" onclick="runFlow()">Run reconciliation flow</button>':'<button class="btn" onclick="setView(\'runs\')">Open run details</button>')+'</div>';
-}
-function workspace(){
- setHead("AI Sales CRM workspace","Move exported network and message data through reconciliation, relationship records, and next actions.");
- const active=state.actions.filter(action=>action.status==="OPEN");
- view.innerHTML='<div class="workspace-shell"><section class="work-main"><div class="panel batch-panel">'+batchSummary()+'</div>'+workflowSteps()+(state.runResult?resultPanel(): '')+'<div class="panel flow-panel"><div class="panel-head"><h3>Processing rules</h3><span>Sample run · deterministic controls + simulated analysis</span></div><div class="rule-flow"><div><b>Match</b><span>Profile URL first; uncertain matches are held for review.</span></div><div><b>Reconcile</b><span>New events are compared with the latest relationship record.</span></div><div><b>Control</b><span>Do Not Contact and human review take precedence.</span></div><div><b>Recommend</b><span>Suggested actions include a reason and source evidence.</span></div></div></div></section><aside class="work-side"><div class="panel"><div class="panel-head"><h3>Next actions</h3><button class="text-button" onclick="setView(\'actions\')">Open queue</button></div><div class="side-list">'+(active.length?active.slice(0,3).map(actionRow).join(""):'<p class="empty">No actions need review.</p>')+'</div></div><div class="panel side-panel"><div class="panel-head"><h3>Relationship data</h3><button class="text-button" onclick="setView(\'people\')">Open People Master</button></div><div class="entity-count"><b>'+state.people.length+'</b><span>sample people</span></div><p>People Master · Interaction Log · Follow-up Analysis · Action Queue</p></div></aside></div>';
-}
-function resultPanel(){
- const r=state.runResult;
- return '<div class="run-result"><div class="result-head"><div><span class="eyebrow">RUN RESULT · '+escapeHTML(r.id)+'</span><h2>Data reconciled. Work queue refreshed.</h2></div><button class="btn" onclick="setView(\'runs\')">View run record</button></div><div class="result-grid"><div><b>'+r.newPeople+'</b><span>new profiles</span></div><div><b>'+r.updatedPeople+'</b><span>profiles updated</span></div><div><b>'+r.heldIdentity+'</b><span>identity review</span></div><div><b>'+r.superseded+'</b><span>stale actions superseded</span></div></div><p>'+escapeHTML(r.note)+'</p><div class="result-links"><button class="text-button" onclick="setView(\'people\')">Review People Master</button><button class="text-button" onclick="setView(\'actions\')">Review next actions</button></div></div>';
-}
-function actionRow(action){
- const person=personFor(action.personId);
- return '<button class="queue-item" onclick="openAction(\''+escapeHTML(action.id)+'\')"><span class="priority-dot '+(action.confidence==="High"?"high":"")+'"></span><span class="queue-copy"><b>'+escapeHTML(action.type)+'</b><span>'+escapeHTML(person?person.name:"Unmatched interaction")+' · '+escapeHTML(action.due)+'</span></span><span class="queue-state">'+escapeHTML(action.status==="OPEN"?"Review":"Waiting")+'</span></button>';
-}
-function imports(){
- setHead("Imports","Review incoming LinkedIn exports before they change your relationship records.");
- const total=state.batch.files.reduce((n,f)=>n+f.rows.length,0);
- view.innerHTML='<div class="page-actions"><div><span class="eyebrow">INCOMING DATA</span><h2>Import batch</h2><p>Upload CSV exports or load the prepared demo data. Files are parsed in this browser and are not uploaded.</p></div><label class="btn file-button">Choose CSV exports<input id="fileInput" type="file" accept=".csv,text/csv" multiple></label></div><div class="panel import-card"><div class="batch-top"><div><div class="eyebrow">'+(state.batch.sample?"DEMO SAMPLE":"LOCAL CSV IMPORT")+' · '+escapeHTML(state.batch.id)+'</div><h2>'+escapeHTML(state.batch.name)+'</h2><p>'+total+' rows across '+state.batch.files.length+' files</p></div><span class="status-pill '+(state.batch.status==="COMPLETE"?"done":"ready")+'">'+(state.batch.status==="COMPLETE"?"Processed":"Ready to process")+'</span></div><div class="file-list">'+state.batch.files.map(fileCard).join("")+'</div><div class="import-footer"><button class="btn" onclick="loadSampleBatch()">Load prepared demo</button>'+(state.batch.status==="READY"?'<button class="btn primary" onclick="runFlow()">Run reconciliation flow</button>':'<button class="btn" onclick="setView(\'runs\')">View processed run</button>')+'</div></div><div class="import-note"><b>Source handling</b><span>Connection, invitation, and message files enter the same run. The workflow links profiles, appends interaction events, holds ambiguous identity matches, and recalculates eligible next actions. This public demo uses a prepared run; it does not connect to LinkedIn or n8n.</span></div>';
- const input=$("#fileInput");if(input)input.addEventListener("change",event=>uploadFiles(event.target.files));
-}
-function fileCard(file){
- return '<div class="file-row"><span class="file-icon">CSV</span><div><b>'+escapeHTML(file.name)+'</b><span>'+escapeHTML(file.type)+' export</span></div><strong>'+file.rows.length+' rows</strong><span class="file-check">Ready</span></div>';
-}
-function uploadFiles(files){
- if(!files||!files.length)return;
- const selected=Array.from(files);
- Promise.all(selected.map(async file=>{
-   if(file.size>10*1024*1024)throw new Error(file.name+" is over the 10 MB demo limit.");
-   const parsed=parseCSV(await file.text());
-   if(!parsed.headers.length||!parsed.rows.length)throw new Error(file.name+" has no readable CSV rows.");
-   return {name:file.name,type:detectType(file.name,parsed.headers),headers:parsed.headers,rows:parsed.rows};
- })).then(parsed=>{
-   state.batch={id:"LOCAL-"+String(Date.now()).slice(-6),name:"Local CSV export batch",status:"READY",sample:false,files:parsed};
-   state.runResult=null;state.currentView="imports";state.audit.unshift({time:"Just now",actor:"Operator",event:"import.received",detail:parsed.length+" CSV file(s) parsed in this browser; "+parsed.reduce((n,f)=>n+f.rows.length,0)+" rows."});render();
- }).catch(error=>{window.alert(error.message);});
-}
-function parseCSV(text){
- const rows=[];let row=[],cell="",quoted=false;
- for(let i=0;i<text.length;i++){
-   const c=text[i];
-   if(c==='"'&&quoted&&text[i+1]==='"'){cell+='"';i++;}
-   else if(c==='"')quoted=!quoted;
-   else if(c===","&&!quoted){row.push(cell);cell="";}
-   else if((c==="\n"||c==="\r")&&!quoted){if(c==="\r"&&text[i+1]==="\n")i++;row.push(cell);if(row.some(x=>x.trim()!==""))rows.push(row);row=[];cell="";}
-   else cell+=c;
- }
- if(cell!==""||row.length){row.push(cell);if(row.some(x=>x.trim()!==""))rows.push(row);}
- if(rows.length<2)return {headers:[],rows:[]};
- const headers=rows.shift().map(x=>x.replace(/^\uFEFF/,"").trim());
- return {headers,rows:rows.map(values=>Object.fromEntries(headers.map((key,index)=>[key,(values[index]||"").trim()])))};
-}
-function detectType(filename,headers){
- const source=(filename+" "+headers.join(" ")).toLowerCase();
- if(source.includes("conversation id")||source.includes("sender profile url")||filename.toLowerCase().includes("message"))return "Messages";
- if(source.includes("inviterprofileurl")||source.includes("inviteeprofileurl")||filename.toLowerCase().includes("invitation"))return "Invitations";
- return "Connections";
-}
-function getField(row,names){
- const entries=Object.keys(row||{});for(const name of names){const target=String(name).toLowerCase().replace(/[^a-z0-9]/g,"");const found=entries.find(key=>key.toLowerCase().replace(/[^a-z0-9]/g,"")===target);if(found&&row[found])return String(row[found]).trim();}return "";
-}
-function runs(){
- setHead("Flow runs","See what each import changed, what it held, and which recommendations it produced.");
- const records=state.runs.length?state.runs:'';
- view.innerHTML='<div class="page-actions"><div><span class="eyebrow">EXECUTION HISTORY</span><h2>Reconciliation runs</h2><p>Every run ties its source files to record changes, exceptions, and action outcomes.</p></div>'+(state.batch.status==="READY"?'<button class="btn primary" onclick="runFlow()">Run ready batch</button>':'<button class="btn" onclick="setView(\'imports\')">Open imports</button>')+'</div>'+(records?'<div class="run-list">'+state.runs.map(runCard).join("")+'</div>':'<div class="panel empty-panel"><h3>No runs in this browser session yet</h3><p>Process the ready sample batch to see row matching, relationship updates, identity holds, and queue reconciliation recorded together.</p><button class="btn primary" onclick="runFlow()">Run sample workflow</button></div>')+(state.runResult?'<div class="panel run-steps-panel"><div class="panel-head"><h3>Run steps · '+escapeHTML(state.runResult.id)+'</h3><span>all stages recorded</span></div><ol class="run-steps">'+state.runResult.steps.map(step=>'<li><span class="step-check">✓</span><div><b>'+escapeHTML(step[0])+'</b><span>'+escapeHTML(step[1])+'</span></div></li>').join("")+'</ol></div>':'');
-}
-function runCard(run){
- return '<button class="run-card" onclick="showRun(\''+escapeHTML(run.id)+'\')"><span class="run-icon">✓</span><span><b>'+escapeHTML(run.id)+' · '+escapeHTML(run.name)+'</b><span>'+escapeHTML(run.time)+' · '+run.rows+' rows · '+run.fileCount+' source files</span></span><span class="run-status">'+escapeHTML(run.status)+'</span></button>';
-}
-function showRun(id){const found=state.runs.find(run=>run.id===id);if(found){state.runResult=found.result;state.currentView="runs";render();}}
-function people(){
- setHead("People Master","Review the current relationship record, its source links, interaction history, and next action.");
- const needle=state.search.toLowerCase();
- const rows=state.people.filter(p=>!needle||(p.name+" "+p.company+" "+p.state).toLowerCase().includes(needle));
- if(state.selectedPerson){personDetail(state.selectedPerson);return;}
- view.innerHTML='<div class="page-actions"><div><span class="eyebrow">CANONICAL RELATIONSHIP RECORDS</span><h2>'+rows.length+' people in this sample workspace</h2><p>New exports reconcile against these records; uncertain identity matches stay visible for review.</p></div><button class="btn" onclick="exportPeople()">Export People Master CSV</button></div><div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Person</th><th>Company</th><th>Relationship state</th><th>Last interaction</th><th>Next action</th><th></th></tr></thead><tbody>'+rows.map(personRow).join("")+'</tbody></table></div></div>';
-}
-function personRow(person){
- return '<tr><td><button class="person-link" onclick="openPerson(\''+escapeHTML(person.id)+'\')"><span class="avatar">'+escapeHTML(initials(person.name))+'</span><span><b>'+escapeHTML(person.name)+'</b><small>'+escapeHTML(person.title)+'</small></span></button></td><td>'+escapeHTML(person.company)+'</td><td>'+safeStatus(person.state)+(person.dnc?'<span class="flag">Suppressed</span>':'')+'</td><td>'+escapeHTML(person.lastInteraction)+'</td><td>'+escapeHTML(person.nextAction)+'</td><td><button class="text-button" onclick="openPerson(\''+escapeHTML(person.id)+'\')">Open record</button></td></tr>';
-}
-function openPerson(id){state.selectedPerson=id;state.selectedAction=null;state.currentView="people";render();}
-function personDetail(id){
- const person=personFor(id);if(!person){state.selectedPerson=null;people();return;}
- const history=state.interactions.filter(item=>item.personId===id);
- const related=state.actions.filter(item=>item.personId===id);
- view.innerHTML='<button class="back-link" onclick="state.selectedPerson=null;render()">← People Master</button><div class="record-head"><span class="avatar large">'+escapeHTML(initials(person.name))+'</span><div><span class="eyebrow">PERSON RECORD · '+escapeHTML(person.id)+'</span><h2>'+escapeHTML(person.name)+'</h2><p>'+escapeHTML(person.title)+' · '+escapeHTML(person.company)+'</p></div><button class="btn" onclick="toggleDNC(\''+escapeHTML(person.id)+'\')">'+(person.dnc?"Remove suppression":"Set Do Not Contact")+'</button></div><div class="workspace-grid record-grid"><div class="panel"><div class="panel-head"><h3>Interaction Log</h3><span>'+history.length+' events</span></div><div class="timeline">'+history.slice().reverse().map(event=>'<div class="timeline-item"><b>'+escapeHTML(event.date)+' · '+escapeHTML(event.direction)+' '+escapeHTML(event.type)+'</b><span>'+escapeHTML(event.summary)+'</span><small>Source: '+escapeHTML(event.source||"Interaction Log")+'</small></div>').join("")+'</div></div><div class="panel"><div class="panel-head"><h3>Relationship context</h3><span>source linked</span></div><div class="record-facts"><div><small>Current state</small><b>'+escapeHTML(titleCase(person.state))+'</b></div><div><small>Last source</small><b>'+escapeHTML(person.source)+'</b></div><div><small>Next action</small><b>'+escapeHTML(person.nextAction)+'</b></div><div><small>Do Not Contact</small><b>'+(person.dnc?"Yes":"No")+'</b></div><div class="wide"><small>Operator notes</small><p>'+escapeHTML(person.notes||"No notes recorded.")+'</p></div></div><h3 class="subhead">Related actions</h3><div class="side-list">'+(related.length?related.map(actionRow).join(""):'<p class="empty">No actions linked to this record.</p>')+'</div></div></div>';
-}
-function actions(){
- setHead("Next actions","Recommendations are tied to record state and source evidence; external messages stay under human control.");
- if(state.selectedAction){actionDetail(state.selectedAction);return;}
- const open=state.actions.filter(action=>action.status==="OPEN");
- const waiting=state.actions.filter(action=>action.status!=="OPEN");
- view.innerHTML='<div class="page-actions"><div><span class="eyebrow">HUMAN REVIEW QUEUE</span><h2>'+open.length+' recommendations need review</h2><p>Review context, adjust the proposed next step, and record the outcome. Nothing is sent from this demo.</p></div><button class="btn" onclick="exportActions()">Export Action Queue CSV</button></div><div class="action-groups"><section><h3>Ready for review</h3><div class="action-cards">'+(open.length?open.map(actionCard).join(""):'<div class="panel empty-panel">No open recommendations.</div>')+'</div></section><section><h3>Completed, snoozed, or superseded</h3><div class="panel history-panel">'+(waiting.length?waiting.map(actionHistoryRow).join(""):'<p class="empty">Action history appears here after a decision or new interaction.</p>')+'</div></section></div>';
-}
-function actionCard(action){
- const person=personFor(action.personId);
- return '<article class="action-card"><div class="action-card-top"><span class="priority-tag">'+escapeHTML(action.confidence)+' confidence</span><span>'+escapeHTML(action.due)+'</span></div><h3>'+escapeHTML(action.type)+' · '+escapeHTML(person?person.name:"Identity review")+'</h3><p>'+escapeHTML(action.reason)+'</p><div class="action-evidence"><b>Evidence</b>'+action.evidence.map(item=>'<span>• '+escapeHTML(item)+'</span>').join("")+'</div><div class="action-controls"><button class="btn primary" onclick="openAction(\''+escapeHTML(action.id)+'\')">Review recommendation</button><button class="text-button" onclick="resolveAction(\''+escapeHTML(action.id)+'\',\'SNOOZED\')">Snooze</button><button class="text-button" onclick="resolveAction(\''+escapeHTML(action.id)+'\',\'CANCELLED\')">Dismiss</button></div></article>';
-}
-function actionHistoryRow(action){
- const person=personFor(action.personId);
- return '<div class="history-row"><span><b>'+escapeHTML(action.type)+'</b><small>'+escapeHTML(person?person.name:"Record")+' · '+escapeHTML(action.reason)+'</small></span>'+safeStatus(action.status)+'</div>';
-}
-function openAction(id){state.selectedAction=id;state.selectedPerson=null;state.currentView="actions";render();}
-function actionDetail(id){
- const action=state.actions.find(item=>item.id===id);if(!action){state.selectedAction=null;actions();return;}
- const person=personFor(action.personId);
- view.innerHTML='<button class="back-link" onclick="state.selectedAction=null;render()">← Next actions</button><div class="action-review"><div class="action-review-head"><div><span class="eyebrow">RECOMMENDATION · '+escapeHTML(action.id)+'</span><h2>'+escapeHTML(action.type)+'</h2><p>'+escapeHTML(person?person.name:"Unmatched event")+' · '+escapeHTML(person?person.company:"Needs identity review")+' · '+escapeHTML(action.due)+'</p></div><span class="priority-tag">'+escapeHTML(action.confidence)+' confidence</span></div><div class="workspace-grid"><div class="panel"><div class="panel-head"><h3>Why this is here</h3><span>evidence-linked</span></div><p class="detail-reason">'+escapeHTML(action.reason)+'</p><div class="action-evidence">'+action.evidence.map(item=>'<span>• '+escapeHTML(item)+'</span>').join("")+'</div></div><div class="panel"><div class="panel-head"><h3>Suggested next step</h3><span>operator decides</span></div><p class="detail-reason">'+escapeHTML(action.suggested)+'</p><label class="field-label" for="outcome">Decision note</label><textarea id="outcome" rows="3" placeholder="Record what you decided"></textarea><div class="action-controls"><button class="btn primary" onclick="resolveAction(\''+escapeHTML(action.id)+'\',\'DONE\')">Record complete</button><button class="btn" onclick="resolveAction(\''+escapeHTML(action.id)+'\',\'SNOOZED\')">Snooze</button><button class="btn danger" onclick="resolveAction(\''+escapeHTML(action.id)+'\',\'CANCELLED\')">Dismiss</button></div><p class="privacy-note">This records a local demo outcome. It does not send or schedule a message.</p></div></div></div>';
-}
-function resolveAction(id,status){
- const action=state.actions.find(item=>item.id===id);if(!action||action.status!=="OPEN")return;
- const note=$("#outcome")?$("#outcome").value.trim():"";
- action.status=status;action.outcome=note||(status==="DONE"?"Operator reviewed":"");
- if(status==="DONE")action.outcome=note||"Completed in demo";
- if(status==="SNOOZED")action.due="Snoozed · revisit later";
- state.audit.unshift({time:"Just now",actor:"Operator",event:"action."+status.toLowerCase(),detail:action.id+" · "+action.type+" · "+action.outcome});
- state.selectedAction=null;state.currentView="actions";render();
-}
-function toggleDNC(id){
- const person=personFor(id);if(!person)return;person.dnc=!person.dnc;
- if(person.dnc)state.actions.filter(action=>action.personId===id&&action.status==="OPEN").forEach(action=>{action.status="BLOCKED";action.outcome="Blocked by Do Not Contact";});
- state.audit.unshift({time:"Just now",actor:"Operator",event:person.dnc?"suppression.applied":"suppression.removed",detail:person.name+" · Do Not Contact "+(person.dnc?"enabled":"disabled")});
- render();
-}
-function evidence(){
- setHead("Data model","The relationship workflow separates identity, interaction history, recommendations, and action outcomes.");
- view.innerHTML='<div class="panel evidence-source"><h2>Record model · browser-local demo</h2><p>The public case uses invented identities and browser-local data. It does not reproduce a private workbook snapshot, operational row counts, message content, or contact details.</p><div class="table-wrap"><table class="data-table"><thead><tr><th>Record type</th><th>Purpose</th><th>Important fields</th></tr></thead><tbody><tr><td>People Master</td><td>Keep a canonical person and current network state.</td><td>Stable identity key, company, connection state, relationship state, next action.</td></tr><tr><td>Interaction history</td><td>Preserve source-backed context across data refreshes.</td><td>Interaction type, timestamp, source, short example summary.</td></tr><tr><td>Action Queue</td><td>Show eligible work with a reason and human disposition.</td><td>Due date, priority, policy result, suggested action, status, outcome.</td></tr></tbody></table></div><h3>Governance rules shown in the demo</h3><ul><li>Stable identity keys resolve records; ambiguous matches are held.</li><li>Suppression rules take precedence over follow-up recommendations.</li><li>Prior interaction history is retained when a newer message export is absent.</li><li>Every recommendation remains reviewable; no message is sent.</li></ul><div class="callout blue"><strong>Data boundary</strong><p>Public scenario records and run summaries are invented for this demo. The demo does not connect to LinkedIn, Google Sheets, n8n, or a live model provider.</p></div></div>';
-}
-function runFlow(){
- if(state.batch.status==="COMPLETE"){state.currentView="runs";render();return;}
- const batch=state.batch;let result;
- if(batch.sample)result=runSampleFlow();
- else result=runUploadedFlow(batch);
- batch.status="COMPLETE";batch.processedRun=result.id;
- state.runResult=result;state.runs.unshift({id:result.id,name:batch.name,time:"Just now",rows:batch.files.reduce((n,file)=>n+file.rows.length,0),fileCount:batch.files.length,status:"Completed",result:result});
- state.audit.unshift({time:"Just now",actor:"Workflow",event:"reconciliation.completed",detail:result.id+" · "+result.note});
- state.currentView="workspace";state.selectedPerson=null;state.selectedAction=null;render();
-}
-function runSampleFlow(){
- const priorMessageCount=state.interactions.filter(interaction=>interaction.type==="Message").length;
- const maya=state.people.find(person=>person.id==="P-1042");
- maya.source="Connections.csv · existing interaction history retained";
- const avery={id:"P-1214",name:"Avery Goh",title:"Operations Lead",company:"Lumen Works",url:"https://www.linkedin.com/in/sample-avery",state:"NEW_CONNECTION",lastInteraction:"Today · Connection accepted",nextAction:"Review fit before outreach",source:"Connections.csv",dnc:false,notes:"New connection from the sample exports; no outreach has been sent."};
- state.people.push(avery);
- state.interactions.unshift({id:"I-3221",personId:avery.id,date:"Today",channel:"LinkedIn",direction:"System",type:"Connection accepted",summary:"Connection state imported; human fit review remains before any outreach.",source:"Invitations.csv"});
- const unresolved=state.people.find(person=>person.id==="P-1188");unresolved.state="IDENTITY_REVIEW";unresolved.nextAction="Review imported profile match";
- state.actions.unshift({id:"ACT-2241",personId:avery.id,type:"Review new connection",reason:"A newly accepted connection has no interaction history or confirmed business fit.",suggested:"Check fit and relationship context before choosing whether to contact.",confidence:"Medium",status:"OPEN",due:"New connection",evidence:["Connection status updated from Invitations.csv","No conversation history matched","Human decision required before outreach"]});
- state.audit.unshift({time:"Just now",actor:"Identity review",event:"identity.held",detail:"A similar name with a changed profile URL remains unresolved."});
- state.audit.unshift({time:"Just now",actor:"Reconciliation",event:"messages.retained",detail:"No Messages export was present; older interaction history was preserved."});
- state.sequence++;
- return {id:"RUN-"+String(state.sequence).padStart(3,"0"),newPeople:1,updatedPeople:1,heldIdentity:1,superseded:0,rows:6,fileCount:2,status:"Completed",note:"One new person, one connection update, one identity exception, and one invitation event were reconciled. Existing interaction history was retained because no Messages export was present.",steps:[["Read source exports","Connections 4 · Invitations 2 rows · no Messages file"],["Resolve identities","2 matched · 1 new profile · 1 held for review"],["Update relationship records","People Master reconciled · invitation event appended"],["Preserve prior interactions",priorMessageCount+" older seeded message record(s) left unchanged"],["Recalculate next actions","1 new-connection review task · no outreach sent"]]};
-}
-function runUploadedFlow(batch){
- let newPeople=0,updatedPeople=0,heldIdentity=0,interactionsAdded=0,superseded=0,actionsAdded=0;
- batch.files.forEach(file=>{
-   file.rows.forEach(row=>{
-     if(file.type==="Connections"){
-       const first=getField(row,["First Name","firstName"]),last=getField(row,["Last Name","lastName"]),name=(first+" "+last).trim()||getField(row,["Name","Full Name"]);
-       if(!name){heldIdentity++;return;}
-       const url=getField(row,["URL","LinkedIn URL","Normalized URL","Profile URL"]);
-       const company=getField(row,["Company","Normalized Company"]);
-       const existing=url?state.people.find(person=>person.url&&person.url.toLowerCase()===url.toLowerCase()):null;
-       if(existing){existing.title=getField(row,["Position","Current Title"])||existing.title;existing.company=company||existing.company;existing.source=file.name;updatedPeople++;}
-       else if(url){
-         const person={id:"P-"+String(1300+state.people.length),name:name,title:getField(row,["Position","Current Title"])||"Title not provided",company:company||"Company not provided",url:url,state:"NEW_CONNECTION",lastInteraction:"Connection export imported",nextAction:"Review fit before outreach",source:file.name,dnc:false,notes:"Imported locally from "+file.name+"; business fit has not been reviewed."};
-         state.people.push(person);newPeople++;
-         state.actions.unshift({id:"ACT-"+String(2300+state.actions.length),personId:person.id,type:"Review new connection",reason:"A new profile was imported without an existing relationship record.",suggested:"Review fit and context before deciding on outreach.",confidence:"Low",status:"OPEN",due:"Imported connection",evidence:["Profile URL available in "+file.name,"No matched interaction history","Human decision required"]});actionsAdded++;
-       }else heldIdentity++;
-     }else if(file.type==="Messages"){
-       const direction=getField(row,["Direction"]).toUpperCase();
-       const profile=getField(row,["Sender Profile URL","senderProfileUrl","Recipient Profile URL","recipientProfileUrl"]);
-       const person=profile?state.people.find(item=>item.url&&item.url.toLowerCase()===profile.toLowerCase()):null;
-       if(!person||!["INBOUND","OUTBOUND","INCOMING","OUTGOING"].includes(direction)){heldIdentity++;return;}
-       const inbound=direction==="INBOUND"||direction==="INCOMING";const date=getField(row,["Date","Timestamp"]);
-       state.interactions.unshift({id:"I-"+String(3300+state.interactions.length),personId:person.id,date:date||"Imported",channel:"LinkedIn",direction:inbound?"Inbound":"Outbound",type:"Message",summary:(inbound?"Inbound":"Outbound")+" message imported; content remains in the local source file.",source:file.name});interactionsAdded++;
-       if(inbound){
-         person.state="ACTIVE_CONVERSATION";person.lastInteraction=(date||"Today")+" · Inbound LinkedIn message";person.nextAction="Review inbound reply";
-         const stale=state.actions.find(action=>action.personId===person.id&&action.status==="OPEN"&&action.type.toLowerCase().includes("follow"));
-         if(stale){stale.status="SUPERSEDED";stale.outcome="New inbound interaction imported.";superseded++;}
-         if(!state.actions.some(action=>action.personId===person.id&&action.status==="OPEN"&&action.type.includes("inbound"))){
-           state.actions.unshift({id:"ACT-"+String(2400+state.actions.length),personId:person.id,type:"Review inbound reply",reason:"A new inbound message changes the latest relationship context.",suggested:"Review the conversation and decide on a human response.",confidence:"High",status:"OPEN",due:"New reply · review",evidence:["Inbound direction present in export","Prior open follow-up checked for staleness","No message sent by this demo"]});actionsAdded++;
-         }
-       }
-     }else{
-       const profile=getField(row,["inviteeProfileUrl","inviteeProfileURL","Normalized URL","URL"]);
-       const person=profile?state.people.find(item=>item.url&&item.url.toLowerCase()===profile.toLowerCase()):null;
-       const direction=getField(row,["Direction"]).toUpperCase();
-       if(person&&direction){const inbound=direction.includes("ACCEPT")||direction==="INBOUND";person.state=inbound?"NEW_CONNECTION":person.state;person.lastInteraction=(getField(row,["Sent At","Timestamp"])||"Imported")+" · Invitation "+direction;person.source=file.name;interactionsAdded++;}
-       else heldIdentity++;
-     }
-   });
- });
- const id="RUN-LOC-"+String(++state.sequence);
- const steps=[["Read uploaded exports",batch.files.map(file=>file.type+" "+file.rows.length).join(" · ")+" rows"],["Resolve identities",newPeople+" new · "+updatedPeople+" updated · "+heldIdentity+" held"],["Update relationship records","People Master reconciled · "+interactionsAdded+" interaction / invitation events recorded"],["Reconcile existing actions",superseded+" open follow-up(s) superseded by newer inbound events"],["Recalculate next actions",actionsAdded+" review task(s) created · no messages sent"]];
- return {id:id,newPeople:newPeople,updatedPeople:updatedPeople,heldIdentity:heldIdentity,superseded:superseded,rows:batch.files.reduce((n,file)=>n+file.rows.length,0),fileCount:batch.files.length,status:"Completed",note:"Local demo rules processed the uploaded rows in this browser. Unmatched or direction-unclear records remain held for review.",steps:steps};
-}
-function loadSampleBatch(){state.batch=structuredClone(SAMPLE_BATCH);state.runResult=null;state.currentView="imports";render();}
-function csvEscape(value){return '"'+String(value==null?"":value).replace(/"/g,'""')+'"';}
-function downloadCSV(filename,headers,rows){
- const csv=[headers,...rows].map(row=>row.map(csvEscape).join(",")).join("\r\n");
- const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const link=document.createElement("a");link.href=url;link.download=filename;link.click();URL.revokeObjectURL(url);
-}
-function exportPeople(){downloadCSV("people-master-demo.csv",["Person ID","Name","Title","Company","Relationship State","Last Interaction Date","Next Action","Source","Do Not Contact"],state.people.map(p=>[p.id,p.name,p.title,p.company,p.state,p.lastInteraction,p.nextAction,p.source,p.dnc]));}
-function exportActions(){downloadCSV("action-queue-demo.csv",["Action ID","Person","Action Type","Why This Action","Suggested Action","Confidence","Status","Outcome"],state.actions.map(a=>{const p=personFor(a.personId);return[a.id,p?p.name:"",a.type,a.reason,a.suggested,a.confidence,a.status,a.outcome||""];}));}
-function audit(){
- setHead("Audit trail","Follow the source event, record update, recommendation, and human decision.");
- view.innerHTML='<div class="panel"><div class="panel-head"><h3>Activity history</h3><span>'+state.audit.length+' events</span></div><div class="audit-list">'+state.audit.map(entry=>'<div class="audit-row"><time>'+escapeHTML(entry.time)+'</time><b>'+escapeHTML(entry.actor)+'</b><code>'+escapeHTML(entry.event)+'</code><span>'+escapeHTML(entry.detail)+'</span></div>').join("")+'</div></div>';
-}
-function mountProspectingCommand(){
- if(!window.AgentCommandSurface)return;
- window.AgentCommandSurface.mount({
-  product:"AI Sales CRM",
-  placeholder:"Reconcile the latest exports and show me what needs review.",
-  suggestions:["Reconcile the latest connection and invitation exports","Show me next actions that need review","Find identity matches that need a human decision","What changed after the last reconciliation?"],
-  fallback:["Reconcile sample exports","Review open actions","Inspect identity exceptions"],
-  resolve(text){
-   const normalized=text.toLowerCase();
-   if(/reconcil|refresh|latest export|connection.*invitation|sync people|run.*flow/.test(normalized))return{
-    objective:"Reconcile new identity exports without clearing prior message history",
-    steps:[
-     {agent:"Identity Reconciliation Agent",task:"Match Connections and Invitations rows to People Master; hold ambiguous identities."},
-     {agent:"Relationship Analyst",task:"Read existing interaction context and preserve it when no new Messages export is present."},
-     {agent:"Action Queue Agent",task:"Recalculate review tasks while leaving unresolved identities and outreach under human control."}
-    ],
-    run(){
-     if(state.batch.status!=="COMPLETE")runFlow();else setView("runs");
-     const result=state.runResult||state.runs[0]?.result;
-     const noMessages=!state.batch.files.some(file=>file.type==="Messages");
-     return{
-      title:result?`Run ${result.id} · ${result.status}`:"No completed run found",
-      summary:result?.note||"Open Imports to load a sample batch before running reconciliation.",
-      facts:result?.steps?.map(step=>`${step[0]} · ${step[1]}`)||["No records changed"],
-      confidence:"High for exact profile matches · ambiguous identity held",
-      checked:`${state.batch.files.length} source files · ${state.batch.files.reduce((total,file)=>total+file.rows.length,0)} demo rows · ${state.people.length} people`,
-      freshness:noMessages?"Connections / Invitations sample is current · older message history retained":"Sample batch includes a Messages file",
-      assumptions:["Seeded records are invented for this demo",noMessages?"No Messages input means existing Interaction Log rows stay unchanged":"Message rows are part of the loaded batch"],
-      exception:result?.heldIdentity?`${result.heldIdentity} possible identity match remains in review; no profile was merged automatically.`:"No identity exception in this run.",
-      sources:["Connections.csv","Invitations.csv",...(noMessages?["Older interaction history · retained"]:["Messages export"]),"People Master · local demo state"],
-      action:{label:"Review the reconciliation run",run:()=>setView("runs")}
-     };
-    }
-   };
-   if(/\b(action|follow.?up|review|what needs|next step|today)\b/.test(normalized))return{
-    objective:"Find the relationship actions that are ready for human review",
-    steps:[
-     {agent:"Relationship Analyst",task:"Review current state, latest recorded interaction, and suppression flags."},
-     {agent:"Action Queue Agent",task:"Separate open recommendations from completed, blocked, or cancelled work."}
-    ],
-    run(){
-     const open=state.actions.filter(action=>action.status==="OPEN");
-     setView("actions");
-     return{title:`${open.length} open action${open.length===1?"":"s"}`,summary:"Each card links a proposed action to recorded context. Open an action, review the evidence, then make the disposition yourself.",facts:open.slice(0,4).map(action=>{const person=personFor(action.personId);return`${person?.name||"Identity unresolved"} · ${action.type} · ${action.suggested}`;}),confidence:"Recommendations are not permission to contact someone",checked:`${state.actions.length} action records · ${state.people.length} people`,freshness:"Current browser-local state",assumptions:["Do Not Contact suppression takes precedence","Contact willingness is never inferred from a profile match"],exception:open.some(action=>action.status==="BLOCKED")?"Some actions are blocked by identity or suppression checks.":"No message will be sent from this demo.",sources:["People Master","Interaction Log","Action Queue"],action:{label:"Open next action",run:()=>setView("actions")}};
-    }
-   };
-   if(/identity|ambiguous|unmatched|profile match/.test(normalized))return{
-    objective:"Review identity matches that are unsafe to merge automatically",
-    steps:[
-     {agent:"Identity Reconciliation Agent",task:"Compare stable profile identifiers before using names or company text."},
-     {agent:"Exception Handler",task:"Keep conflicting records separate until a human confirms identity."}
-    ],
-    run(){
-     const held=state.people.filter(person=>person.state==="IDENTITY_REVIEW");
-     setView("people");
-     return{title:`${held.length} identity record${held.length===1?"":"s"} need review`,summary:held.map(person=>`${person.name} · ${person.company}: ${person.nextAction}`).join("; ")||"No identity review is currently open.",facts:held.map(person=>`${person.name} · profile URL ${person.url?"present":"missing"} · source ${person.source}`),confidence:"Low until identity is confirmed",checked:`${state.people.length} People Master records`,freshness:"Current local reconciliation state",assumptions:["Name similarity alone is not a safe identity key"],exception:held.length?"No records were merged. Confirm the profile URL and company context in the People view.":"No unresolved identity remains.",sources:["Connections.csv","Invitations.csv","People Master"],action:held[0]?{label:"Review the held profile",run:()=>openPerson(held[0].id)}:null};
-    }
-   };
-   if(/changed|last run|run details|what happened/.test(normalized))return{
-    objective:"Inspect the latest workflow run and its exceptions",
-    steps:[{agent:"Workflow Analyst",task:"Retrieve run summary, row counts, changes, and held exceptions."}],
-    run(){setView("runs");const result=state.runResult||state.runs[0]?.result;return{title:result?`Run ${result.id}`:"No reconciliation run yet",summary:result?.note||"Import the demo batch and run reconciliation to create a result.",facts:result?.steps?.map(step=>`${step[0]} · ${step[1]}`)||[],confidence:"High for recorded local run state",checked:`${state.runs.length} completed run${state.runs.length===1?"":"s"}`,freshness:"Local demo audit trail",sources:["Flow run record","Activity log"],exception:result?.heldIdentity?`${result.heldIdentity} identity held for review.`:"No run exception recorded.",action:result?{label:"Open the latest run",run:()=>setView("runs")}:null};}
-   };
-   return null;
-  }
- });
-}
-function resetDemo(){state=structuredClone(SEED);render();}
-document.querySelectorAll(".nav").forEach(button=>button.addEventListener("click",()=>setView(button.dataset.view)));
-$("#reset").addEventListener("click",resetDemo);
-$("#globalSearch").addEventListener("input",event=>{state.search=event.target.value;if(state.currentView==="people")people();});
-$("#globalSearch").addEventListener("keydown",event=>{if(event.key==="Escape"){event.target.value="";state.search="";if(state.currentView==="people")people();}});
-render();
-mountProspectingCommand();
+const escapeHtml = value => String(value == null ? '' : value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
 
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && saved.schemaVersion === 2) return saved;
+  } catch (error) {
+    console.warn('Could not restore this demo session.', error);
+  }
+  return createInitialState();
+}
+
+let state = loadState();
+const adapters = createDemoAdapters(() => state);
+state.search = state.search || '';
+state.commandDraft = state.commandDraft || '';
+state.selectedQuoteId = state.selectedQuoteId || null;
+state.selectedProposalId = state.selectedProposalId || null;
+state.selectedRfqId = state.selectedRfqId || null;
+
+const prompts = {
+  flagship: 'I just met Acme Technologies. They need 120 units of Product X, delivered next month. They currently pay around $430 per unit to another supplier. We discussed something closer to $410 if they take the full quantity. They also want implementation support and a two-year maintenance agreement. Check availability, make sure our margins are acceptable, prepare a competitive quotation and put together a proposal explaining why they should choose us.',
+  exception: 'Acme Technologies needs 120 units of Product X next month. Revise the price to $365 per unit for the full quantity. Include implementation support and a two-year maintenance agreement. Calculate the margin and prepare an approval request.',
+  technology: 'Vector Labs needs 50 Operations Suite License seats. They require SSO and are worried about data migration. Budget is around $60,000. Implementation is needed before January 2027. Their current solution expires in December 2026. Match the product, prepare a quotation and show what still needs confirmation.',
+  daily: 'What needs my attention today? Handle everything else.'
+};
+
+const pageMeta = {
+  overview: ['Sales workspace', 'Customer work first. The system keeps records, quotations and approvals in step.'],
+  pipeline: ['Accounts and pipeline', 'Review active opportunities, account context and the next customer action.'],
+  rfqs: ['RFQ workbench', 'Start from a conversation, pasted email or rough notes. The original source stays attached.'],
+  quotes: ['Quotations', 'Inspect calculations, revise commercial terms and resolve policy exceptions.'],
+  proposals: ['Proposals', 'Prepare customer proposals from current account facts and quotation versions.'],
+  approvals: ['Approval queue', 'Review commercial exceptions and record a clear decision.'],
+  products: ['Product and pricing catalog', 'Check approved prices, margin rules, inventory snapshots and delivery readiness.'],
+  team: ['Team visibility', 'See pipeline and commercial work derived from the same operational records.'],
+  activity: ['Execution history', 'Review what the workflow recorded, completed, held or surfaced for attention.']
+};
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.warn('This browser could not save the current demo session.', error);
+  }
+}
+
+function accountFor(id) {
+  return state.accounts.find(item => item.id === id) || null;
+}
+
+function opportunityFor(accountId) {
+  return state.opportunities.find(item => item.accountId === accountId && item.status === 'Open') || null;
+}
+
+function quoteFor(id) {
+  return state.quotes.find(item => item.id === id) || null;
+}
+
+function visibleAccountIds() {
+  return new Set(visibleAccounts(state, state.role).map(item => item.id));
+}
+
+function money(cents, currency) {
+  return escapeHtml(formatMoney(cents, currency || 'SGD'));
+}
+
+function dateLabel(value) {
+  if (!value) return 'Not set';
+  const date = new Date(value.length === 10 ? value + 'T12:00:00' : value);
+  if (Number.isNaN(date.getTime())) return escapeHtml(value);
+  return new Intl.DateTimeFormat('en-SG', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
+}
+
+function statusLabel(value) {
+  const labels = {
+    READY_FOR_SALES_REVIEW: 'Sales review',
+    AWAITING_APPROVAL: 'Awaiting approval',
+    APPROVED_EXCEPTION: 'Approved exception',
+    REVISION_REQUIRED: 'Revision required',
+    READY_FOR_CUSTOMER: 'Ready for customer',
+    NOT_REQUIRED: 'No approval needed',
+    PENDING: 'Pending',
+    APPROVED: 'Approved',
+    REJECTED: 'Rejected',
+    DRAFT: 'Draft',
+    STALE_QUOTE_VERSION: 'Quote changed',
+    NEEDS_INFORMATION: 'Needs information',
+    QUOTATION_PREPARED: 'Quotation prepared',
+    APPROVAL_REQUIRED: 'Approval required',
+    STRUCTURED: 'Structured'
+  };
+  return labels[value] || String(value || 'Open').replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, letter => letter.toUpperCase());
+}
+
+function badge(value) {
+  const key = String(value || '').toLowerCase().replaceAll('_', '-');
+  const tone = key.includes('ready') || key === 'approved' || key === 'complete' ? 'good'
+    : key.includes('approval') || key.includes('review') || key.includes('draft') || key.includes('waiting') ? 'warning'
+    : key.includes('reject') || key.includes('revision') || key.includes('blocked') ? 'bad'
+    : 'neutral';
+  return '<span class="badge ' + tone + '">' + escapeHtml(statusLabel(value)) + '</span>';
+}
+
+function render() {
+  const view = pageMeta[state.activeView] ? state.activeView : 'overview';
+  state.activeView = view;
+  const [title, description] = pageMeta[view];
+  $('#page-title').textContent = title;
+  $('#page-description').textContent = description;
+  $('#role-switch').value = state.role;
+  $('#global-search').value = state.search;
+  $('#storage-label').textContent = 'Example workspace · saved in this browser';
+  document.querySelectorAll('[data-nav-view]').forEach(button => {
+    const isActive = button.dataset.navView === view;
+    button.classList.toggle('active', isActive);
+    if (isActive) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
+  });
+  const panel = $('#view');
+  if (view === 'overview') panel.innerHTML = renderOverview();
+  if (view === 'pipeline') panel.innerHTML = renderPipeline();
+  if (view === 'rfqs') panel.innerHTML = renderRfqs();
+  if (view === 'quotes') panel.innerHTML = renderQuotes();
+  if (view === 'proposals') panel.innerHTML = renderProposals();
+  if (view === 'approvals') panel.innerHTML = renderApprovals();
+  if (view === 'products') panel.innerHTML = renderProducts();
+  if (view === 'team') panel.innerHTML = renderTeam();
+  if (view === 'activity') panel.innerHTML = renderActivity();
+  saveState();
+}
+
+function renderComposer(compact) {
+  const isCompact = Boolean(compact);
+  return '<section class="command-card ' + (isCompact ? 'compact' : '') + '">' +
+    '<div class="command-intro"><div><span class="eyebrow">OUTCOME FIRST</span><h2>' + (isCompact ? 'Start from the customer conversation' : 'Tell the workspace what the customer needs') + '</h2>' +
+    '<p>Describe the outcome. The local demo extracts the request, checks the saved catalog and pricing rules, then records the work for review.</p></div>' +
+    '<span class="command-mark" aria-hidden="true">↗</span></div>' +
+    '<form id="command-form" class="command-form"><label class="sr-only" for="command-input">Customer notes or sales request</label>' +
+    '<textarea id="command-input" name="command" rows="' + (isCompact ? '5' : '4') + '" placeholder="Paste meeting notes, customer email or a sales task. You can start with incomplete details.">' + escapeHtml(state.commandDraft) + '</textarea>' +
+    '<div class="command-footer"><span>Original notes are saved with the RFQ. No email or WhatsApp message is sent.</span><label class="attach-btn">Attach text or CSV<input id="brief-file" type="file" accept=".txt,.md,.csv,text/plain,text/csv"></label><div class="button-row">' +
+    '<button class="btn secondary" type="button" data-action="run-daily">Review my day</button><button class="btn primary" type="submit">Process request <span aria-hidden="true">→</span></button></div></div></form>' +
+    '<div class="prompt-row"><span>Try an example</span><button class="prompt-chip" type="button" data-action="load-prompt" data-prompt="flagship">Acme RFQ</button><button class="prompt-chip" type="button" data-action="load-prompt" data-prompt="exception">Below-floor price</button><button class="prompt-chip" type="button" data-action="load-prompt" data-prompt="technology">Technology renewal</button><button class="prompt-chip" type="button" data-action="load-prompt" data-prompt="daily">Daily review</button></div>' +
+    '<p class="demo-limit">This browser-local prototype uses a rule-based extraction adapter and example company records. It does not connect to a live CRM, ERP, email, WhatsApp or model provider.</p>' +
+    '</section>';
+}
+
+function renderOverview() {
+  const accounts = visibleAccounts(state, state.role);
+  const accountIds = new Set(accounts.map(item => item.id));
+  const opportunities = state.opportunities.filter(item => accountIds.has(item.accountId) && item.status === 'Open');
+  const quotes = state.quotes.filter(item => accountIds.has(item.accountId));
+  const approvals = state.approvals.filter(item => item.status === 'PENDING' && accountIds.has(item.accountId));
+  const proposals = state.proposals.filter(item => accountIds.has(item.accountId));
+  const metrics = managerMetrics(state, state.role);
+  const latest = state.executions.slice(0, 3);
+  return '<div class="overview-hero"><div><span class="eyebrow">LESS ADMIN. MORE SELLING.</span><h2>Keep customer work moving. Let the workspace handle the follow-through.</h2><p>Capture a conversation once. Requirements, pricing, quotation status and management visibility stay connected to the same account and opportunity.</p><button class="btn light" type="button" data-nav-view="rfqs">Open RFQ workbench <span aria-hidden="true">→</span></button></div>' +
+    '<div class="hero-orbit" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><span class="orbit-center">CRM<br>OPS</span><span class="orbit-node node-one">RFQ</span><span class="orbit-node node-two">QUOTE</span><span class="orbit-node node-three">CRM</span></div></div>' +
+    renderComposer(false) +
+    (state.dailyDigest ? renderDailyDigest(state.dailyDigest) : '') +
+    '<div class="metric-grid">' +
+    metricCard('Open opportunities', metrics.opportunityCount, 'Across ' + metrics.accountCount + ' visible accounts', 'blue') +
+    metricCard('Open pipeline', money(metrics.pipelineCents, 'SGD'), 'Values recalculate from current quote records', '') +
+    metricCard('Awaiting approval', metrics.pendingApprovalCount, 'Commercial exceptions held for a manager', approvals.length ? 'amber' : '') +
+    metricCard('Proposals prepared', proposals.length, quotes.length + ' quotation record(s) linked', '') +
+    '</div><div class="content-grid overview-grid"><section class="panel"><div class="panel-head"><div><span class="eyebrow">CUSTOMER WORK</span><h3>Opportunities needing a next step</h3></div><button class="text-button" data-nav-view="pipeline">View pipeline</button></div>' +
+    (opportunities.length ? '<div class="opportunity-list">' + opportunities.slice().sort((a, b) => a.dueDate.localeCompare(b.dueDate)).map(opportunityRow).join('') + '</div>' : '<div class="empty-state">No open opportunities in this view.</div>') +
+    '</section><section class="panel"><div class="panel-head"><div><span class="eyebrow">HUMAN REVIEW</span><h3>What still needs a person</h3></div><button class="text-button" data-nav-view="approvals">Open review queue</button></div>' +
+    renderAttention(approvals, opportunities, proposals) +
+    '</section></div><section class="panel recent-panel"><div class="panel-head"><div><span class="eyebrow">EXECUTION HISTORY</span><h3>Recent agent work</h3></div><button class="text-button" data-nav-view="activity">Open activity</button></div>' +
+    (latest.length ? '<div class="execution-list">' + latest.map(executionRow).join('') + '</div>' : '<div class="empty-state">Process a customer brief or run a daily review to see recorded work here.</div>') + '</section>';
+}
+
+function renderDailyDigest(digest) {
+  const group = (title, items, emptyText, tone) => '<section class="digest-card ' + tone + '"><h3>' + title + '</h3>' +
+    (items.length ? '<ul>' + items.map(item => '<li>' + escapeHtml(typeof item === 'string' ? item : item.text) + '</li>').join('') + '</ul>' : '<p>' + emptyText + '</p>') + '</section>';
+  return '<section class="daily-digest"><div class="digest-heading"><div><span class="eyebrow">DAILY REVIEW · ' + dateLabel(digest.ranAt) + '</span><h2>Here is what needs you today.</h2></div><span class="source-chip">Built from current workspace records</span></div><div class="digest-grid">' +
+    group('Completed by agents', digest.completed, 'No background actions were needed.', 'digest-done') +
+    group('Awaiting approval', digest.awaitingApproval, 'No commercial decisions are waiting.', 'digest-approval') +
+    group('Requires salesperson', digest.requiresSalesperson, 'No customer or seller follow-up is due.', 'digest-human') +
+    group('Blocked or unconfirmed', digest.blocked, 'No delivery or catalog blockers surfaced.', 'digest-blocked') +
+    '</div></section>';
+}
+
+function metricCard(label, value, hint, tone) {
+  return '<article class="metric-card ' + escapeHtml(tone || '') + '"><span>' + escapeHtml(label) + '</span><b>' + value + '</b><small>' + escapeHtml(hint) + '</small></article>';
+}
+
+function opportunityRow(opportunity) {
+  const account = accountFor(opportunity.accountId);
+  return '<button type="button" class="opportunity-row" data-action="open-account" data-account="' + escapeHtml(opportunity.accountId) + '">' +
+    '<span class="account-avatar">' + escapeHtml((account ? account.name : '?').split(' ').map(part => part[0]).slice(0, 2).join('')) + '</span>' +
+    '<span class="opportunity-copy"><b>' + escapeHtml(opportunity.name) + '</b><small>' + escapeHtml(account ? account.name : 'Account') + ' · ' + escapeHtml(opportunity.stage) + '</small></span>' +
+    '<span class="opportunity-value">' + money(opportunity.valueCents, account ? account.currency : 'SGD') + '<small>Next: ' + escapeHtml(opportunity.nextAction) + '</small></span>' +
+    '<span class="due-date">' + dateLabel(opportunity.dueDate) + '</span></button>';
+}
+
+function renderAttention(approvals, opportunities, proposals) {
+  const rows = [];
+  approvals.slice(0, 2).forEach(item => rows.push('<div class="attention-row"><span class="attention-icon amber">!</span><span><b>Manager decision</b><small>' + escapeHtml(item.quoteId) + ' · pricing exception</small></span><button class="text-button" data-nav-view="approvals">Review</button></div>'));
+  const due = opportunities.filter(item => item.dueDate <= DEMO_TODAY).slice(0, 2);
+  due.forEach(item => rows.push('<div class="attention-row"><span class="attention-icon blue">•</span><span><b>Customer follow-up</b><small>' + escapeHtml(item.name) + ' · ' + dateLabel(item.dueDate) + '</small></span><button class="text-button" data-action="open-account" data-account="' + escapeHtml(item.accountId) + '">Open</button></div>'));
+  const drafts = proposals.filter(item => item.status !== 'READY_FOR_CUSTOMER').slice(0, 2);
+  drafts.forEach(item => rows.push('<div class="attention-row"><span class="attention-icon purple">↗</span><span><b>Proposal review</b><small>' + escapeHtml(item.title) + ' · ' + escapeHtml(statusLabel(item.status)) + '</small></span><button class="text-button" data-action="open-proposal" data-proposal="' + escapeHtml(item.id) + '">Open</button></div>'));
+  if (!rows.length) return '<div class="empty-state">No approvals or customer actions are waiting in this view.</div>';
+  return '<div class="attention-list">' + rows.join('') + '</div><button class="btn secondary full-width" data-action="run-daily">Review the day and refresh the team view</button>';
+}
+
+function executionRow(item) {
+  const time = dateLabel(item.startedAt);
+  return '<div class="execution-row"><span class="execution-glyph">✓</span><span><b>' + escapeHtml(item.title) + '</b><small>' + escapeHtml(item.adapter) + ' · ' + time + '</small></span>' + badge(item.status) + '</div>';
+}
+
+function renderPipeline() {
+  if (state.selectedAccountId) return renderAccountDetail(state.selectedAccountId);
+  const accounts = visibleAccounts(state, state.role);
+  const accountIds = new Set(accounts.map(item => item.id));
+  const needle = String(state.search || '').toLowerCase();
+  const opportunities = state.opportunities.filter(item => accountIds.has(item.accountId)).filter(item => {
+    if (!needle) return true;
+    const account = accountFor(item.accountId);
+    return (item.name + ' ' + (account ? account.name : '') + ' ' + item.stage + ' ' + item.owner).toLowerCase().includes(needle);
+  });
+  const leads = opportunities.filter(item => item.source.toLowerCase().includes('lead') || item.source.toLowerCase().includes('referral'));
+  return '<div class="page-toolbar"><div><span class="eyebrow">ACCOUNT AND OPPORTUNITY RECORDS</span><h2>' + opportunities.length + ' opportunities in view</h2><p>Customer conversations, assigned ownership, next actions and quotation status share one source of record.</p></div><div class="toolbar-actions">' + integrationRegistry.filter(item => item.id === 'email' || item.id === 'whatsapp').map(item => '<span class="source-chip">' + escapeHtml(item.label) + ': ' + escapeHtml(item.mode.toLowerCase()) + '</span>').join('') + '</div></div>' +
+    '<div class="metric-grid compact-metrics">' + metricCard('Active opportunities', opportunities.filter(item => item.status === 'Open').length, 'Owned by the active role', '') + metricCard('Lead or referral source', leads.length, 'Qualification happens in the same pipeline', '') + metricCard('Customer accounts', accounts.length, state.role === 'manager' ? 'Manager view' : 'Assigned to Zev Pan', '') + metricCard('Customer messages sent', '0', 'External communication stays under human control', '') + '</div>' +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">PIPELINE</span><h3>Active customer opportunities</h3></div><span>Values from current CRM records</span></div>' +
+    '<div class="table-scroll"><table class="data-table"><thead><tr><th>Account / opportunity</th><th>Stage</th><th>Value</th><th>Owner</th><th>Next action</th><th>Due</th></tr></thead><tbody>' +
+    opportunities.map(item => {
+      const account = accountFor(item.accountId);
+      return '<tr><td><button class="table-link" data-action="open-account" data-account="' + escapeHtml(item.accountId) + '">' + escapeHtml(account.name) + '<small>' + escapeHtml(item.name) + '</small></button></td><td>' + escapeHtml(item.stage) + '</td><td>' + money(item.valueCents, account.currency) + '</td><td>' + escapeHtml(item.owner) + '</td><td>' + escapeHtml(item.nextAction) + '</td><td>' + dateLabel(item.dueDate) + '</td></tr>';
+    }).join('') + '</tbody></table></div></section>';
+}
+
+function renderAccountDetail(accountId) {
+  const account = accountFor(accountId);
+  if (!account || (state.role === 'sales' && account.owner !== 'Zev Pan')) {
+    state.selectedAccountId = null;
+    return '<section class="panel empty-state">This account is not available in the active salesperson view.</section>';
+  }
+  const opportunity = opportunityFor(account.id);
+  const interactions = state.interactions.filter(item => item.accountId === account.id).sort((a, b) => b.date.localeCompare(a.date));
+  const quotes = state.quotes.filter(item => item.accountId === account.id);
+  const events = state.events.filter(item => item.accountId === account.id).slice(0, 8);
+  const timeline = interactions.map(item => '<div class="timeline-entry"><span class="timeline-dot"></span><div><b>' + escapeHtml(item.channel) + ' · ' + escapeHtml(item.direction) + '</b><small>' + dateLabel(item.date) + ' · ' + escapeHtml(item.owner) + '</small><p>' + escapeHtml(item.summary) + '</p></div></div>').join('');
+  const eventRows = events.map(item => '<div class="timeline-entry agent-entry"><span class="timeline-dot agent-dot"></span><div><b>' + escapeHtml(item.actor) + ' · ' + escapeHtml(item.type.replaceAll('.', ' ')) + '</b><small>' + dateLabel(item.at) + '</small><p>' + escapeHtml(item.summary) + '</p></div></div>').join('');
+  return '<button class="back-link" data-action="back-pipeline">← Accounts and pipeline</button><div class="account-title-row"><div><span class="eyebrow">' + escapeHtml(account.tier) + ' ACCOUNT</span><h2>' + escapeHtml(account.name) + '</h2><p>' + escapeHtml(account.industry) + ' · ' + escapeHtml(account.country) + ' · Account owner: ' + escapeHtml(account.owner) + '</p></div><button class="btn secondary" data-nav-view="rfqs">Create RFQ</button></div>' +
+    '<div class="account-grid"><div class="account-main"><section class="panel"><div class="panel-head"><div><span class="eyebrow">OPPORTUNITY</span><h3>' + escapeHtml(opportunity ? opportunity.name : 'No active opportunity') + '</h3></div>' + (opportunity ? badge(opportunity.stage) : '') + '</div>' +
+    (opportunity ? '<div class="opportunity-facts"><div><small>Current value</small><b>' + money(opportunity.valueCents, account.currency) + '</b></div><div><small>Next action</small><b>' + escapeHtml(opportunity.nextAction) + '</b></div><div><small>Due</small><b>' + dateLabel(opportunity.dueDate) + '</b></div><div><small>Source</small><b>' + escapeHtml(opportunity.source) + '</b></div></div>' : '<div class="panel-body">Use RFQ intake to create a linked sales request.</div>') +
+    '<div class="panel-head subpanel-head"><div><span class="eyebrow">QUOTATIONS</span><h3>Commercial records</h3></div></div>' +
+    (quotes.length ? '<div class="inline-record-list">' + quotes.map(item => '<button class="inline-record" data-action="open-quote" data-quote="' + escapeHtml(item.id) + '"><span><b>' + escapeHtml(item.number) + ' · v' + item.version + '</b><small>' + dateLabel(item.createdAt) + '</small></span><span>' + money(item.calculation.totalCents, item.currency) + '</span>' + badge(item.status) + '</button>').join('') + '</div>' : '<div class="empty-state">No quotation yet. Process a customer brief to start one.</div>') +
+    '</section><section class="panel"><div class="panel-head"><div><span class="eyebrow">CUSTOMER TIMELINE</span><h3>Interaction and agent history</h3></div><span>Manual entries are saved with the account</span></div><div class="timeline">' + (timeline || '<div class="empty-state">No customer interactions recorded.</div>') + eventRows + '</div></section>' +
+    '<section class="panel interaction-panel"><div class="panel-head"><div><span class="eyebrow">RECORD AN INTERACTION</span><h3>Keep the relationship context current</h3></div></div><form data-form="interaction" class="interaction-form"><input type="hidden" name="accountId" value="' + escapeHtml(account.id) + '"><label>Channel<select name="channel"><option>Meeting note</option><option>Customer call</option><option>Email note</option><option>Business WhatsApp note</option></select></label><label>What happened?<textarea name="summary" rows="3" placeholder="Record the customer need, objection or commitment."></textarea></label><button class="btn primary" type="submit">Add to CRM timeline</button><p class="helper">The entry is saved in this browser. It does not send a message.</p></form></section></div>' +
+    '<aside class="account-side"><section class="panel"><div class="panel-head"><div><span class="eyebrow">CUSTOMER CONTACTS</span><h3>People involved</h3></div></div><div class="contact-list">' + account.contacts.map(contact => '<article class="contact-card"><span class="contact-avatar">' + escapeHtml(contact.name.split(' ').map(part => part[0]).slice(0, 2).join('')) + '</span><div><b>' + escapeHtml(contact.name) + '</b><small>' + escapeHtml(contact.title) + '</small><span>' + escapeHtml(contact.role) + '</span></div></article>').join('') + '</div></section>' +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">ACCOUNT CONTEXT</span><h3>Commercial profile</h3></div></div><div class="profile-list"><div><span>Account currency</span><b>' + escapeHtml(account.currency) + '</b></div><div><span>Tax policy</span><b>' + (account.taxRateBps / 100) + '% example rate</b></div><div><span>Price source</span><b>Approved catalog list</b></div><div><span>Last account touch</span><b>' + dateLabel(account.lastTouch) + '</b></div></div><p class="profile-note">Email and Business WhatsApp are shown for context only. No live connection is configured.</p></section></aside></div>';
+}
+
+function renderRfqs() {
+  const rfq = state.rfqs.find(item => item.id === state.selectedRfqId) || null;
+  const visible = state.rfqs.filter(item => visibleAccountIds().has(item.accountId));
+  const parsed = rfq ? rfq.requirements : null;
+  return renderComposer(true) + '<div class="rfq-layout"><section class="panel"><div class="panel-head"><div><span class="eyebrow">STRUCTURED CUSTOMER DEMAND</span><h3>RFQ records</h3></div><span>' + visible.length + ' saved</span></div>' +
+    (visible.length ? '<div class="rfq-list">' + visible.map(item => '<button class="rfq-row ' + (rfq && rfq.id === item.id ? 'selected' : '') + '" data-action="open-rfq" data-rfq="' + escapeHtml(item.id) + '"><span class="rfq-icon">R</span><span><b>' + escapeHtml(item.id) + ' · ' + escapeHtml(item.requirements.accountName || 'Account needed') + '</b><small>' + escapeHtml(item.requirements.productName || 'Product to confirm') + (item.requirements.quantity ? ' · ' + item.requirements.quantity + ' ' + escapeHtml(item.requirements.unit || 'units') : '') + '</small></span>' + badge(item.status) + '</button>').join('') + '</div>' : '<div class="empty-state">Paste a customer request to create the first RFQ.</div>') + '</section>' +
+    '<section class="panel rfq-detail">' + (rfq ? renderRfqDetail(rfq, parsed) : '<div class="empty-state large-empty"><span class="empty-illustration">RFQ</span><h3>Turn rough notes into structured demand</h3><p>The system saves the original source, matches the customer and product, and surfaces what is still uncertain.</p><ul><li>Quantity, services and delivery window</li><li>Competitor context and target price</li><li>Catalog, availability and policy checks</li></ul></div>') + '</section></div>';
+}
+
+function renderRfqDetail(rfq, parsed) {
+  const account = accountFor(rfq.accountId);
+  const quote = quoteFor(rfq.quoteId);
+  const primary = state.products.find(item => item.id === parsed.productId);
+  const volumeBreak = primary ? (primary.volumeDiscounts || []).filter(item => parsed.quantity >= item.minimumQuantity).sort((a, b) => b.minimumQuantity - a.minimumQuantity)[0] : null;
+  const accountAgreement = account && primary ? (account.priceAgreements || []).find(item => item.productId === primary.id && item.status === 'Active' && parsed.quantity >= item.minimumQuantity) : null;
+  return '<div class="panel-head"><div><span class="eyebrow">' + escapeHtml(rfq.id) + ' · ' + dateLabel(rfq.createdAt) + '</span><h3>' + escapeHtml(account ? account.name : 'Account needs review') + '</h3></div>' + badge(rfq.status) + '</div>' +
+    '<div class="rfq-structured"><div class="fact-card"><small>Product and quantity</small><b>' + escapeHtml(parsed.productName || 'Needs confirmation') + '</b><span>' + escapeHtml(parsed.quantity ? parsed.quantity + ' ' + parsed.unit : 'Quantity not found') + '</span></div><div class="fact-card"><small>Requested delivery</small><b>' + escapeHtml(parsed.deliveryWindow || 'To be agreed') + '</b><span>Customer window, not a delivery commitment</span></div><div class="fact-card"><small>Competitor reference</small><b>' + (parsed.currentSupplierPriceCents ? money(parsed.currentSupplierPriceCents, parsed.currency) : 'Not provided') + '</b><span>Customer reported</span></div><div class="fact-card"><small>Target price</small><b>' + (parsed.targetUnitPriceCents ? money(parsed.targetUnitPriceCents, parsed.currency) : 'Catalog list') + '</b><span>Per ' + escapeHtml(parsed.unit || 'unit') + '</span></div>' + (parsed.budgetCents ? '<div class="fact-card"><small>Stated budget</small><b>' + money(parsed.budgetCents, parsed.currency) + '</b><span>Confirm whether tax is included</span></div>' : '') + '</div>' +
+    '<div class="rfq-columns"><div><h4>Requirements and source</h4><p class="source-quote">' + escapeHtml(parsed.sourceText) + '</p><details class="source-details"><summary>Show extracted notes</summary><ul>' + (parsed.notes.length ? parsed.notes.map(item => '<li>' + escapeHtml(item) + '</li>').join('') : '<li>No additional notes extracted.</li>') + '</ul></details>' +
+    (parsed.assumptions.length ? '<h4>Pricing assumptions</h4><ul class="check-list">' + parsed.assumptions.map(item => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>' : '') +
+    (parsed.openQuestions.length ? '<h4>Clarification before release</h4><ul class="question-list">' + parsed.openQuestions.map(item => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>' : '') +
+    (parsed.blockers.length ? '<div class="callout danger-callout"><b>Pricing paused</b><ul>' + parsed.blockers.map(item => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul></div>' : '') +
+    '</div><div class="rfq-next"><h4>Catalog and policy check</h4>' + (primary ? '<div class="catalog-match"><b>' + escapeHtml(primary.name) + '</b><span>' + escapeHtml(primary.category) + ' · ' + escapeHtml(primary.id) + '</span><small>' + escapeHtml(primary.pricingSource) + '</small>' + (accountAgreement ? '<small>Customer rate card: ' + escapeHtml(accountAgreement.id) + ' at ' + money(accountAgreement.unitPriceCents, account.currency) + ' per ' + escapeHtml(primary.unit) + '</small>' : volumeBreak ? '<small>Volume break available: ' + (volumeBreak.discountBps / 100) + '% off at ' + volumeBreak.minimumQuantity + '+ units</small>' : '') + (primary.stock ? '<div class="stock-stat"><b>' + primary.stock.available + '</b><span>available in last stock snapshot</span></div>' : primary.capacity ? '<div class="stock-stat"><b>' + (primary.capacity.availableSeats || primary.capacity.status) + '</b><span>' + escapeHtml(primary.capacity.confidence) + '</span></div>' : '') + '</div>' : '<p class="helper">A catalog match will appear when the required product is identified.</p>') +
+    (quote ? '<div class="prepared-record"><span class="eyebrow">QUOTATION PREPARED</span><b>' + escapeHtml(quote.number) + ' · version ' + quote.version + '</b><span>' + money(quote.calculation.totalCents, quote.currency) + ' including tax</span>' + badge(quote.status) + '<button class="btn primary" data-action="open-quote" data-quote="' + escapeHtml(quote.id) + '">Review quotation</button></div>' : '') +
+    '</div></div>';
+}
+
+function renderQuotes() {
+  const visibleQuotes = state.quotes.filter(item => visibleAccountIds().has(item.accountId));
+  const selected = quoteFor(state.selectedQuoteId);
+  if (selected && visibleAccountIds().has(selected.accountId)) return renderQuoteDetail(selected);
+  return '<div class="page-toolbar"><div><span class="eyebrow">DETERMINISTIC PRICING</span><h2>' + visibleQuotes.length + ' quotation record(s)</h2><p>Totals and policy decisions come from catalog costs, price rules, services and tax assumptions stored with each version.</p></div><button class="btn primary" data-nav-view="rfqs">Start an RFQ</button></div>' +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">QUOTATION REGISTER</span><h3>Current commercial work</h3></div><span>Internal margin available to authorized sales roles</span></div>' +
+    (visibleQuotes.length ? '<div class="table-scroll"><table class="data-table"><thead><tr><th>Quote</th><th>Account</th><th>Version</th><th>Total</th><th>Gross margin</th><th>Status</th><th></th></tr></thead><tbody>' + visibleQuotes.map(item => {
+      const account = accountFor(item.accountId);
+      return '<tr><td><b>' + escapeHtml(item.number) + '</b><small>' + dateLabel(item.createdAt) + '</small></td><td>' + escapeHtml(account.name) + '</td><td>v' + item.version + '</td><td>' + money(item.calculation.totalCents, item.currency) + '</td><td>' + (item.calculation.grossMarginBps / 100).toFixed(2) + '%</td><td>' + badge(item.status) + '</td><td><button class="text-button" data-action="open-quote" data-quote="' + escapeHtml(item.id) + '">Open</button></td></tr>';
+    }).join('') + '</tbody></table></div>' : '<div class="empty-state">A quotation appears after an RFQ has a linked account, product and quantity.</div>') + '</section>';
+}
+
+function renderQuoteDetail(quote) {
+  const account = accountFor(quote.accountId);
+  const rfq = state.rfqs.find(item => item.id === quote.rfqId);
+  const approval = state.approvals.find(item => item.id === quote.approvalId);
+  const latestProposal = state.proposals.find(item => item.quoteId === quote.id && item.quoteVersion === quote.version);
+  const visibleCost = state.role === 'manager';
+  const lines = quote.calculation.lines.map(line => '<tr><td><b>' + escapeHtml(line.name) + '</b><small>' + escapeHtml(line.description) + '<br>Price per ' + escapeHtml(line.unit) + '<br>Price basis: ' + escapeHtml(line.priceBasis) + '</small></td><td><input name="qty-' + escapeHtml(line.id) + '" type="number" min="1" step="1" value="' + line.quantity + '" aria-label="Quantity for ' + escapeHtml(line.name) + '"></td><td><input name="period-' + escapeHtml(line.id) + '" type="number" min="1" step="1" value="' + line.periodCount + '" aria-label="Term for ' + escapeHtml(line.name) + '"></td><td><input name="price-' + escapeHtml(line.id) + '" type="number" min="0" step="0.01" value="' + (line.unitPriceCents / 100).toFixed(2) + '" aria-label="Unit price for ' + escapeHtml(line.name) + '"></td>' + (visibleCost ? '<td>' + money(line.unitCostCents, quote.currency) + '</td>' : '') + '<td>' + (line.marginBps / 100).toFixed(2) + '%</td><td>' + money(line.lineNetCents, quote.currency) + '</td></tr>').join('');
+  const violations = quote.exceptions.length ? '<div class="callout danger-callout"><b>Release held by pricing rules</b><ul>' + quote.exceptions.map(item => '<li><strong>' + escapeHtml(item.rule) + ':</strong> ' + escapeHtml(item.detail) + '</li>').join('') + '</ul><p>Approver: ' + escapeHtml(quote.exceptions[0].approverRole) + '. The final customer document stays marked as a draft until a decision is recorded.</p>' + (approval ? '<button class="btn secondary" data-nav-view="approvals">Open ' + escapeHtml(approval.id) + '</button>' : '') + '</div>' : '<div class="callout success-callout"><b>Pricing rules passed</b><p>All lines meet their saved gross margin floors and discount limits. Sales review is still required before the quote is marked ready for the customer.</p></div>';
+  return '<button class="back-link" data-action="back-quotes">← Quotations</button><div class="account-title-row quote-heading"><div><span class="eyebrow">' + escapeHtml(quote.number) + ' · VERSION ' + quote.version + '</span><h2>' + escapeHtml(account.name) + '</h2><p>Opportunity ' + escapeHtml(quote.opportunityId || 'not linked') + ' · RFQ ' + escapeHtml(quote.rfqId) + ' · Valid through ' + dateLabel(quote.validThrough) + '</p></div>' + badge(quote.status) + '</div>' +
+    '<div class="quote-facts">' + metricCard('Quotation total', money(quote.calculation.totalCents, quote.currency), 'Includes ' + (quote.taxRateBps / 100) + '% example tax estimate', 'blue') + metricCard('Amount before tax', money(quote.calculation.amountBeforeTaxCents, quote.currency), 'Discounted lines plus delivery and fees', '') + metricCard('Gross margin', (quote.calculation.grossMarginBps / 100).toFixed(2) + '%', 'Gross margin = profit divided by selling price', '') + metricCard('Markup', (quote.calculation.markupBps / 100).toFixed(2) + '%', 'Markup = profit divided by cost', '') + '</div>' +
+    '<div class="quote-detail-grid"><div class="quote-main"><section class="panel"><div class="panel-head"><div><span class="eyebrow">QUOTE VERSION ' + quote.version + '</span><h3>Quotation lines</h3></div><span>Change a line and save a new version</span></div>' +
+    '<form data-form="quote-revision"><div class="table-scroll"><table class="data-table quote-table"><thead><tr><th>Product or service</th><th>Quantity</th><th>Term count</th><th>Unit price (' + escapeHtml(quote.currency) + ')</th>' + (visibleCost ? '<th>Internal cost</th>' : '') + '<th>Gross margin</th><th>Line total</th></tr></thead><tbody>' + lines + '</tbody></table></div><div class="form-footer"><span>Line calculations use whole quantities and saved policy floors.</span><button class="btn secondary" type="submit">Save as version ' + (quote.version + 1) + '</button></div></form>' +
+    '<div class="totals-list"><div><span>List price total</span><b>' + money(quote.calculation.listTotalCents, quote.currency) + '</b></div><div><span>Discount</span><b>' + money(quote.calculation.discountCents, quote.currency) + '</b></div><div><span>Subtotal after discount</span><b>' + money(quote.calculation.subtotalCents, quote.currency) + '</b></div><div><span>Delivery</span><b>' + money(quote.calculation.shippingCents, quote.currency) + '</b></div><div><span>Tax estimate at ' + (quote.taxRateBps / 100) + '%</span><b>' + money(quote.calculation.taxCents, quote.currency) + '</b></div><div class="total-row"><span>Total</span><b>' + money(quote.calculation.totalCents, quote.currency) + '</b></div></div></section>' +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">POLICY EVALUATION</span><h3>Commercial control</h3></div>' + badge(quote.approvalStatus) + '</div>' + violations + '</section>' +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">VERSION HISTORY</span><h3>Earlier calculations</h3></div><span>' + quote.versions.length + ' saved revision(s)</span></div>' + (quote.versions.length ? '<div class="version-list">' + quote.versions.slice().reverse().map(item => '<div><span><b>Version ' + item.version + '</b><small>' + dateLabel(item.savedAt) + ' · ' + escapeHtml(statusLabel(item.status)) + '</small></span><b>' + money(item.calculation.totalCents, quote.currency) + '</b></div>').join('') + '</div>' : '<div class="empty-state">Quote revisions preserve the prior totals and line values here.</div>') + '</section></div>' +
+    '<aside class="quote-side"><section class="panel"><div class="panel-head"><div><span class="eyebrow">CUSTOMER RELEASE</span><h3>Review and approve</h3></div></div><div class="release-copy"><p>Internal costs and margins stay out of the customer quotation. The downloaded preview uses a draft mark until the seller confirms the assumptions.</p>' +
+    (quote.releaseQuestions.length ? '<ul class="question-list">' + quote.releaseQuestions.map(item => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>' : '<p>No unresolved release questions.</p>') +
+    (quote.releaseQuestions.some(item => item.toLowerCase().includes('currency')) ? '<label class="check-control"><input type="checkbox" id="currency-confirm"> I confirm ' + escapeHtml(quote.currency) + ' is the intended quote currency.</label>' : '') +
+    (quote.releaseQuestions.length ? '<label class="check-control"><input type="checkbox" id="assumptions-confirm"> I reviewed the listed assumptions and will not present unconfirmed availability or delivery as a commitment.</label>' : '') +
+    '<button class="btn primary full-width" data-action="confirm-quote" data-quote="' + escapeHtml(quote.id) + '" ' + (['READY_FOR_CUSTOMER', 'AWAITING_APPROVAL', 'REVISION_REQUIRED'].includes(quote.status) ? 'disabled' : '') + '>Mark ready for customer</button>' +
+    '<button class="btn secondary full-width" data-action="download-quote" data-quote="' + escapeHtml(quote.id) + '">' + (quote.status === 'READY_FOR_CUSTOMER' ? 'Download customer quotation' : 'Download draft quotation preview') + '</button>' +
+    (quote.status !== 'AWAITING_APPROVAL' && quote.status !== 'REVISION_REQUIRED' ? '<button class="btn secondary full-width" data-action="generate-proposal" data-quote="' + escapeHtml(quote.id) + '">' + (latestProposal ? 'Prepare another proposal version' : 'Generate proposal draft') + '</button>' : '<p class="helper">Proposal preparation waits until the commercial exception is resolved.</p>') +
+    (latestProposal ? '<button class="text-button full-width" data-action="open-proposal" data-proposal="' + escapeHtml(latestProposal.id) + '">Open linked proposal · ' + escapeHtml(statusLabel(latestProposal.status)) + '</button>' : '') +
+    '</div></section>' +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">SOURCE NOTES</span><h3>RFQ audit trail</h3></div></div><div class="source-notes">' + escapeHtml(rfq ? rfq.sourceText : 'No source notes are linked.') + '</div><p class="helper">Quote status is written back to the linked opportunity and account timeline.</p></section></aside></div>';
+}
+
+function renderProposals() {
+  const items = state.proposals.filter(item => visibleAccountIds().has(item.accountId));
+  const selected = state.proposals.find(item => item.id === state.selectedProposalId && visibleAccountIds().has(item.accountId));
+  if (selected) return renderProposalDetail(selected);
+  return '<div class="page-toolbar"><div><span class="eyebrow">QUOTE-LINKED DOCUMENTS</span><h2>' + items.length + ' proposal draft(s)</h2><p>Proposal sections use verified catalog facts, the linked RFQ and a specific quotation version. A quote revision makes an older draft visibly stale.</p></div><button class="btn primary" data-nav-view="quotes">Open quotations</button></div>' +
+    (items.length ? '<div class="proposal-grid">' + items.map(item => {
+      const account = accountFor(item.accountId);
+      const quote = quoteFor(item.quoteId);
+      return '<article class="proposal-card"><div class="proposal-cover"><span>PROPOSAL</span><b>' + escapeHtml(account.name) + '</b><small>' + escapeHtml(item.title) + '</small></div><div class="proposal-info"><div>' + badge(item.status) + '<span>Quote ' + escapeHtml(quote ? quote.number : item.quoteId) + ' · v' + item.quoteVersion + '</span></div><p>' + escapeHtml(item.sections.solution) + '</p><button class="btn secondary" data-action="open-proposal" data-proposal="' + escapeHtml(item.id) + '">Review proposal</button></div></article>';
+    }).join('') + '</div>' : '<section class="panel empty-state large-empty"><span class="empty-illustration">DOC</span><h3>Proposal drafts follow a quotation</h3><p>Start with a customer RFQ. The proposal uses that account context and stays linked to the calculated quote.</p><button class="btn primary" data-nav-view="rfqs">Start an RFQ</button></section>');
+}
+
+function renderProposalDetail(proposal) {
+  const account = accountFor(proposal.accountId);
+  const quote = quoteFor(proposal.quoteId);
+  const current = quote && quote.version === proposal.quoteVersion && proposal.sourceQuoteTotalCents === quote.calculation.totalCents;
+  const sections = proposal.sections;
+  const benefits = sections.benefits.map(item => '<li>' + escapeHtml(item) + '</li>').join('');
+  const assumptions = sections.assumptions.map(item => '<li>' + escapeHtml(item) + '</li>').join('');
+  return '<button class="back-link" data-action="back-proposals">← Proposals</button><div class="account-title-row"><div><span class="eyebrow">PROPOSAL DRAFT · ' + escapeHtml(proposal.id) + '</span><h2>' + escapeHtml(proposal.title) + '</h2><p>Prepared from ' + escapeHtml(quote ? quote.number : 'quote unavailable') + ' · version ' + proposal.quoteVersion + '</p></div>' + badge(proposal.status) + '</div>' +
+    (!current ? '<div class="callout warning-callout"><b>This proposal is out of date</b><p>The linked quotation has changed. Refresh the proposal from the current quotation before customer review.</p><button class="btn secondary" data-action="refresh-proposal" data-quote="' + escapeHtml(proposal.quoteId) + '">Refresh from current quote</button></div>' : '') +
+    '<div class="proposal-preview"><div class="proposal-page"><div class="proposal-page-head"><span>SOLUTION PROPOSAL</span><h2>' + escapeHtml(account.name) + '</h2><p>' + dateLabel(proposal.createdAt) + '</p></div><section><h3>Customer requirements</h3><p>' + escapeHtml(sections.customerNeed) + '</p></section><section><h3>Recommended solution</h3><p>' + escapeHtml(sections.solution) + '</p></section><section><h3>Solution benefits</h3><ul>' + benefits + '</ul></section><section><h3>Delivery approach</h3><p>' + escapeHtml(sections.delivery) + '</p></section><section><h3>Commercial proposal</h3><p class="proposal-commercial">' + escapeHtml(sections.commercial) + '</p></section><section><h3>Assumptions and exclusions</h3><ul>' + assumptions + '</ul></section><section><h3>Next steps</h3><ol><li>Confirm requirements and delivery capacity.</li><li>Review the linked quotation terms.</li><li>Agree the implementation and service start date.</li></ol></section></div><aside class="proposal-controls panel"><div class="panel-head"><div><span class="eyebrow">DOCUMENT ACTIONS</span><h3>Keep terms aligned</h3></div></div><p>Benefits are sourced from product records. Commercial totals are copied from the linked quotation version.</p><p><b>Generator:</b> ' + escapeHtml(proposal.generator) + '</p><p><b>Linked quote total:</b> ' + money(proposal.sourceQuoteTotalCents, quote.currency) + '</p>' +
+    (proposal.status !== 'READY_FOR_CUSTOMER' ? '<button class="btn primary full-width" data-action="proposal-ready" data-proposal="' + escapeHtml(proposal.id) + '" ' + (!current || quote.status !== 'READY_FOR_CUSTOMER' ? 'disabled' : '') + '>Mark proposal ready for customer</button>' : '<div class="callout success-callout">Proposal is ready for customer review.</div>') +
+    '<button class="btn secondary full-width" data-action="download-proposal" data-proposal="' + escapeHtml(proposal.id) + '">Download ' + (proposal.status === 'READY_FOR_CUSTOMER' ? 'proposal' : 'draft preview') + '</button><p class="helper">The local adapter prepares HTML that can be opened and printed to PDF. No external provider generated this document.</p></aside></div>';
+}
+
+function renderApprovals() {
+  const accounts = visibleAccountIds();
+  const approvals = state.approvals.filter(item => accounts.has(item.accountId));
+  const pending = approvals.filter(item => item.status === 'PENDING');
+  const past = approvals.filter(item => item.status !== 'PENDING');
+  return '<div class="page-toolbar"><div><span class="eyebrow">HUMAN COMMERCIAL CONTROL</span><h2>' + pending.length + ' decision(s) pending</h2><p>Prices below policy stay held until a manager records an approval or rejection. Decisions apply to one quotation version only.</p></div>' + (state.role === 'manager' ? '<span class="role-pill">Sales Manager actions enabled</span>' : '<span class="role-pill">Read-only for salesperson</span>') + '</div>' +
+    (state.role !== 'manager' ? '<div class="callout warning-callout"><b>Manager review required</b><p>Switch the role control to Sales Manager to decide a pricing exception.</p></div>' : '') +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">PENDING</span><h3>Commercial exception requests</h3></div><span>Internal cost and margin are visible to the manager role</span></div>' +
+    (pending.length ? '<div class="approval-list">' + pending.map(item => renderApprovalCard(item, state.role === 'manager')).join('') + '</div>' : '<div class="empty-state">No commercial exception needs a decision.</div>') + '</section>' +
+    '<section class="panel history-panel"><div class="panel-head"><div><span class="eyebrow">DECISION HISTORY</span><h3>Resolved requests</h3></div><span>' + past.length + ' recorded</span></div>' +
+    (past.length ? '<div class="approval-history">' + past.map(item => '<div><span><b>' + escapeHtml(item.id) + ' · ' + escapeHtml(item.type) + '</b><small>' + escapeHtml(item.quoteId) + ' · ' + escapeHtml(item.decidedBy || '') + ' · ' + dateLabel(item.decidedAt) + '</small></span>' + badge(item.status) + '<p>' + escapeHtml(item.decisionNote) + '</p></div>').join('') + '</div>' : '<div class="empty-state">Approval decisions are appended here with the version and decision note.</div>') + '</section>';
+}
+
+function renderApprovalCard(approval, canDecide) {
+  const quote = quoteFor(approval.quoteId);
+  const account = accountFor(approval.accountId);
+  const exceptionRows = approval.exceptions.map(item => '<li><b>' + escapeHtml(item.rule) + '</b><span>' + escapeHtml(item.detail) + '</span></li>').join('');
+  return '<article class="approval-card"><div class="approval-top"><div><span class="eyebrow">' + escapeHtml(approval.id) + ' · ' + dateLabel(approval.requestedAt) + '</span><h3>' + escapeHtml(account.name) + ' · ' + escapeHtml(quote.number) + ' v' + approval.quoteVersion + '</h3><p>Requested by ' + escapeHtml(approval.requestedBy) + ' · approver ' + escapeHtml(approval.approverRole) + '</p></div>' + badge(approval.status) + '</div>' +
+    '<div class="approval-data"><div><small>Proposed total</small><b>' + money(quote.calculation.totalCents, quote.currency) + '</b></div><div><small>Gross margin</small><b>' + (quote.calculation.grossMarginBps / 100).toFixed(2) + '%</b></div><div><small>Internal cost</small><b>' + money(quote.calculation.totalCostCents, quote.currency) + '</b></div></div>' +
+    '<ul class="exception-list">' + exceptionRows + '</ul><div class="approval-actions"><button class="text-button" data-action="open-quote" data-quote="' + escapeHtml(quote.id) + '">Open quotation</button>' +
+    (canDecide && approval.status === 'PENDING' ? '<label class="approval-note">Decision note<input name="note-' + escapeHtml(approval.id) + '" placeholder="Add a commercial reason"></label><div class="button-row"><button class="btn danger" data-action="decide-approval" data-approval="' + escapeHtml(approval.id) + '" data-decision="REJECTED">Reject</button><button class="btn primary" data-action="decide-approval" data-approval="' + escapeHtml(approval.id) + '" data-decision="APPROVED">Approve exception</button></div>' : '') + '</div></article>';
+}
+
+function renderProducts() {
+  const products = state.products;
+  return '<div class="page-toolbar"><div><span class="eyebrow">CATALOG FRESHNESS</span><h2>' + products.length + ' product and service records</h2><p>Pricing uses approved rate-card records. Inventory and delivery capacity are dated example snapshots, not live confirmations.</p></div><span class="snapshot-chip">Catalog dated 18 Oct 2026</span></div>' +
+    '<div class="product-grid">' + products.map(product => '<article class="product-card"><div class="product-top"><span class="category-tag">' + escapeHtml(product.category) + '</span><span class="status-live">Active catalog record</span></div><h3>' + escapeHtml(product.name) + '</h3><p>' + escapeHtml(product.description) + '</p><div class="product-price"><div><small>List price</small><b>' + money(product.listPriceCents, 'SGD') + '</b><span>per ' + escapeHtml(product.unit) + '</span></div><div><small>Pricing source</small><b>' + escapeHtml(product.id) + '</b><span>' + escapeHtml(product.pricingSource) + '</span></div></div>' +
+    (product.stock ? '<div class="availability"><span class="stock-number">' + product.stock.available + '</span><span><b>available in snapshot</b><small>' + product.stock.onHand + ' on hand · ' + product.stock.reserved + ' reserved · ' + escapeHtml(product.stock.asOf) + '</small></span></div>' : product.capacity ? '<div class="availability"><span class="capacity-number">' + escapeHtml(product.capacity.availableSeats || '!' ) + '</span><span><b>' + escapeHtml(product.capacity.status || 'capacity record') + '</b><small>' + escapeHtml(product.capacity.asOf) + ' · ' + escapeHtml(product.capacity.source) + '</small></span></div>' : '<div class="availability"><span class="capacity-number">✓</span><span><b>Service rate available</b><small>Service commencement date needs agreement</small></span></div>') +
+    '<div class="product-features"><b>Confirmed catalog details</b><ul>' + product.features.map(item => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul></div>' +
+    '<div class="policy-strip"><span>Gross margin floor <b>' + (product.marginFloorBps / 100) + '%</b></span><span>Max discount <b>' + (product.maxDiscountBps / 100) + '%</b></span>' + ((product.volumeDiscounts || []).length ? '<span>Volume price <b>' + product.volumeDiscounts.map(item => item.minimumQuantity + '+ at ' + (item.discountBps / 100) + '%').join(' · ') + '</b></span>' : '') + (state.role === 'manager' ? '<span>Internal cost <b>' + money(product.unitCostCents, 'SGD') + ' per ' + escapeHtml(product.unit) + '</b></span>' : '') + '</div>' +
+    '<p class="freshness-note">Source: ' + escapeHtml(product.stock ? product.stock.source : product.capacity ? product.capacity.source : 'Approved service rate card') + '. ' + escapeHtml(product.stock ? product.stock.confidence : product.capacity ? product.capacity.confidence : 'Pricing record') + '.</p></article>').join('') + '</div>';
+}
+
+function renderTeam() {
+  if (state.role !== 'manager') return '<div class="callout warning-callout"><b>Manager view</b><p>Switch to Sales Manager to see team-level records and commercial exceptions.</p></div>';
+  const metrics = managerMetrics(state, state.role);
+  const owners = [...new Set(state.opportunities.map(item => item.owner))];
+  const allAccounts = visibleAccounts(state, state.role);
+  const pending = state.approvals.filter(item => item.status === 'PENDING');
+  const allQuotes = state.quotes.filter(item => allAccounts.some(account => account.id === item.accountId));
+  const stageCounts = {};
+  state.opportunities.filter(item => item.status === 'Open').forEach(item => stageCounts[item.stage] = (stageCounts[item.stage] || 0) + 1);
+  return '<div class="team-intro"><div><span class="eyebrow">REPORTING WITHOUT REPORTING</span><h2>Operational work is the report.</h2><p>Pipeline value, RFQ state, quotation status and exceptions are derived from the same account and event records used by sales.</p></div><button class="btn secondary" data-action="run-daily">Refresh from current records</button></div>' +
+    '<div class="metric-grid">' + metricCard('Team opportunities', metrics.opportunityCount, 'Open opportunities', '') + metricCard('Pipeline value', money(metrics.pipelineCents, 'SGD'), 'Current opportunity values', 'blue') + metricCard('Quotes in progress', allQuotes.length, 'Includes saved versions and exceptions', '') + metricCard('Pending approvals', pending.length, 'Manager queue', pending.length ? 'amber' : '') + '</div>' +
+    '<div class="content-grid team-grid"><section class="panel"><div class="panel-head"><div><span class="eyebrow">TEAM WORKLOAD</span><h3>Open opportunities by owner</h3></div><span>Derived from pipeline records</span></div><div class="workload-list">' + owners.map(owner => {
+      const items = state.opportunities.filter(item => item.owner === owner && item.status === 'Open');
+      const amount = items.reduce((sum, item) => sum + item.valueCents, 0);
+      return '<div class="workload-row"><span class="owner-avatar">' + escapeHtml(owner.split(' ').map(part => part[0]).join('')) + '</span><span><b>' + escapeHtml(owner) + '</b><small>' + items.length + ' open opportunities · ' + money(amount, 'SGD') + '</small></span><span class="bar-track"><i style="width:' + Math.max(8, items.length / Math.max(1, metrics.opportunityCount) * 100) + '%"></i></span></div>';
+    }).join('') + '</div><div class="panel-subsection"><h4>Pipeline by stage</h4><div class="stage-chips">' + Object.entries(stageCounts).map(entry => '<span>' + escapeHtml(entry[0]) + '<b>' + entry[1] + '</b></span>').join('') + '</div></div></section>' +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">COMMERCIAL CONTROL</span><h3>Exceptions and blockers</h3></div><button class="text-button" data-nav-view="approvals">Approval queue</button></div>' +
+    (pending.length ? '<div class="manager-approval-list">' + pending.map(item => '<div><span><b>' + escapeHtml(accountFor(item.accountId).name) + '</b><small>' + escapeHtml(item.quoteId) + ' · ' + escapeHtml(item.exceptions[0].rule) + '</small></span><b>' + money(quoteFor(item.quoteId).calculation.totalCents, quoteFor(item.quoteId).currency) + '</b><button class="text-button" data-action="open-quote" data-quote="' + escapeHtml(item.quoteId) + '">Review</button></div>').join('') + '</div>' : '<div class="empty-state">No pricing exceptions are pending.</div>') +
+    '<div class="panel-subsection"><h4>Unconfirmed operations</h4><p class="helper">Product X stock is a dated snapshot. Implementation and migration slots require delivery team confirmation.</p></div></section></div>' +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">TEAM PIPELINE</span><h3>Current opportunity state</h3></div><span>All entries from sales operations</span></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Account</th><th>Opportunity</th><th>Owner</th><th>Stage</th><th>Value</th><th>Next action</th></tr></thead><tbody>' +
+    state.opportunities.map(item => '<tr><td>' + escapeHtml(accountFor(item.accountId).name) + '</td><td>' + escapeHtml(item.name) + '</td><td>' + escapeHtml(item.owner) + '</td><td>' + escapeHtml(item.stage) + '</td><td>' + money(item.valueCents, 'SGD') + '</td><td>' + escapeHtml(item.nextAction) + '</td></tr>').join('') +
+    '</tbody></table></div></section>';
+}
+
+function renderActivity() {
+  const ids = visibleAccountIds();
+  const events = state.events.filter(item => !item.accountId || ids.has(item.accountId));
+  const runs = state.executions;
+  return '<div class="page-toolbar"><div><span class="eyebrow">AUDITABLE WORK</span><h2>Agent and CRM activity</h2><p>Actions, holds and decisions are recorded against the same quote, account and opportunity records.</p></div><button class="btn secondary" data-action="run-daily">Run daily review</button></div>' +
+    '<div class="content-grid activity-grid"><section class="panel"><div class="panel-head"><div><span class="eyebrow">AGENT EXECUTIONS</span><h3>' + runs.length + ' run(s)</h3></div><span>Local demo adapter</span></div>' +
+    (runs.length ? '<div class="execution-list">' + runs.map(item => '<div class="run-detail"><div class="run-detail-top"><span><b>' + escapeHtml(item.id) + ' · ' + escapeHtml(item.title) + '</b><small>' + dateLabel(item.startedAt) + ' · ' + escapeHtml(item.adapter) + '</small></span>' + badge(item.status) + '</div><ul>' + item.actions.map(action => '<li class="run-agent"><span class="agent-check ' + escapeHtml(action.status) + '">' + (action.status === 'complete' ? '✓' : action.status === 'held' ? '!' : action.status === 'blocked' ? '×' : '·') + '</span><span><b>' + escapeHtml(action.agent) + '</b><small>' + escapeHtml(action.result) + '</small></span>' + badge(action.status) + '</li>').join('') + '</ul></div>').join('') + '</div>' : '<div class="empty-state">Run a customer or daily workflow to build execution history.</div>') + '</section>' +
+    '<section class="panel"><div class="panel-head"><div><span class="eyebrow">CRM EVENT TIMELINE</span><h3>' + events.length + ' event(s)</h3></div><span>Latest first</span></div>' +
+    (events.length ? '<div class="event-feed">' + events.map(item => '<article class="event-entry"><div><b>' + escapeHtml(item.actor) + '</b><small>' + dateLabel(item.at) + ' · ' + escapeHtml(item.type) + '</small></div><p>' + escapeHtml(item.summary) + '</p><small>' + escapeHtml(item.detail) + '</small></article>').join('') + '</div>' : '<div class="empty-state">CRM events appear as agents prepare quotes, sellers log interactions and managers decide approvals.</div>') + '</section></div>';
+}
+
+function runCommand(text) {
+  const command = String(text || '').trim();
+  if (!command) {
+    showToast('Add customer notes or a sales task first.', 'warning');
+    return;
+  }
+  state.commandDraft = command;
+  if (command.toLowerCase().includes('attention today') || command.toLowerCase().includes('handle everything else') || command.toLowerCase().includes('sales admin')) {
+    runDailyReview(state, { now: new Date().toISOString() });
+    state.commandDraft = '';
+    state.activeView = 'overview';
+    saveState();
+    render();
+    showToast('Daily review completed. Open actions, approvals and blockers are listed below.', 'success');
+    return;
+  }
+  let result;
+  try {
+    result = processCustomerBrief(state, command, {
+      now: new Date().toISOString(),
+      today: DEMO_TODAY,
+      interpreter: adapters.interpretation.run,
+      proposalGenerator: (_state, quoteId, options) => adapters.proposal.generate(quoteId, options)
+    });
+  } catch (error) {
+    showToast(error.message, 'warning');
+    return;
+  }
+  state.selectedRfqId = result.rfq.id;
+  state.selectedQuoteId = result.quote ? result.quote.id : null;
+  state.activeView = 'rfqs';
+  state.commandDraft = '';
+  saveState();
+  render();
+  if (result.quote && result.quote.status === 'AWAITING_APPROVAL') {
+    showToast('RFQ saved. Pricing was calculated and held for manager approval.', 'warning');
+  } else if (result.quote) {
+    showToast('RFQ, quotation and proposal draft are linked to the opportunity.', 'success');
+  } else {
+    showToast('RFQ saved with clarification items. Pricing is paused until the core fields are confirmed.', 'warning');
+  }
+}
+
+function showToast(message, tone) {
+  const toast = $('#toast');
+  toast.textContent = message;
+  toast.className = 'toast visible ' + (tone || 'info');
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => toast.classList.remove('visible'), 4200);
+}
+
+function downloadHtml(filename, contents) {
+  const blob = new Blob([contents], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+document.addEventListener('click', event => {
+  const nav = event.target.closest('[data-nav-view]');
+  if (nav) {
+    if (nav.dataset.navView === 'pipeline' && state.activeView !== 'pipeline') state.selectedAccountId = null;
+    if (nav.dataset.navView === 'quotes' && state.activeView !== 'quotes') state.selectedQuoteId = null;
+    if (nav.dataset.navView === 'proposals' && state.activeView !== 'proposals') state.selectedProposalId = null;
+    state.activeView = nav.dataset.navView;
+    render();
+    return;
+  }
+  const button = event.target.closest('[data-action]');
+  if (!button || button.disabled) return;
+  const action = button.dataset.action;
+  if (action === 'load-prompt') {
+    state.commandDraft = prompts[button.dataset.prompt] || '';
+    render();
+    $('#command-input').focus();
+    return;
+  }
+  if (action === 'run-daily') {
+    runDailyReview(state, { now: new Date().toISOString() });
+    state.activeView = 'overview';
+    render();
+    showToast('Daily sales review refreshed from current CRM and quotation records.', 'success');
+    return;
+  }
+  if (action === 'open-account') {
+    state.selectedAccountId = button.dataset.account;
+    state.activeView = 'pipeline';
+    render();
+    return;
+  }
+  if (action === 'back-pipeline') {
+    state.selectedAccountId = null;
+    render();
+    return;
+  }
+  if (action === 'open-rfq') {
+    state.selectedRfqId = button.dataset.rfq;
+    render();
+    return;
+  }
+  if (action === 'open-quote') {
+    state.selectedQuoteId = button.dataset.quote;
+    state.activeView = 'quotes';
+    render();
+    return;
+  }
+  if (action === 'back-quotes') {
+    state.selectedQuoteId = null;
+    render();
+    return;
+  }
+  if (action === 'open-proposal') {
+    state.selectedProposalId = button.dataset.proposal;
+    state.activeView = 'proposals';
+    render();
+    return;
+  }
+  if (action === 'back-proposals') {
+    state.selectedProposalId = null;
+    render();
+    return;
+  }
+  if (action === 'confirm-quote') {
+    const currencyConfirmed = Boolean($('#currency-confirm') && $('#currency-confirm').checked);
+    const assumptionsConfirmed = Boolean($('#assumptions-confirm') && $('#assumptions-confirm').checked);
+    try {
+      confirmQuoteForCustomer(state, button.dataset.quote, { currencyConfirmed, assumptionsConfirmed }, { now: new Date().toISOString() });
+      render();
+      showToast('Quotation is ready for customer review. No message was sent.', 'success');
+    } catch (error) {
+      showToast(error.message, 'warning');
+    }
+    return;
+  }
+  if (action === 'download-quote') {
+    const quote = quoteFor(button.dataset.quote);
+    if (!quote) return;
+    downloadHtml(quote.number + '-v' + quote.version + (quote.status === 'READY_FOR_CUSTOMER' ? '-customer.html' : '-draft.html'), customerQuoteHtml(state, quote));
+    return;
+  }
+  if (action === 'generate-proposal') {
+    try {
+      const proposal = adapters.proposal.generate(button.dataset.quote, { now: new Date().toISOString() });
+      state.selectedProposalId = proposal.id;
+      state.activeView = 'proposals';
+      render();
+      showToast('Proposal draft assembled from the linked quotation and catalog facts.', 'success');
+    } catch (error) {
+      showToast(error.message, 'warning');
+    }
+    return;
+  }
+  if (action === 'refresh-proposal') {
+    try {
+      const proposal = adapters.proposal.generate(button.dataset.quote, { now: new Date().toISOString() });
+      state.selectedProposalId = proposal.id;
+      render();
+      showToast('Proposal refreshed from the current quote version.', 'success');
+    } catch (error) {
+      showToast(error.message, 'warning');
+    }
+    return;
+  }
+  if (action === 'proposal-ready') {
+    try {
+      markProposalReady(state, button.dataset.proposal, { now: new Date().toISOString() });
+      render();
+      showToast('Proposal is ready for customer review. No message was sent.', 'success');
+    } catch (error) {
+      showToast(error.message, 'warning');
+    }
+    return;
+  }
+  if (action === 'download-proposal') {
+    const proposal = state.proposals.find(item => item.id === button.dataset.proposal);
+    if (!proposal) return;
+    downloadHtml(proposal.id + (proposal.status === 'READY_FOR_CUSTOMER' ? '-proposal.html' : '-draft.html'), proposalHtml(state, proposal));
+    return;
+  }
+  if (action === 'decide-approval') {
+    const approvalId = button.dataset.approval;
+    const note = $('[name="note-' + CSS.escape(approvalId) + '"]');
+    try {
+      decideApproval(state, approvalId, button.dataset.decision, { role: state.role, note: note ? note.value : '', now: new Date().toISOString() });
+      render();
+      showToast(button.dataset.decision === 'APPROVED' ? 'Exception approved for this quotation version.' : 'Exception rejected. The salesperson must revise the quote.', 'success');
+    } catch (error) {
+      showToast(error.message, 'warning');
+    }
+    return;
+  }
+  if (action === 'reset') {
+    localStorage.removeItem(STORAGE_KEY);
+    state = createInitialState();
+    state.search = '';
+    state.commandDraft = '';
+    render();
+    showToast('Demo workspace reset to its starting records.', 'info');
+  }
+});
+
+document.addEventListener('submit', event => {
+  const form = event.target;
+  if (form.id === 'command-form') {
+    event.preventDefault();
+    runCommand(new FormData(form).get('command'));
+    return;
+  }
+  if (form.dataset.form === 'interaction') {
+    event.preventDefault();
+    const data = new FormData(form);
+    try {
+      adapters.crm.recordInteraction(data.get('accountId'), data.get('summary'), { channel: data.get('channel'), now: new Date().toISOString() });
+      render();
+      showToast('Interaction added to the CRM timeline.', 'success');
+    } catch (error) {
+      showToast(error.message, 'warning');
+    }
+    return;
+  }
+  if (form.dataset.form === 'quote-revision') {
+    event.preventDefault();
+    const quote = quoteFor(state.selectedQuoteId);
+    if (!quote) return;
+    const data = new FormData(form);
+    const changes = {};
+    quote.lines.forEach(line => {
+      changes[line.id] = {
+        quantity: Number(data.get('qty-' + line.id)),
+        periodCount: Number(data.get('period-' + line.id)),
+        unitPriceCents: Math.round(Number(data.get('price-' + line.id)) * 100)
+      };
+    });
+    try {
+      reviseQuote(state, quote.id, changes, { now: new Date().toISOString() });
+      render();
+      showToast('A new quotation version was saved and recalculated.', quoteFor(quote.id).exceptions.length ? 'warning' : 'success');
+    } catch (error) {
+      showToast(error.message, 'warning');
+    }
+  }
+});
+
+document.addEventListener('change', async event => {
+  const input = event.target;
+  if (input.id !== 'brief-file' || !input.files || !input.files[0]) return;
+  const file = input.files[0];
+  input.value = '';
+  if (file.size > 2 * 1024 * 1024) {
+    showToast('This demo accepts note files up to 2 MB.', 'warning');
+    return;
+  }
+  try {
+    const contents = await file.text();
+    state.commandDraft = (state.commandDraft ? state.commandDraft + '\n\n' : '') + 'Attachment: ' + file.name + '\n' + contents;
+    const textarea = $('#command-input');
+    if (textarea) textarea.value = state.commandDraft;
+    saveState();
+    showToast('File contents added locally to the RFQ notes. Nothing was uploaded.', 'success');
+  } catch (error) {
+    showToast('Could not read this file as text.', 'warning');
+  }
+});
+
+$('#role-switch').addEventListener('change', event => {
+  state.role = event.target.value;
+  if (state.role === 'manager') state.activeView = 'team';
+  else {
+    state.activeView = 'overview';
+    if (state.selectedAccountId && !visibleAccountIds().has(state.selectedAccountId)) state.selectedAccountId = null;
+  }
+  render();
+  showToast(state.role === 'manager' ? 'Sales Manager view enabled. Commercial costs and approval actions are visible.' : 'Salesperson view enabled. Records are limited to assigned accounts.', 'info');
+});
+
+$('#global-search').addEventListener('input', event => {
+  state.search = event.target.value;
+  if (state.activeView === 'pipeline') render();
+});
+
+$('#global-search').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    state.activeView = 'pipeline';
+    state.selectedAccountId = null;
+    render();
+  }
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+    event.preventDefault();
+    $('#global-search').focus();
+  }
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'enter') {
+    const form = document.querySelector('#command-form');
+    if (form) form.requestSubmit();
+  }
+});
+
+render();
