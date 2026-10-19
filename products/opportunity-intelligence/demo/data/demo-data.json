@@ -1,0 +1,753 @@
+{
+  "schemaVersion": 2,
+  "profile": {
+    "displayName": "Alex Morgan",
+    "location": "Singapore · Hybrid",
+    "roleFamilies": [
+      "Business analysis",
+      "Business transformation",
+      "Digital transformation",
+      "Process improvement",
+      "AI-enabled business"
+    ],
+    "skillSignals": [
+      "process mapping",
+      "requirements",
+      "stakeholder",
+      "workflow",
+      "automation",
+      "change management",
+      "business analysis",
+      "AI adoption",
+      "reporting",
+      "CRM"
+    ],
+    "weights": {
+      "fit": 50,
+      "value": 40,
+      "timing": 10
+    }
+  },
+  "resumes": [
+    {
+      "id": "resume-transformation",
+      "name": "Transformation & Change",
+      "short": "Transformation",
+      "bestFor": [
+        "Business transformation",
+        "Digital transformation",
+        "Process improvement"
+      ],
+      "summary": "Leads with process redesign, stakeholder alignment, change delivery, and measurable operating outcomes.",
+      "tailoring": [
+        "Move the end-to-end process redesign example into the first third of the resume.",
+        "Add one quantified adoption or cycle-time outcome where evidence is available.",
+        "Use the posting’s language for governance and change enablement only where it matches actual work."
+      ],
+      "default": true
+    },
+    {
+      "id": "resume-ai-business",
+      "name": "AI & Business Analysis",
+      "short": "AI + Business Analysis",
+      "bestFor": [
+        "Business analysis",
+        "AI-enabled business"
+      ],
+      "summary": "Leads with requirements, AI-enabled workflow analysis, and business-to-technology translation.",
+      "tailoring": [
+        "Bring forward the AI use-case discovery and workflow automation example.",
+        "Add concrete artifacts such as requirements, process maps, or UAT plans.",
+        "Separate hands-on tool use from AI strategy or governance claims."
+      ],
+      "default": false
+    },
+    {
+      "id": "resume-operations",
+      "name": "Operations & Process Excellence",
+      "short": "Operations",
+      "bestFor": [
+        "Process improvement",
+        "Business transformation"
+      ],
+      "summary": "Leads with service operations, root-cause analysis, process control, and continuous improvement.",
+      "tailoring": [
+        "Highlight before-and-after operational measures, not only responsibilities.",
+        "Connect process changes to quality, speed, cost, or customer outcomes.",
+        "Use a compact process-improvement project example near the top."
+      ],
+      "default": false
+    }
+  ],
+  "people": [
+    {
+      "id": "p-101",
+      "name": "Mina Koh",
+      "initials": "MK",
+      "company": "Meridian Works",
+      "role": "Transformation Programme Lead",
+      "networkState": "1st-degree connection",
+      "relationshipState": "Warm · recent exchange",
+      "relationshipStrength": "Warm",
+      "latestInteractionDays": 24,
+      "interactionSummary": "Discussed a process-improvement meetup in September."
+    },
+    {
+      "id": "p-102",
+      "name": "Evan Lim",
+      "initials": "EL",
+      "company": "Meridian Works",
+      "role": "Talent Partner · Transformation",
+      "networkState": "2nd-degree connection",
+      "relationshipState": "No prior interaction",
+      "relationshipStrength": "Unknown",
+      "latestInteractionDays": null,
+      "interactionSummary": "No direct interaction recorded."
+    },
+    {
+      "id": "p-201",
+      "name": "Nadia Chen",
+      "initials": "NC",
+      "company": "Northstar Cooperative",
+      "role": "Senior Business Analyst",
+      "networkState": "1st-degree connection",
+      "relationshipState": "Strong · recent collaboration",
+      "relationshipStrength": "Strong",
+      "latestInteractionDays": 12,
+      "interactionSummary": "Worked together on a cross-functional process review earlier this year."
+    },
+    {
+      "id": "p-301",
+      "name": "Ravi Nair",
+      "initials": "RN",
+      "company": "Lumen Logistics",
+      "role": "Operations Excellence Manager",
+      "networkState": "1st-degree connection",
+      "relationshipState": "Known · inactive",
+      "relationshipStrength": "Light",
+      "latestInteractionDays": 310,
+      "interactionSummary": "Last exchange was a short event follow-up about ten months ago."
+    },
+    {
+      "id": "p-302",
+      "name": "Lena Goh",
+      "initials": "LG",
+      "company": "Lumen Logistics",
+      "role": "Business Analyst",
+      "networkState": "2nd-degree connection",
+      "relationshipState": "Introduced by a shared contact",
+      "relationshipStrength": "Unknown",
+      "latestInteractionDays": null,
+      "interactionSummary": "A mutual contact could make an introduction; no direct exchange is recorded."
+    },
+    {
+      "id": "p-401",
+      "name": "Jonas Teo",
+      "initials": "JT",
+      "company": "Asteron Advisory",
+      "role": "Engagement Manager",
+      "networkState": "1st-degree connection",
+      "relationshipState": "Warm · occasional contact",
+      "relationshipStrength": "Warm",
+      "latestInteractionDays": 82,
+      "interactionSummary": "Connected through a transformation community; last exchange was in July."
+    },
+    {
+      "id": "p-501",
+      "name": "Sofia Rahman",
+      "initials": "SR",
+      "company": "Harborlight Health",
+      "role": "People & Change Partner",
+      "networkState": "1st-degree connection",
+      "relationshipState": "Warm · recent exchange",
+      "relationshipStrength": "Warm",
+      "latestInteractionDays": 34,
+      "interactionSummary": "Recent exchange about change adoption and frontline enablement."
+    },
+    {
+      "id": "p-601",
+      "name": "Aiden Park",
+      "initials": "AP",
+      "company": "Clearwell Services",
+      "role": "Automation Lead",
+      "networkState": "2nd-degree connection",
+      "relationshipState": "No prior interaction",
+      "relationshipStrength": "Unknown",
+      "latestInteractionDays": null,
+      "interactionSummary": "No direct interaction recorded."
+    },
+    {
+      "id": "p-701",
+      "name": "Grace Ong",
+      "initials": "GO",
+      "company": "Brightpath Group",
+      "role": "Senior Transformation Manager",
+      "networkState": "1st-degree connection",
+      "relationshipState": "Strong · recent collaboration",
+      "relationshipStrength": "Strong",
+      "latestInteractionDays": 18,
+      "interactionSummary": "Recent project exchange on operating-model design."
+    },
+    {
+      "id": "p-801",
+      "name": "Kai Wong",
+      "initials": "KW",
+      "company": "Fieldstone Digital",
+      "role": "Product Operations Lead",
+      "networkState": "1st-degree connection",
+      "relationshipState": "Known · unrelated context",
+      "relationshipStrength": "Light",
+      "latestInteractionDays": 420,
+      "interactionSummary": "Past connection, but no recent or role-relevant exchange."
+    }
+  ],
+  "jobs": [
+    {
+      "id": "job-101",
+      "company": "Meridian Works",
+      "companyMark": "MW",
+      "companyColor": "blue",
+      "industry": "Enterprise services",
+      "roleTitle": "Business Analyst, AI Transformation Programme",
+      "location": "Singapore · Hybrid",
+      "roleFamily": "AI-enabled business",
+      "postedDaysAgo": 4,
+      "closesInDays": 18,
+      "source": "Synthetic scenario · employer careers page",
+      "description": "Support an AI transformation programme by mapping current-state finance and operations processes, gathering requirements, coordinating pilot delivery, defining adoption measures, and improving recurring reporting. Partner with business owners and technology teams. Prior experience in programme governance and enterprise AI deployment is preferred.",
+      "fitScore": 86,
+      "fitConfidence": "Medium",
+      "fitRationale": "The scope connects process analysis and workflow improvement with AI adoption. The strongest evidence is in requirements, process mapping, and cross-functional delivery; direct enterprise AI programme ownership is not yet demonstrated.",
+      "strengths": [
+        "Process mapping and workflow improvement",
+        "Stakeholder coordination across business and technology",
+        "Requirements and operational analysis"
+      ],
+      "gaps": [
+        "Direct ownership of an enterprise AI programme",
+        "Formal programme governance at scale"
+      ],
+      "careerValue": 92,
+      "careerValueLabel": "Strong signals · verify",
+      "careerSignals": [
+        "Cross-functional programme exposure",
+        "AI adoption and operating-model scope",
+        "Transferable analysis and change work"
+      ],
+      "careerCaveat": "Career value is estimated from the synthetic role scope, not an external company reputation rating.",
+      "timingScore": 72,
+      "lastTouchedDaysAgo": 3,
+      "priorityOverride": "",
+      "resumeId": "resume-ai-business",
+      "resumeReason": "The role emphasizes AI-enabled analysis and requirements translation. Start with the AI & Business Analysis variant, then make the enterprise-programme evidence precise.",
+      "peopleIds": [
+        "p-101",
+        "p-102"
+      ],
+      "assessmentSource": "Synthetic profile + synthetic job description",
+      "application": {
+        "stage": "Researching",
+        "stageUpdatedDaysAgo": 3,
+        "appliedAt": null,
+        "nextAction": {
+          "label": "Ask for role context before tailoring",
+          "dueInDays": 1,
+          "owner": "You",
+          "type": "relationship"
+        },
+        "referralState": "Role insight not requested",
+        "outcome": ""
+      }
+    },
+    {
+      "id": "job-201",
+      "company": "Northstar Cooperative",
+      "companyMark": "NC",
+      "companyColor": "purple",
+      "industry": "Financial services",
+      "roleTitle": "Business Transformation Analyst",
+      "location": "Singapore · Hybrid",
+      "roleFamily": "Business transformation",
+      "postedDaysAgo": 6,
+      "closesInDays": 12,
+      "source": "Synthetic scenario · referral lead",
+      "description": "Work with business leaders to identify operating-model changes, document requirements, coordinate process redesign and technology delivery, and support adoption across service teams. The role includes regular stakeholder workshops and outcome tracking.",
+      "fitScore": 81,
+      "fitConfidence": "High",
+      "fitRationale": "The role’s core work aligns with process redesign, requirements, and stakeholder coordination. The description gives clear evidence for those responsibilities; sector-specific experience should be checked.",
+      "strengths": [
+        "Process redesign and continuous improvement",
+        "Requirements and stakeholder workshops",
+        "Outcome tracking and change support"
+      ],
+      "gaps": [
+        "Financial-services domain depth",
+        "Confirm expected seniority and delivery ownership"
+      ],
+      "careerValue": 88,
+      "careerValueLabel": "Strong signals · verify",
+      "careerSignals": [
+        "Enterprise operating-model exposure",
+        "Cross-functional delivery",
+        "Visible adoption and outcomes"
+      ],
+      "careerCaveat": "These are role-scope signals, not a guarantee of employer quality or future progression.",
+      "timingScore": 84,
+      "lastTouchedDaysAgo": 1,
+      "priorityOverride": "",
+      "resumeId": "resume-transformation",
+      "resumeReason": "The work is transformation-led. Use the Transformation & Change variant and foreground process redesign plus measured adoption outcomes.",
+      "peopleIds": [
+        "p-201"
+      ],
+      "assessmentSource": "Synthetic profile + synthetic job description",
+      "application": {
+        "stage": "Networking",
+        "stageUpdatedDaysAgo": 1,
+        "appliedAt": null,
+        "nextAction": {
+          "label": "Ask Nadia whether she is comfortable referring",
+          "dueInDays": 0,
+          "owner": "You",
+          "type": "relationship"
+        },
+        "referralState": "Referral option · not confirmed",
+        "outcome": ""
+      }
+    },
+    {
+      "id": "job-301",
+      "company": "Lumen Logistics",
+      "companyMark": "LL",
+      "companyColor": "green",
+      "industry": "Supply chain",
+      "roleTitle": "Process Improvement Lead",
+      "location": "Singapore · On-site",
+      "roleFamily": "Process improvement",
+      "postedDaysAgo": 10,
+      "closesInDays": 3,
+      "source": "Synthetic scenario · employer careers page",
+      "description": "Lead frontline process reviews across fulfilment teams, quantify service and productivity issues, facilitate root-cause workshops, and coordinate practical changes with operations and technology. The post asks for experience with process controls and multi-site implementation.",
+      "fitScore": 79,
+      "fitConfidence": "Medium",
+      "fitRationale": "Process review and cross-functional improvement align well. The lead title may require multi-site ownership; confirm that scope before investing in a tailored application.",
+      "strengths": [
+        "Operational process analysis",
+        "Root-cause facilitation",
+        "Cross-functional implementation"
+      ],
+      "gaps": [
+        "Evidence of multi-site leadership",
+        "Role may require deeper supply-chain controls experience"
+      ],
+      "careerValue": 82,
+      "careerValueLabel": "Promising signals · verify",
+      "careerSignals": [
+        "Operational ownership",
+        "Implementation responsibility",
+        "Transferable process-control experience"
+      ],
+      "careerCaveat": "The short closing window creates urgency; it does not establish that the role is the right choice.",
+      "timingScore": 96,
+      "lastTouchedDaysAgo": 9,
+      "priorityOverride": "",
+      "resumeId": "resume-operations",
+      "resumeReason": "Lead with Operations & Process Excellence. Add a quantified root-cause or service-quality example if you can substantiate it.",
+      "peopleIds": [
+        "p-301",
+        "p-302"
+      ],
+      "assessmentSource": "Synthetic profile + synthetic job description",
+      "application": {
+        "stage": "Saved",
+        "stageUpdatedDaysAgo": 9,
+        "appliedAt": null,
+        "nextAction": {
+          "label": "Confirm lead scope and multi-site expectations",
+          "dueInDays": -2,
+          "owner": "You",
+          "type": "research"
+        },
+        "referralState": "Relationship needs warming",
+        "outcome": ""
+      }
+    },
+    {
+      "id": "job-401",
+      "company": "Asteron Advisory",
+      "companyMark": "AA",
+      "companyColor": "amber",
+      "industry": "Consulting",
+      "roleTitle": "Digital Transformation Consultant",
+      "location": "Singapore · Hybrid",
+      "roleFamily": "Digital transformation",
+      "postedDaysAgo": 7,
+      "closesInDays": 20,
+      "source": "Synthetic scenario · employer careers page",
+      "description": "Support client transformation engagements from discovery through implementation. Facilitate workshops, translate needs into operating and technology requirements, coordinate delivery teams, and contribute to change adoption. Consulting delivery experience and client-facing presentation skills are preferred.",
+      "fitScore": 73,
+      "fitConfidence": "Medium",
+      "fitRationale": "Discovery, requirements, and adoption align. The main uncertainty is consulting-style client delivery and presentation experience, which the sample profile does not establish.",
+      "strengths": [
+        "Stakeholder workshops",
+        "Business-to-technology translation",
+        "Change and adoption support"
+      ],
+      "gaps": [
+        "Consulting engagement delivery",
+        "Client presentation and proposal experience"
+      ],
+      "careerValue": 86,
+      "careerValueLabel": "Strong signals · verify",
+      "careerSignals": [
+        "Multiple client contexts",
+        "Implementation lifecycle exposure",
+        "Potential breadth of transformation work"
+      ],
+      "careerCaveat": "Confirm project mix, travel expectations, and level before treating consulting breadth as a benefit.",
+      "timingScore": 62,
+      "lastTouchedDaysAgo": 5,
+      "priorityOverride": "",
+      "resumeId": "resume-transformation",
+      "resumeReason": "Start with Transformation & Change. Reframe delivery examples around discovery, client-facing facilitation, and adoption—without implying consulting experience you do not have.",
+      "peopleIds": [
+        "p-401"
+      ],
+      "assessmentSource": "Synthetic profile + synthetic job description",
+      "application": {
+        "stage": "Researching",
+        "stageUpdatedDaysAgo": 5,
+        "appliedAt": null,
+        "nextAction": {
+          "label": "Ask Jonas about delivery expectations",
+          "dueInDays": 2,
+          "owner": "You",
+          "type": "relationship"
+        },
+        "referralState": "Role insight available",
+        "outcome": ""
+      }
+    },
+    {
+      "id": "job-501",
+      "company": "Harborlight Health",
+      "companyMark": "HH",
+      "companyColor": "rose",
+      "industry": "Healthcare services",
+      "roleTitle": "Transformation Analyst · Service Operations",
+      "location": "Singapore · Hybrid",
+      "roleFamily": "Business transformation",
+      "postedDaysAgo": 13,
+      "closesInDays": 0,
+      "source": "Synthetic scenario · employer careers page",
+      "description": "Help service teams adopt revised operating procedures and technology. Gather frontline feedback, maintain issue and decision logs, support training, and report adoption progress. Healthcare operations experience is preferred but not essential.",
+      "fitScore": 76,
+      "fitConfidence": "Medium",
+      "fitRationale": "Change support, operational coordination, and reporting align. Healthcare domain experience is a gap, while the posting treats it as preferred rather than required.",
+      "strengths": [
+        "Operational coordination",
+        "Change enablement and user support",
+        "Issue tracking and reporting"
+      ],
+      "gaps": [
+        "Healthcare operations context",
+        "Confirm whether the role includes process design or mainly adoption support"
+      ],
+      "careerValue": 76,
+      "careerValueLabel": "Mixed signals · verify",
+      "careerSignals": [
+        "Frontline change exposure",
+        "Technology adoption experience",
+        "Service-operations context"
+      ],
+      "careerCaveat": "The posting closes today in this scenario. Check that it is still open before spending more time.",
+      "timingScore": 100,
+      "lastTouchedDaysAgo": 11,
+      "priorityOverride": "",
+      "resumeId": "resume-operations",
+      "resumeReason": "Operations & Process Excellence is the strongest starting point. Emphasize frontline change support and measurable adoption, then verify the role remains open.",
+      "peopleIds": [
+        "p-501"
+      ],
+      "assessmentSource": "Synthetic profile + synthetic job description",
+      "application": {
+        "stage": "Saved",
+        "stageUpdatedDaysAgo": 11,
+        "appliedAt": null,
+        "nextAction": {
+          "label": "Verify the role is still open",
+          "dueInDays": -1,
+          "owner": "You",
+          "type": "source-check"
+        },
+        "referralState": "No action taken",
+        "outcome": ""
+      }
+    },
+    {
+      "id": "job-601",
+      "company": "Clearwell Services",
+      "companyMark": "CS",
+      "companyColor": "slate",
+      "industry": "Business services",
+      "roleTitle": "Business Analyst · Automation & Controls",
+      "location": "Singapore · Hybrid",
+      "roleFamily": "Business analysis",
+      "postedDaysAgo": 15,
+      "closesInDays": 16,
+      "source": "Synthetic scenario · employer careers page",
+      "description": "Document process requirements, identify suitable automation opportunities, coordinate control owners, and support UAT for workflow changes. Experience in process documentation and stakeholder management is required; automation platform experience is preferred.",
+      "fitScore": 72,
+      "fitConfidence": "Medium",
+      "fitRationale": "Requirements and process documentation are strong matches. The posting’s control and automation-platform expectations need verification.",
+      "strengths": [
+        "Requirements documentation",
+        "Workflow improvement",
+        "Stakeholder coordination"
+      ],
+      "gaps": [
+        "Specific automation platform experience",
+        "Control-design depth"
+      ],
+      "careerValue": 73,
+      "careerValueLabel": "Moderate signals · verify",
+      "careerSignals": [
+        "Process automation exposure",
+        "UAT and control work",
+        "Transferable business analysis"
+      ],
+      "careerCaveat": "The value estimate reflects the described work only; verify role scope and growth path.",
+      "timingScore": 68,
+      "lastTouchedDaysAgo": 12,
+      "priorityOverride": "lower",
+      "resumeId": "resume-ai-business",
+      "resumeReason": "Use AI & Business Analysis as a starting point. Add specific automation-platform experience only if you can substantiate it.",
+      "peopleIds": [
+        "p-601"
+      ],
+      "assessmentSource": "Synthetic profile + synthetic job description",
+      "application": {
+        "stage": "Saved",
+        "stageUpdatedDaysAgo": 12,
+        "appliedAt": null,
+        "nextAction": {
+          "label": "Decide whether control-design gap is acceptable",
+          "dueInDays": -4,
+          "owner": "You",
+          "type": "research"
+        },
+        "referralState": "Possible second-degree path",
+        "outcome": ""
+      }
+    },
+    {
+      "id": "job-701",
+      "company": "Brightpath Group",
+      "companyMark": "BG",
+      "companyColor": "teal",
+      "industry": "Consumer services",
+      "roleTitle": "Process Improvement Lead",
+      "location": "Singapore · Hybrid",
+      "roleFamily": "Process improvement",
+      "postedDaysAgo": 3,
+      "closesInDays": 26,
+      "source": "Synthetic scenario · referral lead",
+      "description": "Own a portfolio of service-process improvements, build a practical operating cadence, work with business leaders on root causes, and coach teams through implementation. The role calls for strong change leadership and benefits tracking.",
+      "fitScore": 78,
+      "fitConfidence": "Medium",
+      "fitRationale": "Process and stakeholder work align, and a relevant recent contact is available. The lead-level coaching and benefits-ownership expectations are the main experience questions.",
+      "strengths": [
+        "Process improvement and root-cause analysis",
+        "Cross-functional stakeholder work",
+        "Change coordination"
+      ],
+      "gaps": [
+        "Portfolio-level ownership",
+        "Benefits realization and team coaching"
+      ],
+      "careerValue": 84,
+      "careerValueLabel": "Promising signals · verify",
+      "careerSignals": [
+        "Portfolio exposure",
+        "Leadership and coaching scope",
+        "Measurable improvement mandate"
+      ],
+      "careerCaveat": "Validate the degree of ownership and support available for the portfolio.",
+      "timingScore": 58,
+      "lastTouchedDaysAgo": 2,
+      "priorityOverride": "",
+      "resumeId": "resume-operations",
+      "resumeReason": "Operations & Process Excellence is the best starting point. Surface the strongest before/after result and be precise about personal ownership.",
+      "peopleIds": [
+        "p-701"
+      ],
+      "assessmentSource": "Synthetic profile + synthetic job description",
+      "application": {
+        "stage": "Preparing",
+        "stageUpdatedDaysAgo": 2,
+        "appliedAt": null,
+        "nextAction": {
+          "label": "Tailor evidence for portfolio-level ownership",
+          "dueInDays": 1,
+          "owner": "You",
+          "type": "resume"
+        },
+        "referralState": "Referral option · not confirmed",
+        "outcome": ""
+      }
+    },
+    {
+      "id": "job-801",
+      "company": "Fieldstone Digital",
+      "companyMark": "FD",
+      "companyColor": "indigo",
+      "industry": "Digital products",
+      "roleTitle": "Digital Operations Analyst",
+      "location": "Singapore · Remote-friendly",
+      "roleFamily": "Digital transformation",
+      "postedDaysAgo": 21,
+      "closesInDays": null,
+      "source": "Synthetic scenario · employer careers page",
+      "description": "Support product operations by documenting workflows, coordinating launch readiness, analyzing service issues, and preparing weekly delivery reports. The role focuses on execution support rather than transformation programme ownership.",
+      "fitScore": 65,
+      "fitConfidence": "High",
+      "fitRationale": "Some process and reporting experience aligns, but the work is more execution support than transformation ownership.",
+      "strengths": [
+        "Workflow documentation",
+        "Operational reporting",
+        "Cross-team coordination"
+      ],
+      "gaps": [
+        "Limited transformation or change ownership",
+        "Role scope may be narrower than the stated career direction"
+      ],
+      "careerValue": 61,
+      "careerValueLabel": "Limited signals · verify",
+      "careerSignals": [
+        "Digital operations context",
+        "Execution and launch exposure",
+        "Limited evidence of transformation scope"
+      ],
+      "careerCaveat": "The posting does not state a closing date. Confirm status and progression path before prioritizing.",
+      "timingScore": 54,
+      "lastTouchedDaysAgo": 16,
+      "priorityOverride": "",
+      "resumeId": "resume-operations",
+      "resumeReason": "If reopened, use Operations & Process Excellence and keep the transformation claims limited to the responsibilities shown.",
+      "peopleIds": [
+        "p-801"
+      ],
+      "assessmentSource": "Synthetic profile + synthetic job description",
+      "application": {
+        "stage": "Closed",
+        "stageUpdatedDaysAgo": 16,
+        "appliedAt": null,
+        "nextAction": null,
+        "referralState": "No relationship action",
+        "outcome": "Passed · scope too narrow"
+      }
+    }
+  ],
+  "jobPersonLinks": [
+    {
+      "id": "link-job-101-p-101",
+      "jobId": "job-101",
+      "personId": "p-101",
+      "referralRelevance": "High",
+      "relationshipReadiness": "Medium",
+      "recommendedAction": "ASK_ROLE_INSIGHT",
+      "rationale": "Her programme work is relevant, and the recent exchange gives you a natural opening. There is no evidence she can refer you; ask for role context first.",
+      "messageDraft": "Hi Mina — I saw the Business Analyst role supporting Meridian Works’ AI transformation programme. Since you lead work in this area, would you be open to sharing what the team needs most from someone in the role? No worries if you’re busy."
+    },
+    {
+      "id": "link-job-101-p-102",
+      "jobId": "job-101",
+      "personId": "p-102",
+      "referralRelevance": "Medium",
+      "relationshipReadiness": "Low",
+      "recommendedAction": "RECRUITER_OUTREACH",
+      "rationale": "The recruiter is role-adjacent, but there is no relationship history. Use a concise, role-specific introduction rather than a referral request.",
+      "messageDraft": "Hello Evan — I’m reviewing the Business Analyst, AI Transformation opportunity at Meridian Works. My background includes process analysis and workflow improvement. Is there a preferred way to share a concise fit summary for this role?"
+    },
+    {
+      "id": "link-job-201-p-201",
+      "jobId": "job-201",
+      "personId": "p-201",
+      "referralRelevance": "High",
+      "relationshipReadiness": "High",
+      "recommendedAction": "DIRECT_REFERRAL_ASK",
+      "rationale": "You have a recent, relevant working relationship and she is in the target function. A referral ask is reasonable, but her willingness is unknown and should not be assumed.",
+      "messageDraft": "Hi Nadia — I noticed the Business Transformation Analyst opening at Northstar Cooperative. It looks closely aligned with my process and stakeholder work. Would you feel comfortable referring me, or would a quick role-context chat be a better first step? Absolutely fine either way."
+    },
+    {
+      "id": "link-job-301-p-301",
+      "jobId": "job-301",
+      "personId": "p-301",
+      "referralRelevance": "High",
+      "relationshipReadiness": "Low",
+      "recommendedAction": "RECONNECT_FIRST",
+      "rationale": "His role is relevant, but the relationship is inactive. Reopen the conversation before asking for role help.",
+      "messageDraft": "Hi Ravi — it’s been a while since the operations forum. I’ve been exploring process-improvement roles and saw one at Lumen Logistics. How have things been going on your side?"
+    },
+    {
+      "id": "link-job-301-p-302",
+      "jobId": "job-301",
+      "personId": "p-302",
+      "referralRelevance": "High",
+      "relationshipReadiness": "Low",
+      "recommendedAction": "CONNECT_FIRST",
+      "rationale": "The role match is useful, but this is a second-degree path. Ask the shared contact for an introduction or send a context-rich connection request first.",
+      "messageDraft": "Hi Lena — I’m exploring process-improvement work and saw your team’s opening at Lumen Logistics. I’d value connecting and learning how the role works with Operations Excellence."
+    },
+    {
+      "id": "link-job-401-p-401",
+      "jobId": "job-401",
+      "personId": "p-401",
+      "referralRelevance": "High",
+      "relationshipReadiness": "Medium",
+      "recommendedAction": "ASK_ROLE_INSIGHT",
+      "rationale": "He can explain consulting delivery expectations, but the last interaction is not recent enough to assume referral readiness.",
+      "messageDraft": "Hi Jonas — I’m looking at the Digital Transformation Consultant opening at Asteron Advisory. Would you be open to sharing how the team balances process discovery with implementation delivery?"
+    },
+    {
+      "id": "link-job-501-p-501",
+      "jobId": "job-501",
+      "personId": "p-501",
+      "referralRelevance": "Medium",
+      "relationshipReadiness": "Medium",
+      "recommendedAction": "ASK_ROLE_INSIGHT",
+      "rationale": "She is close to the adoption side of the work. Ask about the role’s change remit before deciding whether to apply.",
+      "messageDraft": "Hi Sofia — I saw the Transformation Analyst role at Harborlight Health. You’ve worked on adoption and frontline change; would you be open to sharing what makes change work effective there?"
+    },
+    {
+      "id": "link-job-601-p-601",
+      "jobId": "job-601",
+      "personId": "p-601",
+      "referralRelevance": "Medium",
+      "relationshipReadiness": "Low",
+      "recommendedAction": "CONNECT_FIRST",
+      "rationale": "The role touches automation, but there is no direct relationship. A short connection request is more proportionate than a referral ask.",
+      "messageDraft": "Hi Aiden — I’m exploring business analysis roles that combine process improvement and automation. I noticed your work at Clearwell Services and would be glad to connect."
+    },
+    {
+      "id": "link-job-701-p-701",
+      "jobId": "job-701",
+      "personId": "p-701",
+      "referralRelevance": "High",
+      "relationshipReadiness": "High",
+      "recommendedAction": "DIRECT_REFERRAL_ASK",
+      "rationale": "Strong, recent context and close role relevance make a referral ask reasonable. Confirm she is comfortable before treating it as an available referral.",
+      "messageDraft": "Hi Grace — I saw the Process Improvement Lead opening at Brightpath Group. It looks aligned with the operating-model work we discussed. Would you be comfortable referring me, or would you prefer I send the role details first? No pressure either way."
+    },
+    {
+      "id": "link-job-801-p-801",
+      "jobId": "job-801",
+      "personId": "p-801",
+      "referralRelevance": "Low",
+      "relationshipReadiness": "Low",
+      "recommendedAction": "SKIP",
+      "rationale": "The contact is not close to the role’s work and the relationship context is stale. No outreach is recommended for this opportunity.",
+      "messageDraft": ""
+    }
+  ]
+}

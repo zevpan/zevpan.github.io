@@ -39,6 +39,16 @@ This case focuses on:
 - human-in-the-loop controls
 - action reconciliation and auditability
 
+### Focusline — Opportunity Intelligence Workspace
+
+Product and transformation case study for an AI-assisted job-search workflow. The public demo uses synthetic opportunity, contact, relationship, resume, and application data; changes are saved in the current browser only.
+
+- [Read the case study](case-studies/opportunity-intelligence/index.html)
+- [Launch the interactive demo](products/opportunity-intelligence/demo/index.html)
+- [Review the product brief](products/opportunity-intelligence/product-brief.md)
+
+The product centers on explainable opportunity prioritization, role-fit evidence, role-level career-value signals, proportionate relationship actions, resume strategy, and user-controlled next steps. It is not an auto-apply tool.
+
 ## Repository Structure
 
 - `index.html` — main case-study site
