@@ -97,6 +97,7 @@ h1 { margin: 6px 0 5px; color: var(--navy); font-size: 27px; line-height: 1.15; 
 .button:hover { border-color: #9db6d5; background: #f8fbff; }
 .button-primary { border-color: var(--blue); background: var(--blue); color: #fff; }
 .button-primary:hover { border-color: #0f58b6; background: #0f58b6; color: #fff; }
+.button:disabled, .button-primary:disabled { border-color: #d6dce5; background: #e5eaf0; color: #7d8999; box-shadow: none; cursor: not-allowed; opacity: 1; }
 .button-danger { border-color: #e6c8c5; color: var(--red); }
 .button-danger:hover { border-color: #dfaaa4; background: #fff8f7; color: #8f2823; }
 .button-small { min-height: 28px; padding: 0 8px; font-size: 9px; }
