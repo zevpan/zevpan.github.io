@@ -722,7 +722,7 @@ function renderExportView() {
     (state.run ? '<span class="status-badge">' + eligible.length.toLocaleString() + ' source lines · ' + rowCount.toLocaleString() + ' mapped rows</span>' : "") + '</div>' +
     (state.run ? '<div class="export-warning"><strong>Illustrative only:</strong> no official CargoWise EDI template was provided or publicly verified for this prototype. The CSV mapping is a demo artifact, not production-compatible. No posting or external file upload occurs.</div>' : "") +
     (state.run && eligible.length ? '<label class="export-check"><input id="export-attestation" type="checkbox"><span>I reviewed the eligible records and understand this is a synthetic, illustrative file. Releasing it downloads locally and does not post to CargoWise.</span></label>' : "") +
-    (state.run && eligible.length ? '<button class="button button-primary" data-action="release-export" ' + (eligible.length ? "" : "disabled") + '>Approve & download illustrative CSV ↓</button>' : "") +
+    (state.run && eligible.length ? '<button class="button button-primary" data-action="release-export" disabled>Approve & download illustrative CSV ↓</button>' : "") +
     (exportDone ? '<div class="ready-state" style="margin:12px 0"><div class="ready-copy"><span class="ready-icon">✓</span><div><strong>All eligible lines in this local batch have already been exported.</strong><small>Reset the demo to replay; this does not affect an external system.</small></div></div></div>' : "") +
     (state.run && eligible.length ? '<div class="table-scroll export-table-wrap" style="margin-top:13px"><table class="source-table"><thead><tr><th>Invoice</th><th>Source line</th><th>Job ID</th><th>PO</th><th>Amount</th><th>Validation</th></tr></thead><tbody>' + previewRows + '</tbody></table></div><div class="table-footer"><span>' + Math.min(eligible.length, 25) + ' of ' + eligible.length.toLocaleString() + ' eligible invoice lines shown · file output contains ' + rowCount.toLocaleString() + ' rows</span><span>Release requires approval</span></div>' : "") +
     '<div class="export-warning">Illustrative column mapping: Job ID, HAWB, MAWB, PO, vendor, charge code, currency, amount, accrual reference and source invoice lineage. Validate the official target schema before any real implementation.</div></section>';
@@ -1392,6 +1392,9 @@ $("#app").addEventListener("change", function (event) {
   } else if (event.target.id === "effort-select") {
     state.preferences.effort = event.target.value;
     persist();
+  } else if (event.target.id === "export-attestation") {
+    const releaseButton = $('[data-action="release-export"]');
+    if (releaseButton) releaseButton.disabled = !event.target.checked;
   }
 });
 
