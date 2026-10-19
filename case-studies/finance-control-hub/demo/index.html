@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14233b">
+  <title>Finance Control Hub · Synthetic Reconciliation Workbench</title>
+  <meta name="description" content="Interactive finance reconciliation simulation with 4,000 synthetic invoice lines, deterministic matching, exception review, human approvals and an illustrative CSV export.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell" id="app">
+    <aside class="sidebar">
+      <a class="brand" href="../../../index.html" aria-label="Back to Zev Pan portfolio">
+        <span class="brand-mark">FC</span>
+        <span><strong>Finance Control Hub</strong><small>Reconciliation workspace</small></span>
+      </a>
+      <div class="workspace-label">SYNTHETIC FINANCE TEAM</div>
+      <nav class="side-nav" aria-label="Workspace">
+        <button class="nav-item active" data-view="work"><span class="nav-icon">▦</span>Batch workspace</button>
+        <button class="nav-item" data-view="exceptions"><span class="nav-icon">!</span>Exception queue<span class="nav-count" id="exception-nav-count">—</span></button>
+        <button class="nav-item" data-view="sources"><span class="nav-icon">⇧</span>Source records</button>
+        <button class="nav-item" data-view="export"><span class="nav-icon">⇩</span>Export review<span class="nav-count" id="export-nav-count">—</span></button>
+        <button class="nav-item" data-view="audit"><span class="nav-icon">◷</span>Decision history</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="connection-state"><span class="status-dot"></span><span><strong>Local simulation</strong><small>No CargoWise connection</small></span></div>
+        <a class="portfolio-link" href="../index.html">Read Case Study 06 <span>↗</span></a>
+        <a class="portfolio-link" href="../../../index.html">Zev Pan portfolio <span>↗</span></a>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="crumbs"><span>Finance operations</span><span class="crumb-slash">/</span><strong>Reconciliation batch</strong></div>
+        <div class="topbar-actions">
+          <span class="simulation-pill"><span></span>Simulation · synthetic data</span>
+          <button class="text-button" data-action="reset" title="Clear local decisions and start this demo again">Reset demo</button>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="page-heading">
+          <div>
+            <div class="eyebrow">BATCH FCH-2026-10 · IMPORT REVIEW</div>
+            <h1 id="page-title">Reconcile vendor invoices</h1>
+            <p id="page-subtitle">Start with the batch. Review evidence before approving any financial decision.</p>
+          </div>
+          <div class="batch-meta"><span class="batch-state" id="batch-state">Loading source batch…</span><span>Data through 14 Oct 2026</span></div>
+        </section>
+
+        <section class="command-panel" aria-labelledby="command-title">
+          <div class="command-heading">
+            <div class="command-icon">⌘</div>
+            <div><h2 id="command-title">Tell Finance Control Hub what you need</h2><p>Supported commands run against this loaded batch; the command router is deterministic.</p></div>
+          </div>
+          <form id="command-form" class="command-form">
+            <label class="sr-only" for="command-input">Enter a finance work instruction</label>
+            <input id="command-input" type="text" autocomplete="off" placeholder="e.g. Reconcile this month's vendor invoices">
+            <button id="command-submit" class="button button-primary" type="submit">Run instruction <span>→</span></button>
+          </form>
+          <div class="command-suggestions" id="command-suggestions" aria-label="Suggested commands"></div>
+          <div class="command-feedback" id="command-feedback" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="source-strip" id="source-strip" aria-label="Loaded source files">
+          <div class="source-strip-title"><span class="file-glyph">▤</span><div><strong>Reconciliation inputs</strong><small>Source schemas are illustrative; all records are synthetic.</small></div></div>
+          <div class="source-files" id="source-files"></div>
+          <button class="text-button source-inspect" data-view="sources">Inspect records <span>↗</span></button>
+        </section>
+
+        <section class="run-banner" id="run-banner" aria-live="polite"></section>
+        <section id="workspace-content" aria-live="polite">
+          <div class="loading-state"><span class="loader"></span><div><strong>Loading synthetic source records</strong><small>Preparing invoice, HAWB, MAWB and Accrue Cost files.</small></div></div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
