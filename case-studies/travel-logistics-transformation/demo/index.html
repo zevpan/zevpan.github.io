@@ -3,53 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Logistics OMS · Interactive Demo</title>
-<meta name="description" content="Interactive logistics order-management workspace for triage, dispatch decisions, exception handling and human-controlled resolution.">
+<title>Order Management System · Interactive Demo</title>
+<meta name="description" content="A travel order-management workspace for booking intake, two-day dispatch planning, service milestones, communications, and exception handling.">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="../../../shared/agent-command.css?v=2">
+<link rel="stylesheet" href="../../../shared/agent-command.css?v=3">
 </head>
 <body>
-<div class="demo-strip"><strong>Interactive case-study demo</strong><span>Generated demo orders · no live bookings connected</span><a href="../index.html">Back to case study</a></div>
+<div class="demo-strip"><strong>Order Management System demo</strong><span>Illustrative orders and messages · no live connections</span><a href="../index.html">Back to case study</a></div>
 <div class="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">O</div><div><strong>Logistics OMS</strong><small>Order Management</small></div></div>
-
+    <a class="brand" href="../index.html" aria-label="Order Management System case study"><div class="mark">OM</div><div><strong>Order Management System</strong><small>Travel service operations</small></div></a>
     <div class="nav-label">Operations</div>
-    <nav>
-      <button class="nav active" data-view="tower"><span class="nav-icon">◫</span><span>My Work</span></button>
-      <button class="nav" data-view="orders"><span class="nav-icon">▤</span><span>Orders</span></button>
-      <button class="nav" data-view="dispatch"><span class="nav-icon">↗</span><span>Dispatch</span></button>
-      <button class="nav" data-view="exceptions"><span class="nav-icon">!</span><span>Exceptions</span></button>
-      <button class="nav" data-view="metrics"><span class="nav-icon">⌁</span><span>Demo Metrics</span></button>
-      <button class="nav" data-view="evidence"><span class="nav-icon">∑</span><span>Evidence model</span></button>
+    <nav aria-label="Workspace navigation">
+      <button class="nav active" data-view="tower" aria-label="Overview" title="Overview"><span class="nav-icon">◫</span><span>Overview</span></button>
+      <button class="nav" data-view="orders" aria-label="Orders" title="Orders"><span class="nav-icon">▤</span><span>Orders</span></button>
+      <button class="nav" data-view="dispatch" aria-label="Dispatch" title="Dispatch"><span class="nav-icon">↗</span><span>Dispatch</span></button>
+      <button class="nav" data-view="communications" aria-label="Communications" title="Communications"><span class="nav-icon">◉</span><span>Communications</span></button>
+      <button class="nav" data-view="exceptions" aria-label="Exceptions" title="Exceptions"><span class="nav-icon">!</span><span>Exceptions</span></button>
+      <button class="nav" data-view="metrics" aria-label="Demo metrics" title="Demo metrics"><span class="nav-icon">⌁</span><span>Demo metrics</span></button>
     </nav>
-
-    <div class="nav-label">Featured walkthrough</div>
+    <div class="nav-label">Featured order</div>
     <div class="walkthrough">
-      <b>TRV-1048</b>
-      <p>Resolve one booking from dispatch through supplier fallback, service execution, exception handling and human approval.</p>
-      <button onclick="openOrder('TRV-1048')">Open featured order</button>
+      <b>Hotel to airport</b>
+      <p>Record a customer luggage drop and tag image, then follow the driver and airport milestones.</p>
+      <button onclick="openFeaturedOrder()">Open featured order</button>
     </div>
-
-    <div class="bottom"><span>DEMO DATA</span><button id="reset">Reset demo</button></div>
+    <div class="bottom"><span>LOCAL DEMO SCENARIO</span><button id="reset">Reset demo</button></div>
   </aside>
-
   <main class="main">
     <div class="topbar">
-      <div class="crumb"><span class="workspace-dot"></span>Operations Workspace <span>/</span> Prototype</div>
-      <div class="top-actions"><div class="search">⌕ <span>Search orders</span><kbd>/</kbd></div><a class="top-link" href="../index.html">Case study ↗</a><div class="user">Z</div></div>
+      <div class="crumb"><span class="workspace-dot"></span>Operations Workspace <span>/</span> Example environment</div>
+      <div class="top-actions"><label class="search">⌕ <input id="global-search" type="search" placeholder="Search orders"><kbd>/</kbd></label><a class="top-link" href="../index.html">Case study ↗</a><div class="user" aria-label="Signed in as demo user">Z</div></div>
     </div>
-
     <header class="page-head">
-      <div><div class="eyebrow">LOGISTICS OMS WORKSPACE</div><h1 id="title">My Work</h1><p id="subtitle">Prioritized work that requires an operator decision or intervention.</p></div>
-      <div class="mode">LOCAL SCENARIO · HISTORICAL OPERATING CONTEXT</div>
+      <div><div class="eyebrow">ORDER MANAGEMENT SYSTEM WORKSPACE</div><h1 id="title">Overview</h1><p id="subtitle">See service volume, upcoming dispatch, and the issues that need an operator.</p></div>
+      <div class="mode">EXAMPLE WORKFLOW DATA · LOCAL DEMO</div>
     </header>
-
     <div id="agent-command-host"></div>
-    <section id="view"></section>
+    <section id="view" aria-live="polite"></section>
   </main>
 </div>
 <script src="../../../shared/agent-command.js?v=3"></script>
-<script src="app.js?v=intent-1"></script>
+<script src="app.js?v=oms-workspace-2"></script>
 </body>
 </html>

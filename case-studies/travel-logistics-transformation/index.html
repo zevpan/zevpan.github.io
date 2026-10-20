@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Logistics OMS · Zev Pan</title>
+<title>Order Management System · Zev Pan</title>
 <link rel="stylesheet" href="../../shared/intent-model.css?v=1">
 <style>
 :root{
@@ -137,8 +137,8 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <main>
 <div class="hero">
 <div class="kicker">CASE STUDY 01 · INTERACTIVE</div>
-<h1>Logistics OMS</h1>
-<p class="lead">From fragmented, manually coordinated fulfilment to an interactive logistics Order Management System (OMS) with generated order scenarios.</p>
+<h1>Order Management System</h1>
+<p class="lead">From fragmented, manually coordinated fulfilment to a travel-service Order Management System with a two-day order plan, route-specific luggage milestones, linked conversations, and dispatch exceptions.</p>
 <div class="meta">
 <span class="tag">Business Transformation</span>
 <span class="tag">Process Redesign</span>
@@ -148,7 +148,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
 <span class="tag">Service Operations</span>
 </div>
 <div class="demo-cta">
-  <div><strong>Interactive Logistics OMS</strong><p>Use demo orders to test the target operating model: deterministic validation, structured supplier dispatch and fallback, event-driven fulfilment, exception handling, AI-assisted case support and human approval.</p></div>
+  <div><strong>Interactive Order Management System</strong><p>Review 120 example orders across two service dates, company-named booking sources and suppliers, customer, driver, and team conversations, route-specific service updates, and exceptions awaiting action. No booking or chat systems are connected.</p></div>
   <a class="demo-btn" href="demo/index.html">Launch live demo →</a>
 </div>
 </div>
@@ -167,12 +167,12 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <div class="intent-model-intro"><div class="intent-model-kicker">Intent → outcome</div><h2>Ask for the work to be controlled. Let rules move safe cases and route exceptions.</h2><p>The interface stays available for dispatch, order review, and exception decisions. A command layer can coordinate the same workflow across existing booking channels, systems of record, supplier tools, and customer communications.</p></div>
   <div class="intent-case-command"><small>EXAMPLE COMMAND</small><blockquote>“Triage today’s bookings, resolve validation blocks, and prepare supplier work that is safe to dispatch.”</blockquote></div>
   <div class="intent-case-grid">
-    <article class="intent-case-card"><small>Agent plan</small><strong>Normalize · validate · route</strong><span>Intake Agent maps source payloads to canonical orders; Validation Agent applies explicit rules; Supplier Routing Agent checks eligibility and fallback; Exception Analyst prepares review context.</span></article>
+    <article class="intent-case-card"><small>Agent plan</small><strong>Normalize · validate · route</strong><span>Intake Agent maps source payloads to shared orders; Validation Agent applies explicit rules; Supplier Routing Agent checks eligibility and fallback; Exception Analyst prepares review context.</span></article>
     <article class="intent-case-card"><small>Tools + data</small><strong>Keep booking and supplier systems</strong><span>Booking channels, CRM/OMS/TMS records, supplier APIs, event streams, and customer communication tools remain the target systems of record and execution.</span></article>
     <article class="intent-case-card"><small>Bounded execution</small><strong>Automate stable checks</strong><span>Normalize fields, run required-field rules, monitor acknowledgements, and create work items. Dispatch and customer messages are prepared for controlled execution.</span></article>
     <article class="intent-case-card"><small>Human review</small><strong>Approve consequential actions</strong><span>Operators resolve missing itinerary details, supplier exceptions, and recipient mismatches. No handover or external communication should proceed on uncertain identity.</span></article>
   </div>
-  <div class="intent-case-note"><strong>Returned outcome:</strong> canonical order state, event history, intervention queue, and a clear owner. Public demo orders and command runs use generated, browser-local examples.</div>
+  <div class="intent-case-note"><strong>Returned outcome:</strong> order record status, event history, intervention queue, and a clear owner. Public demo orders and command runs use generated, browser-local examples.</div>
 </section>
 <section>
 <div class="portfolio-kicker">Process evidence · Public-safe summary</div>
@@ -184,7 +184,7 @@ footer{border-top:0;padding-top:34px;color:#7a869a}
   <div class="map-arrow">→</div>
   <div class="node"><b>Operational consequence</b><span>Routine steps can follow deterministic rules, while missing information, delayed response, and special cases need owned work queues.</span></div>
   <div class="map-arrow">→</div>
-  <div class="node"><b>Target capability</b><span>Canonical order state, validation and routing rules, event-based fulfilment, exception management, and bounded AI assistance.</span></div>
+  <div class="node"><b>Target capability</b><span>Shared order state, validation and routing rules, event-based fulfilment, exception management, and bounded AI assistance.</span></div>
 </div>
 
 <div class="evidence-note" style="margin-top:16px"><strong>Public-data boundary.</strong> The interactive prototype uses invented orders and events. This case does not publish private transaction rows, customer details, partner identities, or derived business totals. The demo illustrates process behavior and does not claim historical business performance.</div>
@@ -347,14 +347,14 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <span class="pill">Webhooks</span>
 <span class="pill">Scheduled API sync</span>
 <span class="pill">CSV / email fallback adapters</span>
-<span class="pill">Canonical data mapping</span>
+<span class="pill">Shared data mapping</span>
 </div>
 <p class="small">Distributor and OTA channels should create or update orders directly in the internal platform without manual re-entry wherever integration capability exists.</p>
 </div>
 <div class="layer after">
 <div class="layer-title">3 · OMS / TMS core: system of record</div>
 <div class="pills">
-<span class="pill">Canonical Order ID</span>
+<span class="pill">OMS Order ID</span>
 <span class="pill">Customer &amp; itinerary</span>
 <span class="pill">Shipment / bag records</span>
 <span class="pill">Status state machine</span>
@@ -476,7 +476,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <thead><tr><th>Capability</th><th>Before</th><th>After</th></tr></thead>
 <tbody>
 <tr><td>Booking intake</td><td>Emails, OTA backends and manual re-entry</td><td>Booking API + distributor API / webhook ingestion</td></tr>
-<tr><td>System of record</td><td>legacy commerce platform + shared spreadsheet + email context</td><td>OMS / TMS with canonical order and shipment records</td></tr>
+<tr><td>System of record</td><td>legacy commerce platform + shared spreadsheet + email context</td><td>OMS / TMS with shared order and shipment records</td></tr>
 <tr><td>Validation</td><td>CS manually checks service rules</td><td>Rules engine validates automatically; CS sees exceptions only</td></tr>
 <tr><td>Supplier selection</td><td>Memory + spreadsheet</td><td>Versioned supplier master data + configurable routing rules</td></tr>
 <tr><td>Dispatch</td><td>Manually cleaned and forwarded email</td><td>Structured job dispatch with acceptance timer and fallback</td></tr>
@@ -515,7 +515,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <div class="grid">
 <div class="card after">
 <strong>Core platform</strong>
-      Booking UX and booking API; OMS/TMS transaction core; canonical data model; lifecycle state; rules and supplier master data; dispatch logic; exception workspace; operational event log; chain-of-custody controls.
+      Booking UX and booking API; OMS/TMS transaction core; shared data model; lifecycle state; rules and supplier master data; dispatch logic; exception workspace; operational event log; chain-of-custody controls.
     </div>
 <div class="card">
 <strong>Integrate rather than rebuild</strong>
@@ -544,7 +544,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <tr>
 <td>Direct / OTA booking ingestion</td>
 <td><strong>Automation</strong></td>
-<td>Create canonical order, map fields, deduplicate, assign source and timestamps.</td>
+<td>Create shared order, map fields, deduplicate, assign source and timestamps.</td>
 <td>Fallback extraction when source data arrives in semi-structured email or documents.</td>
 <td>CS reviews failed mappings or incomplete orders.</td>
 </tr>
@@ -651,7 +651,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <tbody>
 <tr>
 <td>BR-01</td>
-<td>All direct and distributor bookings must resolve to one canonical internal order record.</td>
+<td>All direct and distributor bookings must resolve to one shared internal order record.</td>
 <td>Remove duplicate manual order creation and create one source of truth for downstream operations.</td>
 </tr>
 <tr>
@@ -681,7 +681,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <thead><tr><th>ID</th><th>System behavior</th></tr></thead>
 <tbody>
 <tr><td>FR-01</td><td>The platform shall accept direct bookings from the customer booking interface and distributor bookings through API, webhook, scheduled sync or controlled fallback ingestion.</td></tr>
-<tr><td>FR-02</td><td>The integration layer shall map each source schema into a canonical order model before the order enters fulfilment.</td></tr>
+<tr><td>FR-02</td><td>The integration layer shall map each source schema into a shared order model before the order enters fulfilment.</td></tr>
 <tr><td>FR-03</td><td>The platform shall generate one unique internal Order ID and preserve the original external source and external Order ID.</td></tr>
 <tr><td>FR-04</td><td>The platform shall prevent duplicate creation when the same external booking is received more than once.</td></tr>
 <tr><td>FR-05</td><td>The platform shall validate required fields such as service date/time, city, service type, customer identity/contact details, pickup/delivery location, and route-specific airport/flight information where applicable.</td></tr>
@@ -692,7 +692,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <tr><td>FR-10</td><td>Every create, update, validation result, exception and manual override shall be timestamped in the audit history.</td></tr>
 </tbody>
 </table>
-<h3>Canonical data requirements</h3>
+<h3>Shared order data requirements</h3>
 <div class="grid">
 <div class="card">
 <strong>Order identity</strong>
@@ -734,8 +734,8 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 </table>
 <h3>Acceptance criteria</h3>
 <div class="grid">
-<div class="card"><strong>AC-01 · Website booking</strong>A valid direct booking creates exactly one canonical OMS/TMS order with the correct source metadata and proceeds without CS re-entry.</div>
-<div class="card"><strong>AC-02 · Distributor booking</strong>A valid distributor booking produces the same canonical internal structure as a direct booking while preserving the distributor Order ID.</div>
+<div class="card"><strong>AC-01 · Website booking</strong>A valid direct booking creates exactly one shared OMS/TMS order with the correct source metadata and proceeds without CS re-entry.</div>
+<div class="card"><strong>AC-02 · Distributor booking</strong>A valid distributor booking produces the same shared internal structure as a direct booking while preserving the distributor Order ID.</div>
 <div class="card"><strong>AC-03 · Duplicate event</strong>Receiving the same external booking twice updates or ignores the duplicate according to policy and never creates a second active order.</div>
 <div class="card"><strong>AC-04 · Missing field</strong>A booking missing a required contact / route field is stopped before dispatch and appears in the exception queue with a clear reason.</div>
 <div class="card"><strong>AC-05 · Rule failure</strong>A booking outside a configured service area or timing rule does not progress silently and is routed to the correct exception workflow.</div>
@@ -749,7 +749,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <td>UAT-01 · Happy-path direct booking</td>
 <td>All mandatory website fields are valid.</td>
 <td>Customer completes payment and booking.</td>
-<td>One canonical order is created, validation passes and the order advances automatically.</td>
+<td>One shared order is created, validation passes and the order advances automatically.</td>
 </tr>
 <tr>
 <td>UAT-02 · Happy-path distributor booking</td>
@@ -978,7 +978,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <tbody>
 <tr><td>FR-C01</td><td>The OMS/TMS shall record structured execution events such as Customer Ready, Driver En Route, Pickup Attempted, Picked Up, Delivery Attempted, Delivered, Waiting, Delayed and Exception Raised.</td></tr>
 <tr><td>FR-C02</td><td>Configured events shall automatically trigger the appropriate customer notification through the available customer communication channel.</td></tr>
-<tr><td>FR-C03</td><td>Supplier / driver status updates received through API, portal, secure link or controlled fallback channels shall update the same canonical order timeline.</td></tr>
+<tr><td>FR-C03</td><td>Supplier / driver status updates received through API, portal, secure link or controlled fallback channels shall update the same shared order timeline.</td></tr>
 <tr><td>FR-C04</td><td>Inbound customer messages shall be matched to the correct booking using available identifiers such as Order ID, verified email, contact number and conversation context.</td></tr>
 <tr><td>FR-C05</td><td>AI may classify inbound messages into intents such as timing change, arrival / readiness, missing information, delay inquiry, complaint, pickup issue, delivery issue or cancellation request.</td></tr>
 <tr><td>FR-C06</td><td>AI may extract proposed structured updates from customer or supplier messages, but changes affecting service time, location, fees or policy must follow the relevant validation and approval workflow.</td></tr>
@@ -1047,7 +1047,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <div class="card"><strong>AC-C03 · Exception creation</strong>An unresolved pickup or delivery failure creates an exception case with owner, severity and SLA clock rather than remaining only inside chat history.</div>
 <div class="card"><strong>AC-C04 · AI summary</strong>The Operations user can open an exception and receive an accurate summary of order state, recent messages, evidence and actions without losing source traceability.</div>
 <div class="card"><strong>AC-C05 · Policy control</strong>An AI recommendation cannot independently execute a discretionary refund, fee waiver or policy override.</div>
-<div class="card"><strong>AC-C06 · Closure</strong>Resolving an exception updates the canonical order state and records who resolved it, what action was taken and when.</div>
+<div class="card"><strong>AC-C06 · Closure</strong>Resolving an exception updates the order record status and records who resolved it, what action was taken and when.</div>
 </div>
 <h3>Representative UAT scenarios</h3>
 <table>
@@ -1121,7 +1121,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <td>Booking / order lifecycle</td>
 <td>Operations Product Owner</td>
 <td>Operations + Platform</td>
-<td>One canonical state model; changes are version-controlled and tested before release.</td>
+<td>One shared state model; changes are version-controlled and tested before release.</td>
 </tr>
 <tr>
 <td>Serviceability &amp; timing rules</td>
@@ -1280,7 +1280,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
-      Finalize canonical order / shipment model, lifecycle states, exception taxonomy, supplier master, service rules and data ownership.
+      Finalize shared order / shipment model, lifecycle states, exception taxonomy, supplier master, service rules and data ownership.
     </div>
 <div class="card">
 <strong>Key outputs</strong>
@@ -1292,14 +1292,14 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
     </div>
 <div class="card">
 <strong>Exit criteria</strong>
-      Core entities and states are agreed; critical rules have named owners; representative orders can be expressed cleanly in the canonical model.
+      Core entities and states are agreed; critical rules have named owners; representative orders can be expressed cleanly in the shared model.
     </div>
 </div>
 <h3>Phase 1 - Booking + OMS/TMS Core</h3>
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
-      Build the booking layer and transaction core for direct bookings: canonical Order ID, shipment records, lifecycle states, audit trail, structured validation and exception queue.
+      Build the booking layer and transaction core for direct bookings: shared Order ID, shipment records, lifecycle states, audit trail, structured validation and exception queue.
     </div>
 <div class="card">
 <strong>Key outputs</strong>
@@ -1318,7 +1318,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <div class="grid">
 <div class="card">
 <strong>Scope</strong>
-      Connect distributor channels to the canonical order model using APIs, webhooks or scheduled sync; retain controlled fallback adapters for unsupported channels.
+      Connect distributor channels to the shared order model using APIs, webhooks or scheduled sync; retain controlled fallback adapters for unsupported channels.
     </div>
 <div class="card">
 <strong>Key outputs</strong>
@@ -1326,7 +1326,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
     </div>
 <div class="card">
 <strong>Dependencies</strong>
-      Stable OMS/TMS create/update APIs and canonical schema.
+      Stable OMS/TMS create/update APIs and shared schema.
     </div>
 <div class="card">
 <strong>Exit criteria</strong>
@@ -1364,7 +1364,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
     </div>
 <div class="card">
 <strong>Dependencies</strong>
-      Supplier execution events, canonical order timeline and communication-channel integrations.
+      Supplier execution events, shared order timeline and communication-channel integrations.
     </div>
 <div class="card">
 <strong>Exit criteria</strong>
@@ -1423,7 +1423,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <h3>Suggested MVP boundary</h3>
 <div class="callout good">
 <strong>MVP: one market, one distributor, one fixed-supplier route, end to end.</strong>
-<p>Demonstrate the complete operating model on a narrow slice: distributor booking → canonical OMS/TMS record → automated validation → supplier dispatch / acceptance → structured pickup / delivery events → customer notifications → exception queue. This proves the architecture and operating model before scaling breadth.</p>
+<p>Demonstrate the complete operating model on a narrow slice: distributor booking → shared OMS/TMS record → automated validation → supplier dispatch / acceptance → structured pickup / delivery events → customer notifications → exception queue. This proves the architecture and operating model before scaling breadth.</p>
 </div>
 <h3>Roadmap success measures</h3>
 <div class="grid">
@@ -1687,55 +1687,54 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 </div>
 <h3>Demo scenario</h3>
 <div class="flow">
-<span class="step">Distributor booking received</span><span class="arrow">→</span>
-<span class="step">Canonical order created</span><span class="arrow">→</span>
-<span class="step">Validation passes</span><span class="arrow">→</span>
-<span class="step">Supplier auto-dispatched</span><span class="arrow">→</span>
-<span class="step">Supplier accepts</span><span class="arrow">→</span>
-<span class="step">Customer ready</span><span class="arrow">→</span>
-<span class="step">Pickup event</span><span class="arrow">→</span>
-<span class="step">Exception triggered</span><span class="arrow">→</span>
-<span class="step">AI-assisted resolution</span>
+<span class="step">Booking received</span><span class="arrow">→</span>
+<span class="step">Order record created</span><span class="arrow">→</span>
+<span class="step">Supplier assigned</span><span class="arrow">→</span>
+<span class="step">Customer drop and tag</span><span class="arrow">→</span>
+<span class="step">Driver collection</span><span class="arrow">→</span>
+<span class="step">Airport or hotel arrival</span><span class="arrow">→</span>
+<span class="step">Luggage delivered</span><span class="arrow">→</span>
+<span class="step">Exception reviewed</span>
 </div>
-<h3>Screen 1 - Logistics OMS Workspace</h3>
+<h3>Screen 1 - Order Management System Workspace</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>
-      Give Operations one view of today’s workload, current order states, supplier-confirmation risks, active exceptions and SLA exposure.
+      Give Operations a date-aware view of the next two service days, upcoming dispatch, order milestones, linked messages, and issues awaiting action.
     </div>
 <div class="card">
 <strong>Core elements</strong>
-      KPI summary, order queue, status filters, exception severity, supplier-confirmation state, SLA countdown, source channel and assigned owner.
+      60 example orders per service date, booking source, supplier company, service date and time, route-specific status, owner, messages, and open exceptions.
     </div>
 <div class="card">
 <strong>Demo interaction</strong>
-      Select the distributor order and open the canonical order record. Trigger one risk condition so the queue visibly changes.
+      Open an order from the two-day plan, inspect the customer, driver, and team thread, then review an exception awaiting action.
     </div>
 <div class="card">
 <strong>Capability demonstrated</strong>
       Process visibility, event-driven workflow, exception-led operations and operational prioritization.
     </div>
 </div>
-<h3>Screen 2 - Canonical Booking Record</h3>
+<h3>Screen 2 - Order Details and Service Milestones</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>
-      Demonstrate one source of truth regardless of booking channel.
+      Show the original booking reference alongside the order ID, service date, route, supplier company, current milestone, and conversation thread.
     </div>
 <div class="card">
 <strong>Core elements</strong>
-      Internal Order ID, source / external Order ID, customer, route, hotel / airport details, flight information, lifecycle state, validation result, supplier assignment and event timeline.
+      Order ID, booking source, original booking ID, customer, route, service date and time, pickup and delivery, supplier company, tag image status, messages, and event history.
     </div>
 <div class="card">
 <strong>Demo interaction</strong>
-      Show the original distributor source data mapped into the canonical structure and the deterministic validation results.
+      Open the featured hotel-to-airport order, record a luggage-tag image, and advance the customer drop, driver collection, airport arrival, and completion milestones.
     </div>
 <div class="card">
 <strong>Capability demonstrated</strong>
       Data normalization, auditability, business rules and removal of duplicate manual entry.
     </div>
 </div>
-<h3>Screen 3 - Validation &amp; Rule Decision</h3>
+<h3>Screen 3 - Order Checks and Required Evidence</h3>
 <div class="grid">
 <div class="card">
 <strong>Purpose</strong>
@@ -1743,11 +1742,11 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
     </div>
 <div class="card">
 <strong>Core elements</strong>
-      Required-field checks, service-area result, lead-time / airport timing checks, rule source / version and pass / fail state.
+      Booking reference, route and date, supplier assignment, luggage-tag evidence, and open-exception status.
     </div>
 <div class="card">
 <strong>Demo interaction</strong>
-      Change one input, such as service time or missing flight number, and show the order moving from Pass to Exception.
+      Open an order missing its tag image. The checks show the block before the customer drop can progress.
     </div>
 <div class="card">
 <strong>Capability demonstrated</strong>
@@ -1762,11 +1761,11 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
     </div>
 <div class="card">
 <strong>Core elements</strong>
-      Eligible suppliers, ranking reason, preferred supplier, job payload, dispatch channel, acknowledgement timer and fallback supplier.
+      Service date and time, route, booking company, supplier company, response state, owner, and exceptions waiting for follow-up.
     </div>
 <div class="card">
 <strong>Demo interaction</strong>
-      Dispatch to Supplier A, simulate timeout / rejection, and show fallback to Supplier B or escalation to Operations.
+      Review orders scheduled for today and tomorrow, assign an unassigned supplier, and record supplier acceptance or reassignment in the local demo.
     </div>
 <div class="card">
 <strong>Capability demonstrated</strong>
@@ -1847,7 +1846,7 @@ QC, refund, and accommodation handling should be visible as distinct workflow st
 <table>
 <thead><tr><th>Interaction</th><th>Prototype requirement</th></tr></thead>
 <tbody>
-<tr><td>Create / ingest order</td><td>Must create a persistent canonical order in the demo data store.</td></tr>
+<tr><td>Create / ingest order</td><td>Must create a persistent shared order in the demo data store.</td></tr>
 <tr><td>Run validation</td><td>Must execute real rule logic, not only show a static result.</td></tr>
 <tr><td>Dispatch supplier</td><td>Must update assignment / acknowledgement state and demonstrate timeout or rejection fallback.</td></tr>
 <tr><td>Record service event</td><td>Must append to the order timeline and change relevant status.</td></tr>

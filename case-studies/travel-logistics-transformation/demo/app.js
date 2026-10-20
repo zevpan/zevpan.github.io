@@ -1,452 +1,586 @@
-const SEED={
-historical:{
- cutoff:"Sample",
- uniqueOrders:240,
- coreRoutes:71.0,
- top3Channels:74.5,
- top3Suppliers:58.8,
- within72h:37.5,
- qcCoverage:31.7,
- refundCoverage:4.6,
- accommodationCoverage:5.4,
- routeMix:[
-  ["Hotel → Airport",32],
-  ["Hotel → Hotel",27],
-  ["Airport → Hotel",19],
-  ["Other / specialist",22]
- ],
- leadTime:[
-  ["<24h",13],
-  ["24–72h",24],
-  ["3–7d",28],
-  [">7d",35]
- ]
-},
-orders:[
-{id:"TRV-1042",source:"Direct",sourceId:"WEB-84219",market:"Tokyo",service:"Hotel → Airport",customer:"A. Morgan",date:"28 Sep",time:"13:30",status:"IN_SERVICE",supplier:"Partner East",dispatch:"ACCEPTED",owner:"Auto",slaRisk:false,manualTouches:0,validation:{run:true,passed:true,missingFlight:false},events:[["12:46","Driver en route","Partner event"],["09:02","Supplier accepted","Structured dispatch"],["08:58","Validation passed","Rules engine"],["08:57","Order created","Direct booking"]]},
-{id:"TRV-1048",source:"Distributor A",sourceId:"DIST-59301",market:"Osaka",service:"Airport → Hotel",customer:"M. Chen",date:"28 Sep",time:"16:20",status:"READY",supplier:null,dispatch:"NOT_SENT",owner:"Ops Queue",slaRisk:false,manualTouches:0,validation:{run:true,passed:true,missingFlight:false},events:[["11:06","Validation passed","Rules engine"],["11:05","Canonical order created","Distributor adapter"],["11:05","Source payload received","Distributor channel"]]},
-{id:"TRV-1051",source:"Distributor A",sourceId:"DIST-59344",market:"Seoul",service:"Hotel → Airport",customer:"J. Patel",date:"28 Sep",time:"18:00",status:"AWAITING_SUPPLIER",supplier:"Partner North",dispatch:"PENDING",owner:"Ops Queue",slaRisk:true,manualTouches:1,validation:{run:true,passed:true,missingFlight:false},events:[["10:40","Dispatch pending","Partner North"],["10:36","Validation passed","Rules engine"],["10:35","Order created","Distributor adapter"]]},
-{id:"TRV-1054",source:"Direct",sourceId:"WEB-84302",market:"Singapore",service:"Hotel → Airport",customer:"R. Lim",date:"28 Sep",time:"19:10",status:"VALIDATION_REQUIRED",supplier:null,dispatch:"BLOCKED",owner:"CS Review",slaRisk:true,manualTouches:1,validation:{run:false,passed:false,missingFlight:true},events:[["12:15","Missing flight information","Validation pre-check"],["12:14","Order created","Direct booking"]]},
-{id:"TRV-1058",source:"Distributor A",sourceId:"DIST-59388",market:"Kyoto",service:"Hotel → Hotel",customer:"S. Lee",date:"28 Sep",time:"15:00",status:"CONFIRMED",supplier:"Partner West",dispatch:"ACCEPTED",owner:"Auto",slaRisk:false,manualTouches:0,validation:{run:true,passed:true,missingFlight:false},events:[["09:31","Supplier accepted","Structured dispatch"],["09:27","Validation passed","Rules engine"],["09:26","Order created","Distributor adapter"]]},
-{id:"TRV-1060",source:"Distributor A",sourceId:"DIST-59410",market:"Tokyo",service:"Airport → Hotel",customer:"T. Brown",date:"28 Sep",time:"20:30",status:"COMPLETED",supplier:"Partner East",dispatch:"ACCEPTED",owner:"Auto",slaRisk:false,manualTouches:0,validation:{run:true,passed:true,missingFlight:false},events:[["14:08","Delivered","Proof recorded"],["13:22","Picked up","Partner event"],["09:12","Supplier accepted","Structured dispatch"]]},
-{id:"TRV-1062",source:"Distributor A",sourceId:"DIST-59428",market:"Osaka",service:"Hotel → Hotel",customer:"L. Tan",date:"28 Sep",time:"14:00",status:"COMPLETED",supplier:"Partner West",dispatch:"ACCEPTED",owner:"Auto",slaRisk:false,manualTouches:0,validation:{run:true,passed:true,missingFlight:false},events:[["18:42","Delivered","Proof recorded"],["11:14","Supplier accepted","Structured dispatch"]]},
-{id:"TRV-1064",source:"Distributor B",sourceId:"DIST-59461",market:"Seoul",service:"Airport → Hotel",customer:"P. Singh",date:"28 Sep",time:"17:10",status:"COMPLETED",supplier:"Partner North",dispatch:"ACCEPTED",owner:"Auto",slaRisk:false,manualTouches:0,validation:{run:true,passed:true,missingFlight:false},events:[["20:05","Delivered","Proof recorded"],["08:42","Supplier accepted","Structured dispatch"]]},
-{id:"TRV-1066",source:"Distributor A",sourceId:"DIST-59475",market:"Fukuoka",service:"Hotel → Airport",customer:"C. Ng",date:"29 Sep",time:"11:00",status:"CONFIRMED",supplier:"Partner South",dispatch:"ACCEPTED",owner:"Auto",slaRisk:false,manualTouches:0,validation:{run:true,passed:true,missingFlight:false},events:[["08:51","Supplier accepted","Structured dispatch"],["08:48","Validation passed","Rules engine"]]},
-{id:"TRV-1069",source:"Direct",sourceId:"WEB-84402",market:"Tokyo",service:"Hotel → Hotel",customer:"H. Wong",date:"29 Sep",time:"10:30",status:"COMPLETED",supplier:"Partner East",dispatch:"ACCEPTED",owner:"Auto",slaRisk:false,manualTouches:0,validation:{run:true,passed:true,missingFlight:false},events:[["17:20","Delivered","Proof recorded"],["07:56","Supplier accepted","Structured dispatch"]]}
-],
-exceptions:[],
-signals:[
-{time:"12:15",title:"TRV-1054 needs information",text:"Flight detail missing; validation cannot complete.",type:"risk"},
-{time:"10:40",title:"TRV-1051 supplier response pending",text:"Acknowledgement timer is approaching threshold.",type:"warn"},
-{time:"09:31",title:"TRV-1058 confirmed",text:"Preferred partner accepted automatically.",type:"ok"}
-],
-audit:[
-["12:15","Rules","validation.blocked","TRV-1054 missing flight information"],
-["11:06","Rules","validation.passed","TRV-1048 passed deterministic checks"],
-["10:40","Dispatch","supplier.pending","TRV-1051 awaiting acknowledgement"]
-]
-};
-
-const KEY="travel-ops-workspace-v3";
-let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(SEED);
-// Keep user scenario progress,
-// but replace that fixed summary with demo fixture values on every load.
-state.historical=structuredClone(SEED.historical);
-const $=s=>document.querySelector(s),view=$("#view"),title=$("#title"),subtitle=$("#subtitle");
-
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-function setHead(t,s){title.textContent=t;subtitle.textContent=s}
-function pill(o){return '<span class="status '+o.status+'">'+o.status.replaceAll("_"," ")+'</span>'}
-function openExceptions(){return state.exceptions.filter(e=>e.status!=="RESOLVED")}
-function pct(v){return Number(v).toFixed(1)+"%"}
-function historicalCards(){
- const h=state.historical;
- return '<div class="calibration-strip">'+
-  '<div class="calibration-stat"><small>Illustrative volume</small><b>'+h.uniqueOrders.toLocaleString()+'</b><span>sample records</span></div>'+
-  '<div class="calibration-stat"><small>Route mix</small><b>'+pct(h.coreRoutes)+'</b><span>common route groups</span></div>'+
-  '<div class="calibration-stat"><small>QC examples</small><b>'+pct(h.qcCoverage)+'</b><span>cases with QC context</span></div>'+
-  '<div class="calibration-stat"><small>Short lead times</small><b>'+pct(h.within72h)+'</b><span>sample records</span></div>'+
- '</div>'
+const STORE_KEY="order-management-system-demo-v4";
+const ROUTES=["Hotel → Airport","Airport → Hotel","Hotel → Hotel"];
+const MARKETS=[
+ {name:"Tokyo",zone:"Asia/Tokyo",offset:540},
+ {name:"Osaka",zone:"Asia/Tokyo",offset:540},
+ {name:"Seoul",zone:"Asia/Seoul",offset:540},
+ {name:"Singapore",zone:"Asia/Singapore",offset:480},
+ {name:"Kyoto",zone:"Asia/Tokyo",offset:540}
+];
+const SOURCES=[
+ {name:"Direct website",type:"Direct",prefix:"WEB"},
+ {name:"AeroVista Airways",type:"Airline",prefix:"AIR"},
+ {name:"Harborlight Hotel Group",type:"Hotel",prefix:"HTL"},
+ {name:"Wanderlane Online",type:"Online travel agency",prefix:"OTA"},
+ {name:"Summit Travel Partners",type:"Travel agent",prefix:"AGT"}
+];
+const SUPPLIERS=[
+ "Northstar Luggage Logistics Ltd",
+ "HarborLink Ground Services Pte Ltd",
+ "Skyport Porter Network Co.",
+ "Metro Relay Mobility Ltd",
+ "Eastgate Luggage Services K.K."
+];
+const OPERATORS=["Maya Chen","Daniel Tan","Sofia Lim","Jay Patel","Ravi Menon","Aiko Sato"];
+const DRIVERS=["Kenji Watanabe","Min-jun Park","Ari Tan","Hana Kim","Jun Sato","Minh Tran","Soo-jin Lee","Marcus Lim"];
+const FIRST=["Avery","Mina","Lucas","Noah","Hana","Maya","Ethan","Sofia","Kai","Leah","Jin","Ivy","Daniel","Nora","Ryan","Yuna","Alex","Mika"];
+const LAST=["Morgan","Chen","Tan","Patel","Lim","Wong","Park","Sato","Ng","Lee","Brown","Singh","Kim","Koh","Ito","Chua"];
+const $=(selector,root=document)=>root.querySelector(selector);
+const view=$("#view"), pageTitle=$("#title"), pageSubtitle=$("#subtitle");
+const DAY_KEY=dateInZone("Asia/Singapore",new Date());
+function dateInZone(zone,instant){
+ const parts=new Intl.DateTimeFormat("en-CA",{timeZone:zone,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(instant);
+ const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));
+ return p.year+"-"+p.month+"-"+p.day;
 }
-function queueRow(o){
- return '<div class="queue-row" onclick="openOrder(\''+o.id+'\')">'+
-  '<div><div class="oid">'+o.id+'</div><div class="small">'+o.source+'</div></div>'+
-  '<div><div class="name">'+o.market+" · "+o.service+'</div><div class="meta">'+o.customer+" · "+o.date+" "+o.time+'</div></div>'+
-  '<div class="reason">'+(o.supplier||"Unassigned")+'</div><div class="owner">'+o.owner+'</div><div>'+pill(o)+'</div></div>'
+function addDays(iso,days){
+ const d=new Date(iso+"T12:00:00Z");d.setUTCDate(d.getUTCDate()+days);
+ return d.toISOString().slice(0,10);
 }
-function render(name){
- document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.view===name));
- ({tower,orders,dispatch,exceptions,metrics,evidence}[name]||tower)()
+function timeFromMinutes(total){
+ const h=Math.floor(total/60)%24,m=total%60;
+ return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
 }
-
-function workReason(o){
- if(o.status==="EXCEPTION") return {tone:"risk",label:"Exception requires a decision",detail:"A service event cannot proceed safely without Operations review."};
- if(o.validation.missingFlight) return {tone:"risk",label:"Required airport information is missing",detail:"Validation has blocked dispatch until the customer record is completed."};
- if(o.dispatch==="REJECTED") return {tone:"risk",label:"Preferred supplier rejected the job",detail:"Fallback coverage is available and the booking is waiting for reassignment."};
- if(o.dispatch==="ESCALATED") return {tone:"warn",label:"Supplier acknowledgement escalated",detail:"The booking is waiting for an Operations decision after the acknowledgement threshold."};
- if(o.dispatch==="PENDING") return {tone:"warn",label:"Supplier has not acknowledged",detail:"The acknowledgement timer is approaching its threshold."};
- if(o.dispatch==="NOT_SENT") return {tone:"normal",label:"Booking is ready for dispatch",detail:"Validation passed and an eligible supplier can now be assigned."};
- if(o.status==="IN_SERVICE") return {tone:"normal",label:"Service is in progress",detail:"No intervention is required unless a new event creates an exception."};
- return {tone:"normal",label:"Operational review",detail:"Review the booking state and take the next appropriate action."}
+function localDateTimeMs(date,time,offset){
+ const parts=date.split("-").map(Number),clock=time.split(":").map(Number);
+ return Date.UTC(parts[0],parts[1]-1,parts[2],clock[0],clock[1])-offset*60000;
 }
-function workAction(o){
- if(o.status==="EXCEPTION") return "Review exception";
- if(o.validation.missingFlight) return o.requestedInfo?"Record customer information":"Request customer information";
- if(o.dispatch==="REJECTED") return "Assign fallback supplier";
- if(o.dispatch==="ESCALATED") return "Reassign supplier";
- if(o.dispatch==="PENDING") return "Escalate or reassign";
- if(o.dispatch==="NOT_SENT") return "Dispatch supplier";
- if(o.status==="IN_SERVICE") return "Monitor service event";
- return "Review booking"
+function dateLabel(iso,zone){
+ const stamp=new Date(iso+"T12:00:00Z");
+ return new Intl.DateTimeFormat("en-SG",{timeZone:zone,weekday:"short",day:"2-digit",month:"short",year:"numeric"}).format(stamp);
 }
-function needsWork(o){
- return o.status==="EXCEPTION"||o.validation.missingFlight||["NOT_SENT","PENDING","REJECTED","ESCALATED"].includes(o.dispatch)||o.owner==="Ops Queue"||o.owner==="CS Review"||o.owner==="Ops Escalation"
+function relativeDay(order){
+ const today=dateInZone(order.timeZone,new Date());
+ return order.serviceDate===today?"Today":order.serviceDate===addDays(today,1)?"Tomorrow":dateLabel(order.serviceDate,order.timeZone);
 }
-function workRow(o){
- const r=workReason(o);
- return '<div class="work-item '+r.tone+'" onclick="openOrder(\''+o.id+'\')">'+
-  '<div class="work-key"><b>'+o.id+'</b><span>'+o.market+' · '+o.service+'</span></div>'+
-  '<div class="work-copy"><b>'+r.label+'</b><span>'+r.detail+'</span></div>'+
-  '<div class="work-time"><b>'+(o.slaRisk?"SLA RISK":"TODAY")+'</b><span>'+o.date+' · '+o.time+'</span></div>'+
-  '<div class="work-next"><span>Next action</span><b>'+workAction(o)+'</b></div>'+
-  '<button class="work-cta" onclick="event.stopPropagation();openOrder(\''+o.id+'\')">Work item →</button>'+
- '</div>'
+function currentClock(zone){
+ return new Intl.DateTimeFormat("en-SG",{timeZone:zone,hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date());
 }
-function tower(){
- setHead("My Work","Prioritized work that requires an operator decision or intervention.");
- const items=state.orders.filter(needsWork).sort((a,b)=>(Number(b.slaRisk)-Number(a.slaRisk))||(["EXCEPTION","VALIDATION_REQUIRED","AWAITING_SUPPLIER","READY"].indexOf(a.status)-["EXCEPTION","VALIDATION_REQUIRED","AWAITING_SUPPLIER","READY"].indexOf(b.status)));
- const supplierWait=items.filter(o=>["PENDING","REJECTED","ESCALATED"].includes(o.dispatch)).length;
- const blocked=items.filter(o=>o.validation.missingFlight||o.status==="EXCEPTION").length;
- const running=state.orders.filter(o=>!needsWork(o)&&o.status!=="COMPLETED").length;
- const completed=state.orders.filter(o=>o.status==="COMPLETED").length;
- view.innerHTML=
- '<div class="work-hero"><div><div class="work-count">'+items.length+' items need attention</div><h2>Work the exception, not the dashboard.</h2><p>Only bookings that need a decision, missing information, supplier intervention or exception handling enter this queue.</p></div><div class="work-summary">'+
-  '<div><b>'+items.filter(o=>o.slaRisk).length+'</b><span>SLA risk</span></div>'+
-  '<div><b>'+supplierWait+'</b><span>supplier attention</span></div>'+
-  '<div><b>'+blocked+'</b><span>blocked / exception</span></div>'+
- '</div></div>'+
- '<div class="workspace-grid"><div class="panel work-panel"><div class="panel-head"><div><h3>My work queue</h3><span>Highest intervention need first</span></div><span>'+items.length+' open</span></div><div class="work-list">'+
- (items.length?items.map(workRow).join(""):'<div class="empty">Nothing currently requires operator intervention.</div>')+
- '</div></div><div class="workspace-side">'+
-  '<div class="panel"><div class="panel-head"><h3>Shift state</h3><span>context, not the task</span></div><div class="shift-grid">'+
-   '<div class="shift-stat"><b>'+running+'</b><span>running automatically</span></div>'+
-   '<div class="shift-stat"><b>'+completed+'</b><span>completed</span></div>'+
-   '<div class="shift-stat"><b>'+state.orders.length+'</b><span>demo bookings</span></div>'+
-   '<div class="shift-stat"><b>'+openExceptions().length+'</b><span>open exceptions</span></div>'+
-  '</div></div>'+
-  '<div class="panel" style="margin-top:12px"><div class="panel-head"><h3>Recent operational changes</h3><span>event feed</span></div><div class="panel-body">'+
-  state.signals.slice(0,5).map(s=>'<div class="signal"><div class="signal-top"><b>'+s.title+'</b><time>'+s.time+'</time></div><p>'+s.text+'</p></div>').join("")+
-  '</div></div>'+
- '</div></div>'+
- '<div class="workspace-note"><b>Scenario context is separate from queue triage.</b> The evidence view uses demo fixture values and does not report business performance.</div>'
+function statusFor(route,minutesToService){
+ if(route==="Airport → Hotel"){
+  if(minutesToService>30)return "SCHEDULED";
+  if(minutesToService>-20)return "ARRIVED_AT_AIRPORT";
+  if(minutesToService>-65)return "LUGGAGE_COLLECTED";
+  if(minutesToService>-180)return "LUGGAGE_DELIVERED";
+  return "COMPLETED";
+ }
+ if(minutesToService>180)return "AWAITING_CUSTOMER_DROP";
+ if(minutesToService>90)return "CUSTOMER_DROPPED";
+ if(minutesToService>30)return "DRIVER_COLLECTED";
+ if(minutesToService>-120)return route==="Hotel → Airport"?"ARRIVED_AT_AIRPORT":"ARRIVED_AT_DESTINATION";
+ return "COMPLETED";
 }
-
-function evidence(){
- setHead("Evidence model","Sample values illustrate the operational questions in this prototype.");
- const h=state.historical;
- view.innerHTML=
- '<div class="evidence-banner"><b>Invented data · not business results.</b><p>All values on this screen are invented to make the workflow behavior concrete. They are not calculated from private operational data and are not a statistically representative sample.</p></div>'+
- '<div class="historical-grid">'+
-  '<div class="historical-card"><div class="kind">Illustrative volume</div><b>'+h.uniqueOrders.toLocaleString()+'</b><p>invented sample records</p></div>'+
-  '<div class="historical-card"><div class="kind">Common route groups</div><b>'+pct(h.coreRoutes)+'</b><p>scenario mix</p></div>'+
-  '<div class="historical-card"><div class="kind">Channel variety</div><b>'+pct(h.top3Channels)+'</b><p>illustrative sample share</p></div>'+
-  '<div class="historical-card"><div class="kind">Supplier mix</div><b>'+pct(h.top3Suppliers)+'</b><p>illustrative sample share</p></div>'+
-  '<div class="historical-card"><div class="kind">Short lead times</div><b>'+pct(h.within72h)+'</b><p>demo records</p></div>'+
-  '<div class="historical-card"><div class="kind">QC scenarios</div><b>'+pct(h.qcCoverage)+'</b><p>invented sample share</p></div>'+
-  '<div class="historical-card"><div class="kind">Refund scenarios</div><b>'+pct(h.refundCoverage)+'</b><p>invented sample share</p></div>'+
-  '<div class="historical-card"><div class="kind">Accommodation scenarios</div><b>'+pct(h.accommodationCoverage)+'</b><p>invented sample share</p></div>'+
- '</div>'+
- '<div class="layout" style="margin-top:12px">'+
-  '<div class="panel"><div class="panel-head"><h3>Service-pattern mix</h3><span>invented sample values</span></div><div class="barlist">'+barRows(h.routeMix)+'</div></div>'+
-  '<div class="panel"><div class="panel-head"><h3>Booking lead-time mix</h3><span>invented sample values</span></div><div class="barlist">'+barRows(h.leadTime)+'</div></div>'+
- '</div>'+
- '<div class="evidence-note"><b>Workflow design:</b> standardize transaction paths; encode supplier routing and fallback; use lead time in urgency controls; and govern QC, refund, and accommodation exceptions as structured workflows.<br><br><b>Boundary:</b> these examples do not measure ROI, headcount savings, supplier quality, service-level change, or an automatable percentage. <a class="evidence-link" href="../index.html">Read the process case →</a></div>'
-}
-function barRows(items){
- return items.map(x=>'<div class="barrow"><label>'+x[0]+'</label><div class="bartrack"><div class="barfill" style="width:'+x[1]+'%"></div></div><b>'+pct(x[1])+'</b></div>').join("")
-}
-
-function orders(){
- setHead("Orders","Every source resolves to one canonical operational record.");
- view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Scenario:</b> these records exercises route normalization, validation, supplier acknowledgement, and exception handling. It is not a statistically representative sample.</div>'+
- '<div class="panel"><div class="panel-head"><h3>Canonical Orders</h3><span>'+state.orders.length+' demo records</span></div><table><thead><tr><th>Order</th><th>Source</th><th>Route</th><th>Supplier</th><th>Owner</th><th>Status</th></tr></thead><tbody>'+
- state.orders.map(o=>'<tr class="click" onclick="openOrder(\''+o.id+'\')"><td><b>'+o.id+'</b><div class="small">'+o.sourceId+'</div></td><td>'+o.source+'</td><td>'+o.market+'<div class="small">'+o.service+'</div></td><td>'+(o.supplier||"Unassigned")+'</td><td>'+o.owner+'</td><td>'+pill(o)+'</td></tr>').join("")+
- '</tbody></table></div>'
-}
-
-function dispatch(){
- setHead("Dispatch","Structured assignment, acknowledgement timers, fallback and human override.");
- const list=state.orders.filter(o=>o.status!=="COMPLETED"&&o.status!=="IN_SERVICE");
- view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Routing rule:</b> check supplier eligibility before ranking, then track acknowledgement and fallback as explicit workflow states.</div>'+
- '<div class="panel"><div class="panel-head"><h3>Dispatch Queue</h3><span>Eligibility before ranking</span></div><table><thead><tr><th>Order</th><th>Market</th><th>Assigned supplier</th><th>Dispatch state</th><th>Status</th></tr></thead><tbody>'+
- list.map(o=>'<tr class="click" onclick="openOrder(\''+o.id+'\')"><td><b>'+o.id+'</b></td><td>'+o.market+'</td><td>'+(o.supplier||"-")+'</td><td>'+o.dispatch+'</td><td>'+pill(o)+'</td></tr>').join("")+
- '</tbody></table></div>'
-}
-
-function exceptions(){
- setHead("Exceptions","Only cases requiring intervention should compete for Operations attention.");
- const ex=openExceptions();
- view.innerHTML='<div class="evidence-note" style="margin-bottom:10px"><b>Exception rule:</b> required information, time thresholds, and ownership determine what enters the queue; uncertain fields remain blocked until reviewed.</div>'+
- (ex.length?
- '<div class="panel"><div class="panel-head"><h3>Exception Queue</h3><span>'+ex.length+' open</span></div><table><thead><tr><th>Case</th><th>Order</th><th>Type</th><th>Severity</th><th>Owner</th><th>Status</th></tr></thead><tbody>'+
- ex.map(e=>'<tr class="click" onclick="openOrder(\''+e.orderId+'\')"><td><b>'+e.id+'</b></td><td>'+e.orderId+'</td><td>'+e.type+'</td><td>'+e.severity+'</td><td>'+e.owner+'</td><td>'+e.status+'</td></tr>').join("")+
- '</tbody></table></div>':
- '<div class="panel empty">No open exceptions yet. Open TRV-1048 and create the recipient-verification scenario.</div>')
-}
-
-function metrics(){
- setHead("Process Metrics","Measures calculated from the orders and actions in this browser.");
- const total=state.orders.length;
- const zero=state.orders.filter(o=>o.manualTouches===0).length;
- const manual=state.orders.reduce((a,o)=>a+o.manualTouches,0);
- const accepted=state.orders.filter(o=>o.dispatch==="ACCEPTED").length;
- const ex=state.exceptions.length;
- const touch=Math.round(zero/total*100),avg=(manual/total).toFixed(1),confirm=Math.round(accepted/total*100),exRate=Math.round(ex/total*100);
- view.innerHTML=
- '<div class="split-label">Current demo state</div>'+
- '<div class="metric-note">These measures are calculated from the local demo orders and update as you test workflow actions. They are not historical business results.</div>'+
- '<div class="metric-grid">'+
-  '<div class="metric-card"><b>'+touch+'%</b><span>Zero-touch demo rate</span></div>'+
-  '<div class="metric-card"><b>'+avg+'</b><span>Manual touches / demo order</span></div>'+
-  '<div class="metric-card"><b>'+confirm+'%</b><span>Supplier accepted / demo total</span></div>'+
-  '<div class="metric-card"><b>'+exRate+'%</b><span>Demo exception rate</span></div>'+
- '</div>'+
- '<div class="formula"><b>Measure the workflow only after the event model is reliable.</b> In a production implementation, define a baseline and validate event completeness before making business-value claims.<br><br><code>touchless_rate = zero_touch_orders / total_demo_orders</code><br><code>exception_rate = demo_exception_cases / total_demo_orders</code></div>'
-}
-
-function openOrder(id){
- const o=state.orders.find(x=>x.id===id);if(!o)return;
- setHead("Resolve Work Item","Decide, act, and move the operation forward.");
- const ex=state.exceptions.find(e=>e.orderId===o.id&&e.status!=="RESOLVED");
- view.innerHTML=
- '<div class="toolbar"><button class="back" onclick="render(\'tower\')">← Back to My Work</button><span class="demo-status">'+(o.id==="TRV-1048"?"Featured end-to-end walkthrough":"Demo order")+'</span></div>'+
- (o.demoMessage?'<div class="banner">'+o.demoMessage+'</div>':'')+
- '<div class="work-context"><div><small>WHY THIS NEEDS YOU</small><b>'+workReason(o).label+'</b><p>'+workReason(o).detail+'</p></div><div><small>NEXT MOVE</small><b>'+workAction(o)+'</b><p>Use the controls below; the event timeline and audit state update immediately.</p></div></div><div class="order-head"><div class="order-icon">↔</div><div><h2>'+o.id+'</h2><div class="meta">'+o.market+" · "+o.service+" · "+o.date+" "+o.time+'</div><div style="margin-top:7px">'+pill(o)+'</div></div><div class="actions">'+actionButtons(o,ex)+'</div></div>'+
- '<div class="detail-grid"><div>'+
- '<div class="card"><div class="card-title"><h3>Canonical order</h3><span>system of record</span></div><div class="field-grid">'+field("Source",o.source)+field("Source ID",o.sourceId)+field("Customer",o.customer)+field("Service",o.service)+field("Market",o.market)+field("Assigned supplier",o.supplier||"Unassigned")+field("Dispatch state",o.dispatch)+field("Owner",o.owner)+'</div></div>'+
- '<div class="card" style="margin-top:12px"><div class="card-title"><h3>Source → canonical mapping</h3><span>normalization</span></div><div class="mapping"><div class="mapping-col"><h4>'+o.source+' source payload</h4><p>external_order_id: '+o.sourceId+'</p><p>market: '+o.market+'</p><p>service_time: '+o.time+'</p><p>customer_name: '+o.customer+'</p></div><div class="map-arrow">→</div><div class="mapping-col"><h4>Canonical order</h4><p>order_id: '+o.id+'</p><p>market_code: '+o.market.toUpperCase().slice(0,3)+'</p><p>scheduled_at: '+o.date+' '+o.time+'</p><p>lifecycle_state: '+o.status+'</p></div></div></div>'+
- '<div class="card" style="margin-top:12px"><div class="card-title"><h3>Validation & rule decisions</h3><span>deterministic</span></div>'+validationHtml(o)+'</div>'+
- '<div class="card" style="margin-top:12px"><div class="card-title"><h3>Supplier dispatch</h3><span>structured fallback</span></div>'+dispatchHtml(o)+'</div>'+
- '</div><div>'+
- '<div class="card"><div class="card-title"><h3>Event timeline</h3><span>append-only demo history</span></div><div class="timeline">'+o.events.map(e=>'<div class="tl"><b>'+e[0]+" · "+e[1]+'</b><p>'+e[2]+'</p></div>').join("")+'</div></div>'+
- (ex?exceptionHtml(ex,o):'<div class="card" style="margin-top:12px"><div class="card-title"><h3>Exception state</h3><span>none open</span></div><div class="small">No active exception is linked to this order.</div></div>')+
- '</div></div>'
-}
-function field(k,v){return '<div class="field"><b>'+k+'</b><span>'+v+'</span></div>'}
-function validationHtml(o){
- const checks=[
-  ["Required fields",!o.validation.missingFlight||o.service.indexOf("Airport")<0,"Rule V-01"],
-  ["Service area",true,"Rule V-04"],
-  ["Lead time",true,"Rule V-07"],
-  ["Airport / itinerary data",!o.validation.missingFlight,"Rule V-09"]
+function makeOrder(dayOffset,index){
+ const market=MARKETS[(index*2+dayOffset)%MARKETS.length];
+ const route=index===0&&dayOffset===0?"Hotel → Airport":ROUTES[(index+dayOffset)%ROUTES.length];
+ const serviceDate=addDays(dateInZone(market.zone,new Date()),dayOffset);
+ const serviceTime=index===0&&dayOffset===0?"23:30":index<30?timeFromMinutes(360+index*17):timeFromMinutes(900+(index-30)*15);
+ const minutesToService=(localDateTimeMs(serviceDate,serviceTime,market.offset)-Date.now())/60000;
+ const status=statusFor(route,minutesToService);
+ const source=SOURCES[index===0&&dayOffset===0?0:(index*3+dayOffset)%SOURCES.length];
+ const dayToken=serviceDate.replaceAll("-","");
+ const orderId="OMS-"+dayToken+"-"+String(index+1).padStart(3,"0");
+ const supplier=SUPPLIERS[(index*3+dayOffset)%SUPPLIERS.length];
+ const first=FIRST[(index*7+dayOffset*5)%FIRST.length];
+ const last=LAST[(index*11+dayOffset*3)%LAST.length];
+ const customer=first+" "+last;
+ const assigned=OPERATORS[(index*5+dayOffset)%OPERATORS.length];
+ const timeSuffix=market.offset===540?"JST":"SGT";
+ let dispatchState=status==="COMPLETED"?"Completed":index%15===0?"Needs assignment":index%9===0?"Awaiting supplier":"Accepted";
+ const tagRequired=route!=="Airport → Hotel";
+ const tagUploaded=tagRequired&&status!=="AWAITING_CUSTOMER_DROP";
+ const base={
+  id:orderId,sourceName:source.name,sourceType:source.type,sourceId:source.prefix+"-"+dayToken+"-"+String(index+1).padStart(3,"0"),
+  market:market.name,timeZone:market.zone,utcOffset:market.offset,timeSuffix,
+  route:route,serviceDate:serviceDate,serviceWindow:dayOffset===0?"today":"tomorrow",serviceTime:serviceTime,
+  customer:customer,customerChannel:["Customer chat","Messaging app","Booking portal"][index%3],
+  pickup:route==="Airport → Hotel"?market.name+" Airport":(market.name+" hotel concierge"),
+  delivery:route==="Hotel → Airport"?market.name+" Airport":(route==="Hotel → Hotel"?market.name+" hotel":"Customer hotel"),
+  supplier:supplier,driver:DRIVERS[(index*3+dayOffset)%DRIVERS.length],owner:assigned,
+  status:status,dispatchState:dispatchState,tagRequired:tagRequired,tagUploaded:tagUploaded,
+  tagFileName:tagUploaded?"Tag image recorded for "+orderId:null,
+  slaRisk:dispatchState==="Awaiting supplier"||dispatchState==="Needs assignment",
+  events:[],exceptionIds:[]
+ };
+ base.events=[
+  {time:"08:15",label:"Booking received",detail:base.sourceName+" · "+base.sourceId},
+  {time:"08:16",label:"Order record created",detail:"Original booking reference retained"},
+  {time:"08:18",label:"Supplier route checked",detail:base.supplier+" · "+base.dispatchState}
  ];
- return '<div class="checks">'+checks.map(c=>'<div class="check-row"><div class="check-icon '+(c[1]?"":"fail")+'">'+(c[1]?"✓":"!")+'</div><div><b>'+c[0]+'</b><p>'+(c[1]?"Condition satisfied":"Needs human / customer resolution")+'</p></div><span class="rule">'+c[2]+'</span></div>').join("")+'</div>'
+ if(status!=="SCHEDULED"&&status!=="AWAITING_CUSTOMER_DROP")base.events.unshift({time:serviceTime,label:statusLabel(status,base),detail:"Example service update"});
+ return base;
 }
-function dispatchHtml(o){
- const aState=o.supplier==="Partner A"?(o.dispatch==="REJECTED"?"Rejected":"Pending"):o.supplier==="Partner B"?"Fallback used":"Eligible";
- return '<div class="dispatch-card">'+
- '<div class="supplier"><div><b>Partner A</b><p>Preferred for market · structured job link</p></div><span class="rank">'+aState+'</span></div>'+
- '<div class="supplier"><div><b>Partner B</b><p>Fallback coverage · structured job link</p></div><span class="rank">'+(o.supplier==="Partner B"?"Accepted":"Eligible")+'</span></div>'+
- '<div class="supplier"><div><b>Human override</b><p>Available when policy or route complexity requires judgement</p></div><span class="rank">Controlled</span></div>'+
- '</div>'
-}
-function actionButtons(o,ex){
- if(o.id==="TRV-1054"){
-  if(o.validation.missingFlight&&!o.requestedInfo) return '<button class="btn primary" onclick="requestCustomerInfo(\''+o.id+'\')">Request customer info</button>';
-  if(o.validation.missingFlight&&o.requestedInfo) return '<button class="btn success" onclick="markInfoReceived(\''+o.id+'\')">Record information received</button>';
+function makeInitialState(){
+ const orders=[];
+ for(let day=0;day<2;day++)for(let i=0;i<60;i++)orders.push(makeOrder(day,i));
+ const exceptions=[];
+ const slots=[32,36,40,44,48,52,56];
+ const types=["Supplier response overdue","Luggage-tag image missing","Customer details need confirmation","Driver milestone overdue","Flight details need review","Customer reply needed","Delivery evidence missing"];
+ for(let day=0;day<2;day++){
+  slots.forEach((index,j)=>{
+   const o=orders[day*60+index];
+   let type=types[j];
+   if(type==="Luggage-tag image missing"&&!o.tagRequired)type="Flight details need review";
+   if(type==="Delivery evidence missing"&&o.status!=="LUGGAGE_DELIVERED"&&o.status!=="COMPLETED")type="Supplier response overdue";
+   const exception={
+    id:"EX-"+o.id.slice(-3)+"-"+(day+1),orderId:o.id,type:type,
+    priority:j%3===0?"High":"Medium",owner:OPERATORS[(index+j)%OPERATORS.length],
+    dueMinutes:j%2===0?18+j:-(8+j),status:"OPEN"
+   };
+   if(type==="Luggage-tag image missing"){o.tagUploaded=false;o.tagFileName=null;o.status="AWAITING_CUSTOMER_DROP";}
+   if(type==="Supplier response overdue"){o.dispatchState="Awaiting supplier";o.slaRisk=true;}
+   if(type==="Flight details need review")o.status="SCHEDULED";
+   o.owner=exception.owner;o.exceptionIds.push(exception.id);
+   o.events.unshift({time:"09:12",label:"Exception opened",detail:type});
+   exceptions.push(exception);
+  });
  }
- if(o.id==="TRV-1051"){
-  if(o.dispatch==="PENDING") return '<button class="btn primary" onclick="escalateSupplier(\''+o.id+'\')">Escalate supplier</button><button class="btn" onclick="reassignSupplier(\''+o.id+'\')">Reassign now</button>';
-  if(o.dispatch==="ESCALATED") return '<button class="btn success" onclick="reassignSupplier(\''+o.id+'\')">Assign alternate supplier</button>';
- }
- if(o.id!=="TRV-1048") return '<button class="btn" onclick="render(\'tower\')">Back to queue</button>';
- if(o.validation.missingFlight) return '<button class="btn primary" onclick="restoreValidation()">Restore required info</button>';
- if(o.dispatch==="NOT_SENT") return '<button class="btn primary" onclick="dispatchA()">Dispatch Partner A</button><button class="btn danger" onclick="breakValidation()">Simulate missing flight</button>';
- if(o.dispatch==="PENDING") return '<button class="btn danger" onclick="rejectA()">Simulate rejection</button>';
- if(o.dispatch==="REJECTED") return '<button class="btn primary" onclick="fallbackB()">Fallback to Partner B</button>';
- if(o.dispatch==="ACCEPTED"&&!o.ready) return '<button class="btn primary" onclick="customerReady()">Record Customer Ready</button>';
- if(o.ready&&!ex&&!o.exceptionResolved) return '<button class="btn danger" onclick="createRecipientException()">Create recipient exception</button>';
- if(ex&&!ex.ai) return '<button class="btn primary" onclick="generateAI()">Generate AI support</button>';
- if(ex&&ex.ai&&!ex.approved) return '<button class="btn success" onclick="approveAction()">Approve recommended action</button>';
- if(o.exceptionResolved) return '<button class="btn" onclick="render(\'metrics\')">View resulting metrics</button>';
- return ''
+ const messages=[];
+ const samples=[
+  ["Customer","I have left two bags with the hotel concierge. The tag photo is attached."],
+  ["Driver","I am at the pickup point. Please confirm when the bags are ready."],
+  ["Team user","I checked the booking details and added the pickup note for the driver."],
+  ["Customer","Can you confirm the driver has collected both bags?"],
+  ["Driver","Collected two bags. Tag numbers match the order notes."],
+  ["Team user","Please keep the customer updated if the arrival time changes."],
+  ["Customer","My flight time changed. I have updated the itinerary in the booking."],
+  ["Driver","Traffic is slow near the airport. Current arrival estimate is 18 minutes."]
+ ];
+ const threadOrders=orders.filter((o,i)=>i<24);
+ threadOrders.forEach((o,i)=>{
+  const group=[samples[i%samples.length],samples[(i+1)%samples.length],samples[(i+2)%samples.length]];
+  group.forEach((sample,j)=>{
+   messages.push({
+    id:"MSG-"+o.id+"-"+(j+1),orderId:o.id,role:sample[0],
+    actor:sample[0]==="Customer"?"Customer · "+o.customer:sample[0]==="Driver"?"Driver · "+o.driver:OPERATORS[(i+j)%OPERATORS.length]+" · Operations",
+    audience:sample[0]==="Team user"?"Team":sample[0],channel:sample[0]==="Customer"?o.customerChannel:sample[0]==="Driver"?"Driver chat":"Operations team",
+    direction:sample[0]==="Team user"?"internal":"inbound",text:group[j][1],
+    createdAt:Date.now()-((24-i)*3600000)+(j*600000),unread:sample[0]!=="Team user"&&j===0
+   });
+  });
+ });
+ return {datasetDay:DAY_KEY,orders:orders,exceptions:exceptions,messages:messages,selectedOrderId:orders[0].id,messageCounter:0,orderPage:0,orderWindow:"all",orderQuery:"",orderRoute:"all",orderStatus:"all",dispatchWindow:"all",dispatchFilter:"all",messageFilter:"all"};
 }
-function requestCustomerInfo(id){
- const o=state.orders.find(x=>x.id===id);if(!o)return;
- o.requestedInfo=true;o.owner="Customer Follow-up";o.demoMessage="Customer-information request logged. This work item remains open until the required airport details are received.";
- o.events.unshift(["Now","Customer information requested","Missing itinerary detail"]);
- state.signals.unshift({time:"Now",title:o.id+" waiting on customer",text:"Required airport information requested.",type:"warn"});
- save();openOrder(id)
+function loadState(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(STORE_KEY)||"null");
+  if(saved&&saved.datasetDay===DAY_KEY&&Array.isArray(saved.orders)&&saved.orders.length>=120)return saved;
+ }catch(error){}
+ return makeInitialState();
 }
-function markInfoReceived(id){
- const o=state.orders.find(x=>x.id===id);if(!o)return;
- o.validation.missingFlight=false;o.validation.run=true;o.validation.passed=true;o.dispatch="NOT_SENT";o.status="READY";o.owner="Ops Queue";o.slaRisk=false;
- o.demoMessage="Required information recorded. Validation now passes and the booking has moved back into the dispatch queue.";
- o.events.unshift(["Now","Required information received","Validation re-run and passed"]);
- state.signals.unshift({time:"Now",title:o.id+" ready for dispatch",text:"Customer information received; validation passed.",type:"ok"});
- save();openOrder(id)
+let state=loadState();
+function save(){localStorage.setItem(STORE_KEY,JSON.stringify(state))}
+function setHead(title,subtitle){pageTitle.textContent=title;pageSubtitle.textContent=subtitle}
+function safe(value){
+ return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]});
 }
-function escalateSupplier(id){
- const o=state.orders.find(x=>x.id===id);if(!o)return;
- o.dispatch="ESCALATED";o.owner="Ops Escalation";o.manualTouches+=1;o.demoMessage="Supplier acknowledgement threshold reached. The booking is now explicitly owned by Operations.";
- o.events.unshift(["Now","Supplier acknowledgement escalated","Operations intervention"]);
- state.signals.unshift({time:"Now",title:o.id+" escalated",text:"Supplier acknowledgement exceeded threshold.",type:"risk"});
- save();openOrder(id)
+function orderById(id){return state.orders.find(function(o){return o.id===id})}
+function exceptionForOrder(id){return state.exceptions.filter(function(e){return e.orderId===id&&e.status==="OPEN"})}
+function openExceptions(){return state.exceptions.filter(function(e){return e.status==="OPEN"})}
+function statusLabel(status,order){
+ const labels={
+  SCHEDULED:"Scheduled, awaiting airport arrival",
+  AWAITING_CUSTOMER_DROP:"Awaiting customer luggage drop and tag upload",
+  CUSTOMER_DROPPED:"Customer dropped luggage",
+  DRIVER_COLLECTED:"Driver collected luggage",
+  ARRIVED_AT_AIRPORT:"Driver and customer arrived at airport",
+  ARRIVED_AT_DESTINATION:"Driver arrived at destination hotel",
+  LUGGAGE_COLLECTED:"Luggage collected",
+  LUGGAGE_DELIVERED:"Luggage delivered",
+  COMPLETED:"Completed"
+ };
+ return labels[status]||status.replaceAll("_"," ").toLowerCase();
+}
+function statusClass(status){
+ return "status status-"+String(status||"").toLowerCase().replaceAll("_","-");
+}
+function pill(status,order){return '<span class="'+statusClass(status)+'">'+safe(statusLabel(status,order))+'</span>'}
+function dispatchPill(value){
+ const cls=value==="Accepted"||value==="Completed"?"ok":value==="Awaiting supplier"?"warn":value==="Needs assignment"?"risk":"neutral";
+ return '<span class="dispatch-state dispatch-'+cls+'">'+safe(value)+'</span>';
+}
+function routeSteps(order){
+ if(order.route==="Airport → Hotel")return [
+  ["SCHEDULED","Scheduled"],
+  ["ARRIVED_AT_AIRPORT","Driver and customer arrived at airport"],
+  ["LUGGAGE_COLLECTED","Luggage collected"],
+  ["LUGGAGE_DELIVERED","Luggage delivered"],
+  ["COMPLETED","Completed"]
+ ];
+ return [
+  ["AWAITING_CUSTOMER_DROP","Awaiting customer luggage drop and tag upload"],
+  ["CUSTOMER_DROPPED","Customer dropped luggage"],
+  ["DRIVER_COLLECTED","Driver collected luggage"],
+  [order.route==="Hotel → Airport"?"ARRIVED_AT_AIRPORT":"ARRIVED_AT_DESTINATION",order.route==="Hotel → Airport"?"Driver and customer arrived at airport":"Driver arrived at destination hotel"],
+  ["COMPLETED","Completed"]
+ ];
+}
+function stepIndex(order){
+ const steps=routeSteps(order);
+ const index=steps.findIndex(function(step){return step[0]===order.status});
+ return index<0?0:index;
+}
+function nextStep(order){
+ const steps=routeSteps(order),index=stepIndex(order);
+ return index<steps.length-1?steps[index+1]:null;
+}
+function nextActionLabel(order){
+ if(order.status==="AWAITING_CUSTOMER_DROP")return "Record customer drop and luggage-tag upload";
+ const next=nextStep(order);
+ return next?"Record: "+next[1]:"Order complete";
+}
+function appendEvent(order,label,detail){
+ const now=new Date();
+ order.events.unshift({time:new Intl.DateTimeFormat("en-SG",{timeZone:"Asia/Singapore",hour:"2-digit",minute:"2-digit",hour12:false}).format(now),label:label,detail:detail});
+ order.lastUpdated=now.toISOString();
+}
+function localClock(ms,zone){
+ return new Intl.DateTimeFormat("en-SG",{timeZone:zone,hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date(ms));
+}
+function orderDateTime(order){
+ return dateLabel(order.serviceDate,order.timeZone)+" · "+order.serviceTime+" "+order.timeSuffix;
+}
+function openOrder(id){
+ const o=orderById(id);if(!o)return;
+ setHead("Order details","Review the service route, current milestone, messages, and next action.");
+ const exceptions=exceptionForOrder(id),steps=routeSteps(o),current=stepIndex(o),next=nextStep(o);
+ const thread=state.messages.filter(function(m){return m.orderId===id}).sort(function(a,b){return a.createdAt-b.createdAt});
+ const stepHtml=steps.map(function(s,i){
+  const done=i<current,active=i===current;
+  return '<div class="flow-step '+(done?"done":"")+(active?" active":"")+'"><span class="flow-dot">'+(done?"✓":String(i+1))+'</span><span>'+safe(s[1])+'</span></div>';
+ }).join("");
+ const nextButton=o.status==="AWAITING_CUSTOMER_DROP"
+  ?'<div class="upload-box"><label for="tag-file">Luggage-tag image</label><input id="tag-file" type="file" accept="image/*"><small id="upload-error">Choose the image the customer supplied. The demo records the file name in this browser only.</small><button class="btn primary" onclick="recordCustomerDrop(\''+safe(o.id)+'\')">Record customer drop and tag</button></div>'
+  :next?'<button class="btn primary" onclick="advanceOrder(\''+safe(o.id)+'\')">'+safe(nextActionLabel(o))+'</button>':'<span class="complete-note">All route milestones are recorded.</span>';
+ const exceptionHtml=exceptions.length?'<div class="exception-list">'+exceptions.map(function(e){
+  return '<div class="exception-card"><div><span class="priority priority-'+e.priority.toLowerCase()+'">'+safe(e.priority)+'</span><b>'+safe(e.type)+'</b><small>Owner: '+safe(e.owner)+' · '+safe(e.dueMinutes<0?"Overdue "+Math.abs(e.dueMinutes)+" min":"Due in "+e.dueMinutes+" min")+'</small></div><button class="btn" onclick="resolveException(\''+safe(e.id)+'\')">Resolve in demo</button></div>';
+ }).join("")+'</div>':'<div class="empty-note">No open exception is linked to this order.</div>';
+ const recent=thread.slice(-3).reverse();
+ view.innerHTML=
+  '<div class="toolbar"><button class="back" onclick="render(\'tower\')">← Back to overview</button><span class="demo-status">'+safe(relativeDay(o))+' · '+safe(o.market)+'</span></div>'+
+  (o.demoMessage?'<div class="banner">'+safe(o.demoMessage)+'</div>':'')+
+  '<div class="order-head"><div><div class="order-id">'+safe(o.id)+'</div><h2>'+safe(o.route)+'</h2><div class="meta">'+safe(orderDateTime(o))+' · '+safe(o.customer)+'</div><div class="status-row">'+pill(o.status,o)+(exceptions.length?'<span class="priority priority-high">'+exceptions.length+' open exception'+(exceptions.length===1?"":"s")+'</span>':'')+'</div></div><div class="actions">'+(o.dispatchState==="Needs assignment"?'<button class="btn primary" onclick="sendToSupplier(\''+safe(o.id)+'\')">Assign and dispatch</button>':o.dispatchState==="Awaiting supplier"?'<button class="btn primary" onclick="acceptSupplier(\''+safe(o.id)+'\')">Record supplier acceptance</button>':'')+nextButton+'</div></div>'+
+  '<div class="flow-panel"><div class="panel-heading"><div><h3>Service milestones</h3><p>'+safe(o.route)+" · "+safe(o.pickup)+" → "+safe(o.delivery)+'</p></div><span>Order updates in demo</span></div><div class="flow-steps">'+stepHtml+'</div></div>'+
+  '<div class="detail-grid"><div class="detail-column">'+
+   '<section class="panel"><div class="panel-heading"><div><h3>Order record</h3><p>Source booking and service details</p></div><button class="btn" onclick="openCommunications(\''+safe(o.id)+'\')">Open messages</button></div><div class="field-grid">'+
+   field("Order ID",o.id)+field("Booking source",o.sourceName+" · "+o.sourceType)+field("Original booking ref",o.sourceId)+field("Customer",o.customer)+field("Route",o.route)+field("Service date",dateLabel(o.serviceDate,o.timeZone))+field("Service time",o.serviceTime+" "+o.timeSuffix)+field("Market",o.market)+field("Pickup",o.pickup)+field("Delivery",o.delivery)+field("Supplier company",o.supplier)+field("Supplier dispatch",o.dispatchState)+field("Operations owner",o.owner)+field("Luggage tag",o.tagRequired?(o.tagUploaded?"Image recorded: "+(o.tagFileName||"tag image"):"Awaiting customer image"):"Recorded with airport collection")+
+   '</div></section>'+
+   '<section class="panel"><div class="panel-heading"><div><h3>Order checks</h3><p>Fields and evidence needed for the next service step</p></div></div><div class="panel-body">'+orderChecksHtml(o,exceptions)+'</div></section>'+
+   '<section class="panel"><div class="panel-heading"><div><h3>Open exceptions</h3><p>Issues that still need an owner or decision</p></div><span>'+exceptions.length+' open</span></div><div class="panel-body">'+exceptionHtml+'</div></section>'+
+   '</div><div class="detail-column">'+
+   '<section class="panel"><div class="panel-heading"><div><h3>Recent messages</h3><p>Customer, driver, and team updates</p></div><span>'+thread.length+' in thread</span></div><div class="panel-body">'+(recent.length?recent.map(messageBubble).join(""):'<div class="empty-note">No conversation has been logged for this order.</div>')+'<button class="text-button" onclick="openCommunications(\''+safe(o.id)+'\')">Open full conversation</button></div></section>'+
+   '<section class="panel"><div class="panel-heading"><div><h3>Event history</h3><p>Order and service updates</p></div><span>'+o.events.length+' events</span></div><div class="panel-body"><div class="timeline">'+o.events.slice(0,12).map(function(e){return '<div class="timeline-event"><time>'+safe(e.time)+'</time><div><b>'+safe(e.label)+'</b><span>'+safe(e.detail)+'</span></div></div>'}).join("")+'</div></div></section>'+
+   '</div></div>';
+}
+function field(key,value){return '<div class="field"><small>'+safe(key)+'</small><b>'+safe(value)+'</b></div>'}
+function orderChecksHtml(order,exceptions){
+ const checks=[
+  ["Booking source and original reference",Boolean(order.sourceName&&order.sourceId),"Keep the source company and original booking ID visible."],
+  ["Service route and date",Boolean(order.route&&order.serviceDate&&order.serviceTime),"Route and scheduled service time are recorded."],
+  ["Supplier company",order.dispatchState!=="Needs assignment","Assign an eligible supplier before dispatch."],
+  ["Luggage-tag image",!order.tagRequired||order.tagUploaded,"Hotel-origin services need a tag image before driver collection."],
+  ["Open exceptions",exceptions.length===0,"Resolve issues or record the decision before closing work."]
+ ];
+ return '<div class="check-list">'+checks.map(function(item){return '<div class="check-row"><span class="check-mark '+(item[1]?"passed":"blocked")+'">'+(item[1]?"✓":"!")+'</span><div><b>'+safe(item[0])+'</b><small>'+safe(item[2])+'</small></div><span class="check-result">'+(item[1]?"Recorded":"Needs action")+'</span></div>'}).join("")+'</div>';
+}
+function messageBubble(m){
+ const role=m.role==="Customer"?"customer":m.role==="Driver"?"driver":m.role==="Operations user"||m.role==="Team user"?"team":"other";
+ const stamp=new Intl.DateTimeFormat("en-SG",{timeZone:"Asia/Singapore",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date(m.createdAt));
+ return '<article class="message-bubble '+role+'"><div class="message-meta"><b>'+safe(m.actor)+'</b><span>'+safe(m.channel)+' · '+stamp+'</span></div><p>'+safe(m.text)+'</p>'+(m.attachment?'<span class="attachment">📎 '+safe(m.attachment)+'</span>':'')+'</article>';
+}
+function recordCustomerDrop(id){
+ const o=orderById(id),input=$("#tag-file"),error=$("#upload-error");
+ if(!o||!input||!input.files||!input.files[0]){if(error)error.textContent="Select the luggage-tag image before recording the customer drop.";return}
+ o.tagUploaded=true;o.tagFileName=input.files[0].name;o.status="CUSTOMER_DROPPED";o.demoMessage="Customer drop and tag image recorded in this browser-only scenario.";
+ appendEvent(o,"Customer dropped luggage","Tag image recorded: "+o.tagFileName);
+ save();openOrder(id);
+}
+function advanceOrder(id){
+ const o=orderById(id);if(!o)return;
+ const next=nextStep(o);if(!next)return;
+ o.status=next[0];
+ if(o.status==="ARRIVED_AT_AIRPORT")o.demoMessage="Airport arrival recorded. The order remains tied to its service date, source booking, and message history.";
+ else if(o.status==="ARRIVED_AT_DESTINATION")o.demoMessage="Arrival at the destination hotel recorded.";
+ else o.demoMessage=next[1]+" recorded in the local demo.";
+ appendEvent(o,next[1],"Operations user recorded service milestone");
+ save();openOrder(id);
+}
+function sendToSupplier(id){
+ const o=orderById(id);if(!o)return;
+ o.dispatchState="Awaiting supplier";o.slaRisk=true;
+ appendEvent(o,"Supplier dispatch sent",o.supplier+" · awaiting acknowledgement");
+ o.demoMessage="Dispatch state updated in the local demo. No supplier message was sent.";
+ save();openOrder(id);
+}
+function acceptSupplier(id){
+ const o=orderById(id);if(!o)return;
+ o.dispatchState="Accepted";o.slaRisk=false;
+ appendEvent(o,"Supplier accepted",o.supplier+" · acknowledgement recorded");
+ o.demoMessage="Supplier acceptance recorded in the local demo.";
+ save();openOrder(id);
 }
 function reassignSupplier(id){
- const o=state.orders.find(x=>x.id===id);if(!o)return;
- o.supplier="Partner Alternate";o.dispatch="ACCEPTED";o.status="CONFIRMED";o.owner="Auto";o.slaRisk=false;
- o.demoMessage="Alternate supplier assigned and accepted. The work item leaves the intervention queue.";
- o.events.unshift(["Now","Alternate supplier accepted","Manual reassignment"]);
- state.signals.unshift({time:"Now",title:o.id+" recovered",text:"Alternate supplier accepted; intervention closed.",type:"ok"});
- save();openOrder(id)
+ const o=orderById(id);if(!o)return;
+ const index=SUPPLIERS.indexOf(o.supplier);
+ o.supplier=SUPPLIERS[(index+1+SUPPLIERS.length)%SUPPLIERS.length];
+ o.dispatchState="Awaiting supplier";o.slaRisk=true;
+ appendEvent(o,"Supplier reassigned",o.supplier+" · acknowledgement required");
+ save();openOrder(id);
 }
-
-function breakValidation(){
- const o=state.orders.find(x=>x.id==="TRV-1048");
- o.validation.missingFlight=true;o.validation.passed=false;o.status="VALIDATION_REQUIRED";o.dispatch="BLOCKED";o.owner="CS Review";o.manualTouches+=1;
- o.demoMessage="Validation changed: airport itinerary data is now missing, so dispatch has been blocked.";
- o.events.unshift(["Now","Validation failed","Rule V-09 · missing itinerary detail"]);
- state.signals.unshift({time:"Now",title:o.id+" validation blocked",text:"Required airport information is missing.",type:"risk"});
- save();openOrder(o.id)
+function resolveException(id){
+ const ex=state.exceptions.find(function(item){return item.id===id&&item.status==="OPEN"});if(!ex)return;
+ ex.status="RESOLVED";ex.resolvedAt=new Date().toISOString();
+ const o=orderById(ex.orderId);if(o)appendEvent(o,"Exception resolved in demo",ex.type+" · "+ex.owner);
+ save();
+ if(document.querySelector(".nav.active")?.dataset.view==="dispatch")render("dispatch");else if(document.querySelector(".nav.active")?.dataset.view==="exceptions")render("exceptions");else openOrder(ex.orderId);
 }
-function restoreValidation(){
- const o=state.orders.find(x=>x.id==="TRV-1048");
- o.validation.missingFlight=false;o.validation.passed=true;o.status="READY";o.dispatch="NOT_SENT";o.owner="Ops Queue";
- o.demoMessage="Required information restored. Deterministic validation passes and the order is ready for dispatch.";
- o.events.unshift(["Now","Validation passed","Required information restored"]);
- save();openOrder(o.id)
+function openCommunications(id){
+ state.selectedOrderId=id||state.selectedOrderId;state.messageFilter="all";save();render("communications");
 }
-function dispatchA(){
- const o=state.orders.find(x=>x.id==="TRV-1048");
- o.supplier="Partner A";o.dispatch="PENDING";o.status="AWAITING_SUPPLIER";
- o.demoMessage="Structured job dispatched to Partner A. The acknowledgement timer is now active.";
- o.events.unshift(["Now","Dispatch sent","Partner A · structured job link"]);
- save();openOrder(o.id)
+function selectThread(id){
+ state.selectedOrderId=id;
+ state.messages.forEach(function(m){if(m.orderId===id)m.unread=false});
+ save();render("communications");
 }
-function rejectA(){
- const o=state.orders.find(x=>x.id==="TRV-1048");
- o.dispatch="REJECTED";o.status="AWAITING_SUPPLIER";o.slaRisk=true;o.manualTouches+=1;
- o.demoMessage="Partner A rejected the job. The order is now surfaced for fallback routing.";
- o.events.unshift(["Now","Supplier rejected","Partner A"]);
- state.signals.unshift({time:"Now",title:o.id+" supplier rejected",text:"Preferred partner rejected; fallback available.",type:"warn"});
- save();openOrder(o.id)
+function sendMessage(){
+ const input=$("#message-text"),target=$("#message-audience"),order=orderById(state.selectedOrderId);
+ if(!input||!target||!order)return;
+ const text=input.value.trim();if(!text)return;
+ const audience=target.value;
+ state.messageCounter=(state.messageCounter||0)+1;
+ state.messages.push({
+  id:"MSG-OUT-"+state.messageCounter,orderId:order.id,role:"Operations user",audience:audience,
+  actor:"You · Operations",channel:audience==="Team"?"Operations team":audience+" chat",direction:audience==="Team"?"internal":"outbound",
+  text:text,createdAt:Date.now(),unread:false
+ });
+ appendEvent(order,"Message logged",audience+" · browser-only demo");
+ save();render("communications");
 }
-function fallbackB(){
- const o=state.orders.find(x=>x.id==="TRV-1048");
- o.supplier="Partner B";o.dispatch="ACCEPTED";o.status="CONFIRMED";o.slaRisk=false;o.owner="Auto";
- o.demoMessage="Fallback routing succeeded. Partner B accepted and the canonical order was updated.";
- o.events.unshift(["Now","Fallback supplier accepted","Partner B"]);
- save();openOrder(o.id)
+function threadOrders(filter,query){
+ const grouped=new Map();
+ state.messages.forEach(function(m){
+  if(filter!=="all"&&m.audience.toLowerCase()!==filter)return;
+  const o=orderById(m.orderId);if(!o)return;
+  const hay=(o.id+" "+o.customer+" "+o.market+" "+o.route+" "+m.text).toLowerCase();
+  if(query&&!hay.includes(query.toLowerCase()))return;
+  const current=grouped.get(o.id)||{order:o,messages:[]};
+  current.messages.push(m);grouped.set(o.id,current);
+ });
+ return Array.from(grouped.values()).map(function(item){
+  item.messages.sort(function(a,b){return a.createdAt-b.createdAt});
+  item.last=item.messages[item.messages.length-1];
+  return item;
+ }).sort(function(a,b){return b.last.createdAt-a.last.createdAt});
 }
-function customerReady(){
- const o=state.orders.find(x=>x.id==="TRV-1048");
- o.ready=true;o.status="IN_SERVICE";
- o.demoMessage="Customer Ready recorded as a structured event. Supplier execution and customer status can now update from the event model.";
- o.events.unshift(["Now","Customer Ready","Customer event"]);
- save();openOrder(o.id)
+function communications(){
+ setHead("Communications","Customer, driver, and team conversations linked to each order.");
+ const filter=state.messageFilter||"all",query=state.messageQuery||"";
+ const threads=threadOrders(filter,query);
+ const selectedId=threads.some(function(t){return t.order.id===state.selectedOrderId})?state.selectedOrderId:(threads[0]?.order.id||state.selectedOrderId);
+ const selected=orderById(selectedId)||state.orders[0];
+ const messages=state.messages.filter(function(m){return m.orderId===selected.id}).sort(function(a,b){return a.createdAt-b.createdAt});
+ const count=(role)=>state.messages.filter(function(m){return m.audience.toLowerCase()===role}).length;
+ const listHtml=threads.map(function(t){
+  const unread=t.messages.some(function(m){return m.unread});
+  return '<button class="thread-row '+(t.order.id===selected.id?"selected":"")+'" data-thread="'+safe(t.order.id)+'"><span class="thread-top"><b>'+safe(t.order.customer)+'</b><small>'+safe(t.order.id)+'</small></span><span class="thread-route">'+safe(t.order.route)+' · '+safe(t.order.market)+'</span><span class="thread-preview">'+safe(t.last.text)+'</span><span class="thread-bottom"><small>'+safe(t.last.channel)+'</small>'+(unread?'<em>New</em>':'')+'</span></button>';
+ }).join("");
+ const filterButton=(key,label,num)=>'<button class="filter-chip '+(filter===key?"active":"")+'" data-message-filter="'+key+'">'+label+'<span>'+num+'</span></button>';
+ view.innerHTML=
+  '<div class="comms-note"><b>Example conversations.</b> Messages and replies stay in this browser. No customer, driver, WhatsApp, LINE, or team account is connected.</div>'+
+  '<div class="comms-layout"><aside class="panel inbox-panel"><div class="panel-heading"><div><h3>Order conversations</h3><p>'+threads.length+' visible threads</p></div><span>'+state.messages.length+' messages</span></div><div class="filter-row">'+filterButton("all","All",state.messages.length)+filterButton("customer","Customers",count("customer"))+filterButton("driver","Drivers",count("driver"))+filterButton("team","Team",count("team"))+'</div><div class="search-row"><input id="thread-search" type="search" placeholder="Search orders or messages" value="'+safe(query)+'"></div><div class="thread-list">'+(listHtml||'<div class="empty-note">No conversations match this filter.</div>')+'</div></aside>'+
+  '<section class="panel conversation-panel"><div class="conversation-head"><div><small>'+safe(selected.id)+' · '+safe(selected.market)+'</small><h3>'+safe(selected.customer)+'</h3><p>'+safe(selected.route)+' · '+safe(dateLabel(selected.serviceDate,selected.timeZone))+' · '+safe(selected.serviceTime+" "+selected.timeSuffix)+'</p></div><button class="btn" onclick="openOrder(\''+safe(selected.id)+'\')">Open order</button></div><div class="conversation-context"><span>Customer: '+safe(selected.customerChannel)+'</span><span>Driver: driver chat</span><span>Team: operations workspace</span></div><div class="message-list">'+(messages.length?messages.map(messageBubble).join(""):'<div class="empty-note">No messages in this order thread yet.</div>')+'</div><div class="composer"><label for="message-audience">Send to</label><select id="message-audience"><option>Customer</option><option>Driver</option><option>Team</option></select><textarea id="message-text" rows="3" placeholder="Write a note or response for this demo thread"></textarea><div class="composer-foot"><small>Saving adds a local demo message only. Nothing is sent.</small><button id="send-message" class="btn primary">Save message</button></div></div></section></div>';
+ view.querySelectorAll("[data-message-filter]").forEach(function(button){
+  button.addEventListener("click",function(){state.messageFilter=button.dataset.messageFilter;state.messageQuery=$("#thread-search")?.value||"";render("communications")});
+ });
+ view.querySelectorAll("[data-thread]").forEach(function(button){button.addEventListener("click",function(){selectThread(button.dataset.thread)})});
+ const search=$("#thread-search");
+ if(search)search.addEventListener("input",function(){state.messageQuery=search.value;render("communications");const next=$("#thread-search");if(next){next.focus();next.setSelectionRange(next.value.length,next.value.length)}});
+ const send=$("#send-message");if(send)send.addEventListener("click",sendMessage);
 }
-function createRecipientException(){
- const o=state.orders.find(x=>x.id==="TRV-1048");
- const e={id:"EX-1048-1",orderId:o.id,type:"Recipient verification",severity:"High",owner:"Operations",status:"OPEN",sla:"18 min",ai:false,approved:false};
- state.exceptions.push(e);o.status="EXCEPTION";o.owner="Operations";o.manualTouches+=1;
- o.demoMessage="Recipient-verification exception created and linked to the canonical order.";
- o.events.unshift(["Now","Exception opened","Hotel handover recipient mismatch"]);
- state.signals.unshift({time:"Now",title:o.id+" recipient exception",text:"Handover requires identity verification before release.",type:"risk"});
- save();openOrder(o.id)
+function orderWindowOrders(windowName){
+ return state.orders.filter(function(o){return windowName==="all"||o.serviceWindow===windowName});
 }
-function exceptionHtml(e,o){
- return '<div class="exception"><div class="exception-top"><div><h3>'+e.id+' · '+e.type+'</h3><div class="small">Owner: '+e.owner+' · SLA clock: '+e.sla+'</div></div><span class="severity">'+e.severity+'</span></div><p>Hotel reception reports that the recipient details do not match the booking record. Handover should not continue until the identity / booking context is resolved.</p>'+
- (e.ai?'<div class="ai-box"><div class="label">SIMULATED AI DECISION SUPPORT</div><b>Case summary</b><p>Recipient context conflicts with the canonical booking. The latest evidence does not establish a safe handover.</p><b>Proposed next action</b><p>Hold release, verify booking and recipient identity, then escalate to Operations if the mismatch cannot be resolved.</p><div class="source-ref"><b>Retrieved rule</b><br>R-CHAIN-04 · Recipient verification: proof of handover must establish the correct receiving party. Policy exception remains human-controlled.</div></div>':'')+
- (e.approved?'<div class="banner" style="margin-top:9px">Human approval recorded. Release remains on hold pending verification; the AI recommendation did not execute autonomously.</div>':'')+
- '</div>'
+function matchesOrder(o,query){
+ const value=(o.id+" "+o.customer+" "+o.market+" "+o.route+" "+o.sourceName+" "+o.supplier+" "+o.sourceId).toLowerCase();
+ return !query||value.includes(query.toLowerCase());
 }
-function generateAI(){
- const e=state.exceptions.find(x=>x.orderId==="TRV-1048"&&x.status!=="RESOLVED");
- e.ai=true;
- state.audit.unshift(["Now","AI","exception.support.proposed","Summary + retrieved rule generated for "+e.id]);
- save();openOrder("TRV-1048")
+function orders(){
+ setHead("Orders","Browse a two-day schedule of example service orders, with route and owner context.");
+ const options=[
+  ["all","Next two service days"],["today","Today"],["tomorrow","Tomorrow"]
+ ];
+ const dateOptions=options.map(function(o){return '<option value="'+o[0]+'" '+(state.orderWindow===o[0]?"selected":"")+'>'+o[1]+'</option>'}).join("");
+ view.innerHTML='<div class="list-toolbar"><div class="filters"><label>Service date<select id="order-window">'+dateOptions+'</select></label><label>Route<select id="order-route"><option value="all">All routes</option>'+ROUTES.map(function(r){return '<option value="'+safe(r)+'" '+(state.orderRoute===r?"selected":"")+'>'+safe(r)+'</option>'}).join("")+'</select></label><label>Status<select id="order-status"><option value="all">All milestones</option>'+Array.from(new Set(state.orders.map(function(o){return o.status}))).sort().map(function(s){return '<option value="'+s+'" '+(state.orderStatus===s?"selected":"")+'>'+safe(statusLabel(s))+'</option>'}).join("")+'</select></label></div><label class="search-label">Search<input id="order-search" type="search" placeholder="Order, customer, source, supplier" value="'+safe(state.orderQuery||"")+'"></label></div><div id="orders-results"></div>';
+ function renderRows(){
+  const filtered=orderWindowOrders(state.orderWindow).filter(function(o){
+   return matchesOrder(o,state.orderQuery||"")&&(state.orderRoute==="all"||o.route===state.orderRoute)&&(state.orderStatus==="all"||o.status===state.orderStatus);
+  }).sort(function(a,b){return a.serviceDate.localeCompare(b.serviceDate)||a.serviceTime.localeCompare(b.serviceTime)});
+  const pages=Math.max(1,Math.ceil(filtered.length/20));
+  state.orderPage=Math.min(state.orderPage||0,pages-1);
+  const rows=filtered.slice(state.orderPage*20,(state.orderPage+1)*20);
+  const today=state.orders.filter(function(o){return o.serviceWindow==="today"}).length;
+  const tomorrow=state.orders.filter(function(o){return o.serviceWindow==="tomorrow"}).length;
+  const dayCounts='<div class="day-volume"><span><b>'+today+'</b> orders scheduled today</span><span><b>'+tomorrow+'</b> orders scheduled tomorrow</span><span><b>'+state.orders.length+'</b> orders in this two-day view</span></div>';
+  $("#orders-results").innerHTML=dayCounts+'<div class="panel"><div class="panel-heading"><div><h3>Service orders</h3><p>Booking sources stay visible beside the OMS order ID</p></div><span>'+filtered.length+' matching</span></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Service date</th><th>Order and customer</th><th>Route</th><th>Booking source</th><th>Supplier company</th><th>Milestone</th><th>Owner</th></tr></thead><tbody>'+rows.map(orderRow).join("")+'</tbody></table></div><div class="pagination"><span>Showing '+(filtered.length?state.orderPage*20+1:0)+' to '+Math.min(filtered.length,(state.orderPage+1)*20)+' of '+filtered.length+'</span><div><button class="btn" id="order-prev" '+(state.orderPage===0?"disabled":"")+'>Previous</button><span>Page '+(state.orderPage+1)+' of '+pages+'</span><button class="btn" id="order-next" '+(state.orderPage>=pages-1?"disabled":"")+'>Next</button></div></div></div>';
+  $("#order-prev")?.addEventListener("click",function(){state.orderPage--;renderRows()});
+  $("#order-next")?.addEventListener("click",function(){state.orderPage++;renderRows()});
+ }
+ view.querySelector("#order-window").addEventListener("change",function(e){state.orderWindow=e.target.value;state.orderPage=0;renderRows()});
+ view.querySelector("#order-route").addEventListener("change",function(e){state.orderRoute=e.target.value;state.orderPage=0;renderRows()});
+ view.querySelector("#order-status").addEventListener("change",function(e){state.orderStatus=e.target.value;state.orderPage=0;renderRows()});
+ view.querySelector("#order-search").addEventListener("input",function(e){state.orderQuery=e.target.value;state.orderPage=0;renderRows()});
+ renderRows();
 }
-function approveAction(){
- const e=state.exceptions.find(x=>x.orderId==="TRV-1048"&&x.status!=="RESOLVED");
- const o=state.orders.find(x=>x.id==="TRV-1048");
- e.approved=true;e.status="RESOLVED";o.exceptionResolved=true;o.status="IN_SERVICE";o.owner="Operations";
- o.demoMessage="Human decision recorded. The case is resolved with the handover held until verification; AI remained advisory.";
- o.events.unshift(["Now","Human action approved","Hold release pending recipient verification"]);
- state.audit.unshift(["Now","Human","exception.action.approved","Operations approved controlled hold / verification"]);
- save();openOrder(o.id)
+function orderRow(o){
+ const ex=exceptionForOrder(o.id).length;
+ return '<tr class="table-click" data-open-order="'+safe(o.id)+'"><td><b>'+safe(dateLabel(o.serviceDate,o.timeZone))+'</b><small>'+safe(o.serviceTime+" "+o.timeSuffix)+'</small></td><td><b>'+safe(o.id)+'</b><small>'+safe(o.customer)+(ex?' · '+ex+' open issue'+(ex===1?"":"s"):'')+'</small></td><td>'+safe(o.market)+'<small>'+safe(o.route)+'</small></td><td><b>'+safe(o.sourceName)+'</b><small>'+safe(o.sourceType)+' · '+safe(o.sourceId)+'</small></td><td>'+safe(o.supplier)+'</td><td>'+pill(o.status,o)+'</td><td>'+safe(o.owner)+'</td></tr>';
+}
+function dispatchAction(o){
+ if(o.dispatchState==="Needs assignment")return '<button class="btn mini primary" data-dispatch-action="send" data-order="'+safe(o.id)+'">Assign and send</button>';
+ if(o.dispatchState==="Awaiting supplier")return '<div class="dispatch-actions"><button class="btn mini" data-dispatch-action="accept" data-order="'+safe(o.id)+'">Record acceptance</button><button class="btn mini" data-dispatch-action="reassign" data-order="'+safe(o.id)+'">Reassign</button></div>';
+ return '<button class="btn mini" data-open-order="'+safe(o.id)+'">Open</button>';
+}
+function dispatch(){
+ setHead("Dispatch","Plan the next two service days and work exceptions that are still waiting for action.");
+ const exceptions=openExceptions();
+ const all=state.orders.filter(function(o){return o.serviceWindow==="today"||o.serviceWindow==="tomorrow"});
+ const counts={
+  today:all.filter(function(o){return o.serviceWindow==="today"}).length,
+  tomorrow:all.filter(function(o){return o.serviceWindow==="tomorrow"}).length,
+  assignment:all.filter(function(o){return o.dispatchState==="Needs assignment"}).length,
+  waiting:all.filter(function(o){return o.dispatchState==="Awaiting supplier"}).length
+ };
+ const windowOptions=[["all","Both days"],["today","Today"],["tomorrow","Tomorrow"]].map(function(x){return '<option value="'+x[0]+'" '+(state.dispatchWindow===x[0]?"selected":"")+'>'+x[1]+'</option>'}).join("");
+ const filterOptions=[["all","All orders"],["assignment","Needs assignment"],["supplier","Awaiting supplier"],["exceptions","Has open exception"]].map(function(x){return '<button class="filter-chip '+(state.dispatchFilter===x[0]?"active":"")+'" data-dispatch-filter="'+x[0]+'">'+x[1]+'</button>'}).join("");
+ view.innerHTML=
+  '<div class="dispatch-summary"><div class="summary-card"><small>Today</small><b>'+counts.today+'</b><span>scheduled service orders</span></div><div class="summary-card"><small>Tomorrow</small><b>'+counts.tomorrow+'</b><span>scheduled service orders</span></div><div class="summary-card"><small>Two-day load</small><b>'+all.length+'</b><span>orders in this workspace</span></div><div class="summary-card alert"><small>Exceptions waiting</small><b>'+exceptions.length+'</b><span>need an operator action</span></div></div>'+
+  '<section class="panel exception-panel"><div class="panel-heading"><div><h3>Exceptions awaiting action</h3><p>Open the order, contact the right party, or update the dispatch plan</p></div><span>'+exceptions.length+' open</span></div><div class="exception-table-wrap"><table class="data-table"><thead><tr><th>Priority</th><th>Issue</th><th>Order</th><th>Service date</th><th>Owner</th><th>Due</th><th>Action</th></tr></thead><tbody>'+(exceptions.length?exceptions.map(function(e){
+   const o=orderById(e.orderId);
+   return '<tr><td><span class="priority priority-'+e.priority.toLowerCase()+'">'+safe(e.priority)+'</span></td><td><b>'+safe(e.type)+'</b></td><td><button class="link-button" data-open-order="'+safe(e.orderId)+'">'+safe(e.orderId)+'</button></td><td>'+safe(o?dateLabel(o.serviceDate,o.timeZone):"")+'<small>'+safe(o?o.serviceTime+" "+o.timeSuffix:"")+'</small></td><td>'+safe(e.owner)+'</td><td>'+safe(e.dueMinutes<0?"Overdue "+Math.abs(e.dueMinutes)+" min":"Due in "+e.dueMinutes+" min")+'</td><td><button class="btn mini" data-exception-action="'+safe(e.id)+'">Resolve in demo</button></td></tr>';
+  }).join(""):'<tr><td colspan="7">No open exceptions.</td></tr>')+'</tbody></table></div></section>'+
+  '<section class="panel schedule-panel"><div class="panel-heading"><div><h3>Upcoming dispatch plan</h3><p>All service orders across the next two calendar days</p></div><label class="compact-select">Show<select id="dispatch-window">'+windowOptions+'</select></label></div><div class="filter-row">'+filterOptions+'<span class="filter-spacer"></span><small>Example channel and supplier names</small></div><div id="dispatch-results"></div></section>';
+ function renderDispatchRows(){
+  let rows=all.filter(function(o){
+   if(state.dispatchWindow!=="all"&&o.serviceWindow!==state.dispatchWindow)return false;
+   if(state.dispatchFilter==="assignment"&&o.dispatchState!=="Needs assignment")return false;
+   if(state.dispatchFilter==="supplier"&&o.dispatchState!=="Awaiting supplier")return false;
+   if(state.dispatchFilter==="exceptions"&&!exceptionForOrder(o.id).length)return false;
+   return true;
+  }).sort(function(a,b){return a.serviceDate.localeCompare(b.serviceDate)||a.serviceTime.localeCompare(b.serviceTime)});
+  const byDate={};
+  rows.forEach(function(o){(byDate[o.serviceDate]||(byDate[o.serviceDate]=[])).push(o)});
+  $("#dispatch-results").innerHTML=Object.keys(byDate).sort().map(function(date){
+   const group=byDate[date],first=group[0];
+   return '<div class="day-group"><div class="day-group-head"><b>'+safe(relativeDay(first))+' · '+safe(dateLabel(date,first.timeZone))+'</b><span>'+group.length+' orders</span></div><div class="table-scroll"><table class="data-table dispatch-table"><thead><tr><th>Time</th><th>Order and customer</th><th>Route</th><th>Booking source</th><th>Supplier company</th><th>Supplier response</th><th>Service status</th><th>Owner and action</th></tr></thead><tbody>'+group.map(function(o){
+    return '<tr><td><b>'+safe(o.serviceTime)+'</b><small>'+safe(o.timeSuffix)+'</small></td><td><b>'+safe(o.id)+'</b><small>'+safe(o.customer)+'</small></td><td>'+safe(o.market)+'<small>'+safe(o.route)+'</small></td><td><b>'+safe(o.sourceName)+'</b><small>'+safe(o.sourceType)+'</small></td><td>'+safe(o.supplier)+'</td><td>'+dispatchPill(o.dispatchState)+'</td><td>'+pill(o.status,o)+(exceptionForOrder(o.id).length?'<small class="issue-flag">Exception open</small>':'')+'</td><td><span class="owner-name">'+safe(o.owner)+'</span>'+dispatchAction(o)+'</td></tr>';
+   }).join("")+'</tbody></table></div></div>';
+  }).join("")||'<div class="empty-note">No orders match this view.</div>';
+  $("#dispatch-results").querySelectorAll("[data-open-order]").forEach(function(button){button.addEventListener("click",function(){openOrder(button.dataset.openOrder)})});
+  $("#dispatch-results").querySelectorAll("[data-dispatch-action]").forEach(function(button){button.addEventListener("click",function(){if(button.dataset.dispatchAction==="send")sendToSupplier(button.dataset.order);else if(button.dataset.dispatchAction==="reassign")reassignSupplier(button.dataset.order);else acceptSupplier(button.dataset.order)})});
+ }
+ view.querySelector("#dispatch-window").addEventListener("change",function(e){state.dispatchWindow=e.target.value;renderDispatchRows()});
+ view.querySelectorAll("[data-dispatch-filter]").forEach(function(button){button.addEventListener("click",function(){state.dispatchFilter=button.dataset.dispatchFilter;render("dispatch")})});
+ view.querySelectorAll("[data-open-order]").forEach(function(button){button.addEventListener("click",function(){openOrder(button.dataset.openOrder)})});
+ view.querySelectorAll("[data-exception-action]").forEach(function(button){button.addEventListener("click",function(){resolveException(button.dataset.exceptionAction)})});
+ renderDispatchRows();
+}
+function exceptions(){
+ setHead("Exceptions","Open service issues, their owner, due time, and next action.");
+ const open=openExceptions(),closed=state.exceptions.filter(function(e){return e.status==="RESOLVED"});
+ view.innerHTML='<div class="dispatch-summary"><div class="summary-card alert"><small>Awaiting action</small><b>'+open.length+'</b><span>open exceptions</span></div><div class="summary-card"><small>Resolved in this demo</small><b>'+closed.length+'</b><span>local test actions</span></div><div class="summary-card"><small>Service dates</small><b>2</b><span>today and tomorrow</span></div><div class="summary-card"><small>Orders in scope</small><b>'+state.orders.length+'</b><span>illustrative two-day schedule</span></div></div><div class="panel"><div class="panel-heading"><div><h3>Open exception queue</h3><p>Each issue links to the order, conversation, and service milestone</p></div><span>'+open.length+' need action</span></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Priority</th><th>Issue</th><th>Order and route</th><th>Service date</th><th>Owner</th><th>Due</th><th>Action</th></tr></thead><tbody>'+(open.length?open.map(function(e){
+  const o=orderById(e.orderId);
+  return '<tr><td><span class="priority priority-'+e.priority.toLowerCase()+'">'+safe(e.priority)+'</span></td><td><b>'+safe(e.type)+'</b></td><td><button class="link-button" data-open-order="'+safe(e.orderId)+'">'+safe(e.orderId)+'</button><small>'+safe(o?o.market+" · "+o.route:"")+'</small></td><td>'+safe(o?dateLabel(o.serviceDate,o.timeZone):"")+'<small>'+safe(o?o.serviceTime+" "+o.timeSuffix:"")+'</small></td><td>'+safe(e.owner)+'</td><td>'+safe(e.dueMinutes<0?"Overdue "+Math.abs(e.dueMinutes)+" min":"Due in "+e.dueMinutes+" min")+'</td><td><button class="btn mini" data-exception-action="'+safe(e.id)+'">Resolve in demo</button></td></tr>';
+ }).join(""):'<tr><td colspan="7">No exceptions are waiting for action.</td></tr>')+'</tbody></table></div></div><div class="comms-note"><b>Demo control:</b> resolving an exception changes only this browser. It does not notify a supplier, driver, or customer.</div>';
+ view.querySelectorAll("[data-open-order]").forEach(function(button){button.addEventListener("click",function(){openOrder(button.dataset.openOrder)})});
+ view.querySelectorAll("[data-exception-action]").forEach(function(button){button.addEventListener("click",function(){resolveException(button.dataset.exceptionAction)})});
+}
+function tower(){
+ setHead("Overview","See service volume, upcoming dispatch, and the issues that need an operator.");
+ const today=state.orders.filter(function(o){return o.serviceWindow==="today"}).length;
+ const tomorrow=state.orders.filter(function(o){return o.serviceWindow==="tomorrow"}).length;
+ const open=openExceptions(),notAssigned=state.orders.filter(function(o){return o.dispatchState==="Needs assignment"}).length;
+ const recent=state.messages.slice().sort(function(a,b){return b.createdAt-a.createdAt}).slice(0,5);
+ const exceptionRows=open.slice(0,8).map(function(e){
+  const o=orderById(e.orderId);
+  return '<div class="attention-row"><span class="priority priority-'+e.priority.toLowerCase()+'">'+safe(e.priority)+'</span><div><b>'+safe(e.type)+'</b><small>'+safe(o?o.id+" · "+o.customer:"")+" · "+safe(e.owner)+'</small></div><button class="btn mini" onclick="openOrder(\''+safe(e.orderId)+'\')">Review</button></div>';
+ }).join("");
+ view.innerHTML='<div class="overview-banner"><div><small>ORDER MANAGEMENT WORKSPACE</small><h2>One view for the booking, the service, and the conversation.</h2><p>Orders arrive from websites and distribution companies. Operations can see the source, assign a supplier, follow route-specific milestones, and keep customer, driver, and team messages with the order.</p></div><button class="btn primary" onclick="render(\'dispatch\')">Open two-day dispatch plan</button></div><div class="dispatch-summary"><div class="summary-card"><small>Today</small><b>'+today+'</b><span>scheduled orders</span></div><div class="summary-card"><small>Tomorrow</small><b>'+tomorrow+'</b><span>scheduled orders</span></div><div class="summary-card"><small>Next two days</small><b>'+state.orders.length+'</b><span>orders in demo fixture</span></div><div class="summary-card alert"><small>Needs action</small><b>'+open.length+'</b><span>open exceptions</span></div></div><div class="overview-grid"><section class="panel"><div class="panel-heading"><div><h3>Exceptions awaiting action</h3><p>Prioritized by priority and due time</p></div><button class="text-button" onclick="render(\'exceptions\')">View all</button></div><div class="attention-list">'+(exceptionRows||'<div class="empty-note">No issues are waiting for action.</div>')+'</div></section><section class="panel"><div class="panel-heading"><div><h3>Recent messages</h3><p>Customer, driver, and team updates</p></div><button class="text-button" onclick="render(\'communications\')">Open inbox</button></div><div class="recent-list">'+recent.map(function(m){const o=orderById(m.orderId);return '<button class="recent-message" onclick="openCommunications(\''+safe(m.orderId)+'\')"><span><b>'+safe(m.role==="Customer"?o.customer:m.role==="Driver"?m.actor.split(" · ")[1]:"Operations team")+'</b><small>'+safe(o.id)+' · '+safe(m.role)+'</small></span><p>'+safe(m.text)+'</p></button>'}).join("")+'</div></section></div><div class="footnote">Example orders, company labels, messages, and service events. No booking, supplier, driver, or chat connection is active.</div>';
+}
+function metrics(){
+ setHead("Demo metrics","Counts from the current two-day browser scenario, not historical performance.");
+ const daily=state.orders.filter(function(o){return o.serviceWindow==="today"}).length;
+ const tomorrow=state.orders.filter(function(o){return o.serviceWindow==="tomorrow"}).length;
+ const assigned=state.orders.filter(function(o){return o.dispatchState!=="Needs assignment"}).length;
+ const open=openExceptions().length;
+ const byRoute=ROUTES.map(function(route){return [route,state.orders.filter(function(o){return o.route===route}).length]});
+ const bySource=SOURCES.map(function(source){return [source.name,state.orders.filter(function(o){return o.sourceName===source.name}).length]});
+ function metricCard(label,value,detail){return '<div class="summary-card"><small>'+safe(label)+'</small><b>'+safe(value)+'</b><span>'+safe(detail)+'</span></div>'}
+ function rows(items){return items.map(function(row){return '<div class="breakdown-row"><span>'+safe(row[0])+'</span><b>'+row[1]+'</b></div>'}).join("")}
+ view.innerHTML='<div class="dispatch-summary">'+metricCard("Orders today",daily,"illustrative service orders")+metricCard("Orders tomorrow",tomorrow,"illustrative service orders")+metricCard("Two-day volume",state.orders.length,"60 orders per day in this demo")+metricCard("Open exceptions",open,"items waiting for action")+'</div><div class="overview-grid"><section class="panel"><div class="panel-heading"><div><h3>Orders by service route</h3><p>Current demo fixture</p></div></div><div class="panel-body">'+rows(byRoute)+'</div></section><section class="panel"><div class="panel-heading"><div><h3>Orders by booking source</h3><p>Example channel mix</p></div></div><div class="panel-body">'+rows(bySource)+'</div></section></div><div class="comms-note"><b>Interpretation:</b> volume and channel counts are generated examples for interaction testing. They do not describe the company’s actual transaction history, partner relationships, or operating performance. '+assigned+' of '+state.orders.length+' example orders have a supplier assigned.</div>';
+}
+function render(name){
+ document.querySelectorAll(".nav").forEach(function(item){item.classList.toggle("active",item.dataset.view===name)});
+ ({tower:tower,orders:orders,dispatch:dispatch,communications:communications,exceptions:exceptions,metrics:metrics}[name]||tower)();
 }
 function mountTravelCommand(){
  if(!window.AgentCommandSurface)return;
  window.AgentCommandSurface.mount({
-  product:"Travel Operations Workspace",
-  placeholder:"What needs intervention, and what can proceed safely?",
-  suggestions:["What needs intervention today?","Review TRV-1048","Dispatch Partner A for TRV-1048","Explain the missing-flight block"],
-  fallback:["Triage today's work queue","Review a canonical order","Prepare supplier dispatch for approval"],
-  resolve(text){
-   const normalized=text.toLowerCase();
-   const idMatch=text.match(/TRV-\d{4}/i);
-   const order=state.orders.find(item=>item.id===(idMatch?idMatch[0].toUpperCase():"TRV-1048"));
-   if(/\b(dispatch|send .*supplier|assign supplier)\b/.test(normalized)){
-    const target=order||state.orders.find(item=>item.dispatch==="NOT_SENT");
-    return{
-     objective:`Prepare a supplier dispatch for ${target?.id||"the selected order"}`,
-     steps:[
-      {agent:"Validation Agent",task:"Check required fields, service eligibility, and dispatch readiness using deterministic rules."},
-      {agent:"Supplier Routing Agent",task:"Select the configured supplier route and preserve the canonical order record."},
-      {agent:"Exception Agent",task:"Check for a block or open exception before a human approves dispatch."}
-     ],
-     run(){
-      if(!target)return{title:"No dispatch-ready order found",summary:"No demo order is available for dispatch.",confidence:"Not assessed",checked:"0 orders",freshness:"Local sample",exception:"No state changed.",sources:["Canonical orders"]};
-      const valid=target.id==="TRV-1048"&&target.dispatch==="NOT_SENT"&&target.validation.passed&&!target.validation.missingFlight&&!openExceptions().some(item=>item.orderId===target.id);
-      if(!valid)return{title:`Dispatch blocked · ${target.id}`,summary:"The order failed validation or has an unresolved exception. Resolve that state before dispatch.",confidence:"High for deterministic checks",checked:"1 canonical order · required fields and exceptions",freshness:"Current browser-local order state",exception:"No dispatch was prepared. Review missing information or the linked exception first.",sources:["Canonical order","Validation rules","Exception queue"],action:{label:"Open the blocked work item",run:()=>openOrder(target.id)}};
-      return{title:`${target.id} · supplier dispatch ready`,summary:"Required checks pass. Review the proposed supplier before the job is sent in a connected production system.",facts:[`${target.market} · ${target.service} · ${target.date} ${target.time}`,`Preferred route: Partner A · ${target.supplier||"not yet assigned"}`,"The simulated acknowledgement timer and fallback state are ready."],confidence:"High for eligibility · supplier acceptance unknown",checked:"1 canonical order · 4 deterministic validation checks",freshness:"Current browser-local scenario",assumptions:["The supplier API is simulated", "A dispatch changes external service state in production"],sources:["Canonical order record","Rules engine","Supplier routing policy"],approval:{title:"Supplier dispatch is an external action",description:"Review the order and supplier. Approval here advances only the demo state; it does not call a supplier API.",approveLabel:"Approve simulated dispatch"},onApproval(actionName){if(actionName==="approve"){if(target.id==="TRV-1048"&&target.dispatch==="NOT_SENT")dispatchA();return"Approved in the local demo · no supplier API call was made.";}return"Rejected · the order remains undispatched."}};
-     }
-    };
-   }
-   if(/customer info|request.*information|missing flight|missing airport/.test(normalized)){
-    const target=state.orders.find(item=>item.validation.missingFlight)||order;
-    return{
-     objective:"Resolve an order blocked by missing itinerary information",
-     steps:[{agent:"Validation Agent",task:"Identify the required itinerary field and the rule blocking dispatch."},{agent:"Communication Planner",task:"Prepare a customer-information request for human review; do not send it."}],
-     run(){if(!target?.validation.missingFlight)return{title:"No missing-flight exception found",summary:"The selected demo order does not currently have a missing-airport-data block.",confidence:"High for the current rule state",checked:"1 order",freshness:"Current browser-local state",sources:["Canonical order","Validation rule V-09"]};return{title:`${target.id} · itinerary data required`,summary:"Rule V-09 blocks dispatch until airport details are recorded.",facts:["Missing airport / itinerary information",`Current owner: ${target.owner}`,"After information arrives, deterministic validation must run again."],confidence:"High for the deterministic validation result",checked:"1 blocked order · rule V-09",freshness:"Current browser-local state",exception:"A customer message must be reviewed and sent by a person in production.",sources:["Canonical order","Rule V-09","Customer follow-up queue"],approval:{title:"Customer communication requires approval",description:"This is a proposed communication. The local demo will only log the simulated request.",text:`Hello, we need the flight or itinerary detail for order ${target.id} before dispatch can continue. Could you confirm the missing information?`,approveLabel:"Approve simulated request"},onApproval(actionName){if(actionName==="approve"){requestCustomerInfo(target.id);return"Approved in the local demo · no customer message was sent.";}return"Rejected · the order remains blocked for customer information."}};}
-    };
-   }
-   if(/\b(today|intervention|priority|attention|what needs)\b/.test(normalized))return{
-    objective:"Find bookings that need an operator decision today",
-    steps:[
-     {agent:"Operations Orchestrator",task:"Review canonical order state, validation results, supplier timers, and owners."},
-     {agent:"Exception Analyst",task:"Separate safe automated flow from blocked or time-sensitive work."},
-     {agent:"Work Planner",task:"Rank the intervention queue using SLA risk and required operator action."}
-    ],
-    run(){
-     const items=state.orders.filter(needsWork).sort((a,b)=>(Number(b.slaRisk)-Number(a.slaRisk))||(["EXCEPTION","VALIDATION_REQUIRED","AWAITING_SUPPLIER","READY"].indexOf(a.status)-["EXCEPTION","VALIDATION_REQUIRED","AWAITING_SUPPLIER","READY"].indexOf(b.status)));
-     render("tower");
-     return{title:`${items.length} bookings need intervention`,summary:items.slice(0,3).map(item=>`${item.id} · ${workReason(item).label}`).join("; ")||"No active booking currently needs an operator decision.",facts:items.slice(0,4).map(item=>`${item.id} · ${workAction(item)} · ${item.slaRisk?"SLA risk":"standard queue"} · owner ${item.owner}`),confidence:"High for recorded operational state",checked:`${state.orders.length} canonical orders · ${openExceptions().length} open exceptions`,freshness:"Current browser-local scenario",assumptions:["Queue rank uses deterministic state and SLA rules", "Historical metrics are not used as live order evidence"],sources:["Canonical Orders","Validation rules","Supplier responses","Exception queue"],action:items[0]?{label:`Open ${items[0].id}`,run:()=>openOrder(items[0].id)}:null};
-    }
+  product:"Order Management System",
+  placeholder:"Ask about orders, dispatch, or conversations",
+  suggestions:["Show the next two days of dispatch","Find orders awaiting luggage-tag upload","Open communications"],
+  fallback:["Review upcoming orders","Find exceptions awaiting action","Open customer and driver messages"],
+  resolve:function(text){
+   const query=text.toLowerCase(),match=text.match(/OMS-\d{8}-\d{3}/i);
+   const order=match?orderById(match[0].toUpperCase()):null;
+   if(/communicat|message|chat/.test(query))return{
+    objective:"Open the linked customer, driver, and team conversations",
+    steps:[{agent:"Order Context",task:"Find the selected order and its conversation history."},{agent:"Communications",task:"Display messages by customer, driver, and internal team."}],
+    run:function(){render("communications");return{title:"Order conversations",summary:"The communications workspace groups local example messages by order and participant.",checked:state.messages.length+" browser-local example messages",freshness:"Current demo state",sources:["Order record","Customer chat examples","Driver chat examples","Operations team notes"],exception:"No message will be sent to a real person."}}
    };
-   if(/\b(review|open|inspect|explain|why)\b/.test(normalized)||idMatch){
-    return{
-     objective:`Review the canonical order ${order?.id||"selected in the queue"}`,
-     steps:[
-      {agent:"Order Context Agent",task:"Retrieve the canonical record and source-to-record mapping."},
-      {agent:"Validation Agent",task:"Summarize field checks, dispatch eligibility, and current owner."},
-      {agent:"Work Planner",task:"Return the next safe action and any approval boundary."}
-     ],
-     run(){
-      if(order)openOrder(order.id);
-      if(!order)return{title:"Order not found",summary:"The identifier does not match an demo order in this demo.",confidence:"Not assessed",checked:"No order matched",freshness:"Local sample",exception:"No action was taken.",sources:["Canonical orders"]};
-      const reason=workReason(order);
-      return{title:`${order.id} · ${reason.label}`,summary:reason.detail,facts:[`${order.market} · ${order.service} · ${order.date} ${order.time}`,`Status: ${order.status} · dispatch: ${order.dispatch} · owner: ${order.owner}`,`Next action: ${workAction(order)}`,`Validation: ${order.validation.passed?"passed":"not passed"}${order.validation.missingFlight?" · airport detail missing":""}`,`Open exception: ${openExceptions().some(item=>item.orderId===order.id)?"yes":"no"}`],confidence:"High for recorded state · not an operational guarantee",checked:"1 canonical order · source mapping · validation · event timeline",freshness:"Demo order event history",assumptions:["Supplier availability may change outside this demo"],exception:order.validation.missingFlight?"Dispatch remains blocked until a human records the required flight information.":"No external action occurs unless the user chooses and approves a step.",sources:["Canonical order","Source adapter","Rules engine","Event timeline"],action:{label:"Open full work item",run:()=>openOrder(order.id)}};
-     }
-    };
-   }
+   if(/dispatch|next two|next 2|upcoming/.test(query))return{
+    objective:"Review orders and exceptions for the next two service days",
+    steps:[{agent:"Dispatch Planner",task:"Filter orders by the two-day service window."},{agent:"Exception Monitor",task:"Show cases with a pending owner action."}],
+    run:function(){render("dispatch");return{title:"Two-day dispatch plan",summary:"The dispatch view contains all example orders for today and tomorrow, plus open exceptions.",facts:["60 example orders per service date",openExceptions().length+" exceptions awaiting action"],checked:state.orders.length+" orders · two service days",freshness:"Current browser-local scenario",sources:["Order list","Supplier dispatch state","Exception queue"],exception:"All values are examples and no supplier was contacted."}}
+   };
+   if(/tag|drop/.test(query))return{
+    objective:"Find orders waiting for the customer to drop luggage and upload a tag",
+    steps:[{agent:"Order Search",task:"Find hotel-origin routes before driver collection."},{agent:"Work Planner",task:"Open an order with missing luggage-tag evidence."}],
+    run:function(){const target=state.orders.find(function(o){return o.status==="AWAITING_CUSTOMER_DROP"});if(target)openOrder(target.id);return{title:"Waiting for customer drop and tag",summary:target?target.id+" is waiting for a customer luggage drop and tag image.":"No such order is currently in the two-day example data.",facts:target?[target.route,target.market,orderDateTime(target)]:[],checked:state.orders.length+" example orders",freshness:"Current browser-local state",sources:["Order milestone","Luggage-tag evidence"],exception:"The demo does not store or send uploaded files outside this browser.",action:target?{label:"Open order",run:function(){openOrder(target.id)}}:null}}
+   };
+   if(order)return{
+    objective:"Review an order and its next safe action",
+    steps:[{agent:"Order Context",task:"Show the booking source, service date, supplier, and current milestone."},{agent:"Work Planner",task:"Offer the next route-specific service update."}],
+    run:function(){openOrder(order.id);return{title:order.id+" · "+statusLabel(order.status,order),summary:order.customer+" · "+order.route+" · "+orderDateTime(order),facts:["Supplier: "+order.supplier,"Dispatch: "+order.dispatchState,"Open exceptions: "+exceptionForOrder(order.id).length],checked:"1 browser-local order",freshness:"Current demo state",sources:["Order record","Event history","Conversation thread"],exception:"No external action occurs unless a connected production integration is implemented.",action:{label:"Open order",run:function(){openOrder(order.id)}}}}
+   };
+   if(/exception|needs action|waiting/.test(query))return{
+    objective:"Find exceptions that need an operator",
+    steps:[{agent:"Exception Monitor",task:"List open issues and owners."},{agent:"Work Planner",task:"Open the selected order and its messages."}],
+    run:function(){render("exceptions");return{title:openExceptions().length+" exceptions awaiting action",summary:"The exception list includes its order, service date, owner, and due time.",checked:state.orders.length+" orders · "+openExceptions().length+" open exceptions",freshness:"Current browser-local state",sources:["Exception queue","Order records"],exception:"Example exceptions only."}}
+   };
    return null;
   }
  });
 }
-function resetDemo(){localStorage.removeItem(KEY);location.reload()}
-document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>render(b.dataset.view));
-$("#reset").onclick=resetDemo;
+function resetDemo(){
+ localStorage.removeItem(STORE_KEY);
+ location.reload();
+}
+function openFeaturedOrder(){openOrder(state.orders[0].id)}
+document.querySelectorAll(".nav").forEach(function(button){button.addEventListener("click",function(){render(button.dataset.view)})});
+$("#reset").addEventListener("click",resetDemo);
+$("#global-search").addEventListener("keydown",function(event){
+ if(event.key!=="Enter")return;
+ state.orderQuery=event.currentTarget.value.trim();state.orderWindow="all";state.orderPage=0;render("orders");
+});
 mountTravelCommand();
 render("tower");
+window.render=render;
+window.openOrder=openOrder;
+window.openFeaturedOrder=openFeaturedOrder;
+window.openCommunications=openCommunications;
+window.advanceOrder=advanceOrder;
+window.recordCustomerDrop=recordCustomerDrop;
+window.sendToSupplier=sendToSupplier;
+window.acceptSupplier=acceptSupplier;
+window.reassignSupplier=reassignSupplier;
+window.resolveException=resolveException;
