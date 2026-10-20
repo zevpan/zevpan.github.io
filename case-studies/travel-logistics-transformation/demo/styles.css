@@ -368,3 +368,33 @@ table{width:100%;border-collapse:collapse;background:#fff}th,td{font-size:9px;te
 .check-row small{display:block;font-size:7px;color:#7a869a;line-height:1.4;margin-top:3px}
 .check-result{font-size:7px;font-weight:850;color:#216e4e;white-space:nowrap}
 .check-mark.blocked~div+.check-result{color:#ae2a19}
+
+#agent-command-host .agent-command-surface{margin:8px 0 10px}
+#agent-command-host .agent-command-head{padding:12px 16px 8px}
+#agent-command-host .agent-command-head h2{font-size:16px}
+#agent-command-host .agent-command-head p{font-size:10px;margin:3px 0 0}
+#agent-command-host .agent-command-input{min-height:56px;padding:10px 12px 6px;font-size:12px}
+#agent-command-host .agent-composer-toolbar{min-height:38px}
+#agent-command-host .agent-command-suggestions{padding:7px 16px 9px}
+#agent-command-host .agent-command-foot{padding:6px 16px}
+#agent-command-host .agent-command-flow{display:none}
+@media(max-width:720px){
+ #agent-command-host .agent-command-surface{margin:6px 0 8px}
+ #agent-command-host .agent-command-head{align-items:center;flex-direction:row;gap:7px;padding:9px 10px 6px}
+ #agent-command-host .agent-command-head h2{font-size:13px}
+ #agent-command-host .agent-command-head p{display:none}
+ #agent-command-host .agent-command-state{align-self:center}
+ #agent-command-host .agent-command-form{padding:0 10px}
+ #agent-command-host .agent-command-input{min-height:44px;padding:8px;font-size:11px}
+ #agent-command-host .agent-composer-toolbar{align-items:center;flex-direction:row;flex-wrap:nowrap;min-height:34px;gap:4px;padding:4px}
+ #agent-command-host .agent-composer-leading{width:auto}
+ #agent-command-host .agent-file-hint{display:none}
+ #agent-command-host .agent-composer-trailing{width:auto;margin-left:auto;justify-content:flex-end;gap:3px;flex-wrap:nowrap}
+ #agent-command-host .agent-setting{display:none}
+ #agent-command-host .agent-dictate{width:26px;height:26px}
+ #agent-command-host .agent-command-submit{min-height:28px;padding:5px 8px}
+ #agent-command-host .agent-command-suggestions{flex-wrap:nowrap;overflow-x:auto;padding:6px 10px 8px}
+ #agent-command-host .agent-command-suggestions>span{display:none}
+ #agent-command-host .agent-command-suggestion{flex:0 0 auto;white-space:nowrap;font-size:8px;padding:5px 7px}
+ #agent-command-host .agent-command-foot{display:none}
+}
