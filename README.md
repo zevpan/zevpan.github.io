@@ -71,3 +71,5 @@ node --check products/thread/demo/app.js
 node --check case-studies/prospecting-operations/demo/app.js
 node --check case-studies/travel-logistics-transformation/demo/app.js
 ```
+
+The Order Management System now also includes a separate PostgreSQL service foundation at `case-studies/travel-logistics-transformation/service`. Its API, migration, tenant and role controls, supplier capacity rules, SLA handling, and remaining integration gates are documented in that folder. The public static demo remains browser-local until an identity provider, database, file store, and messaging or booking adapters are selected.
