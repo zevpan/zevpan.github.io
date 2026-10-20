@@ -139,7 +139,11 @@ CREATE TABLE messages (
   created_at timestamptz NOT NULL DEFAULT now(),
   FOREIGN KEY (tenant_id, order_id) REFERENCES orders (tenant_id, id),
   UNIQUE (tenant_id, order_id, idempotency_key),
-  CHECK ((direction = 'INTERNAL' AND audience = 'TEAM' AND sender_type = 'OPERATOR') OR (direction = 'INBOUND' AND ((audience = 'TEAM' AND sender_type IN ('DRIVER', 'SUPPLIER')) OR (audience IN ('CUSTOMER', 'DRIVER', 'SUPPLIER') AND sender_type = audience)))
+  CHECK (
+    (direction = 'INTERNAL' AND audience = 'TEAM' AND sender_type = 'OPERATOR')
+    OR (direction = 'INBOUND' AND audience = 'TEAM' AND sender_type IN ('DRIVER', 'SUPPLIER'))
+    OR (direction = 'INBOUND' AND audience = sender_type AND audience IN ('CUSTOMER', 'DRIVER', 'SUPPLIER'))
+  )
 );
 
 CREATE UNIQUE INDEX messages_provider_dedupe_idx ON messages (tenant_id, channel, provider_message_id) WHERE provider_message_id IS NOT NULL;
