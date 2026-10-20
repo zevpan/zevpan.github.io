@@ -184,7 +184,7 @@ function statusLabel(status,order){
   CUSTOMER_DROPPED:"Customer dropped luggage",
   DRIVER_COLLECTED:"Driver collected luggage",
   ARRIVED_AT_AIRPORT:"Driver and customer arrived at airport",
-  ARRIVED_AT_DESTINATION:"Driver arrived at destination hotel",
+  ARRIVED_AT_DESTINATION:"Driver and customer arrived at destination hotel",
   LUGGAGE_COLLECTED:"Luggage collected",
   LUGGAGE_DELIVERED:"Luggage delivered",
   COMPLETED:"Completed"
@@ -211,7 +211,7 @@ function routeSteps(order){
   ["AWAITING_CUSTOMER_DROP","Awaiting customer luggage drop and tag upload"],
   ["CUSTOMER_DROPPED","Customer dropped luggage"],
   ["DRIVER_COLLECTED","Driver collected luggage"],
-  [order.route==="Hotel → Airport"?"ARRIVED_AT_AIRPORT":"ARRIVED_AT_DESTINATION",order.route==="Hotel → Airport"?"Driver and customer arrived at airport":"Driver arrived at destination hotel"],
+  [order.route==="Hotel → Airport"?"ARRIVED_AT_AIRPORT":"ARRIVED_AT_DESTINATION",order.route==="Hotel → Airport"?"Driver and customer arrived at airport":"Driver and customer arrived at destination hotel"],
   ["COMPLETED","Completed"]
  ];
 }
