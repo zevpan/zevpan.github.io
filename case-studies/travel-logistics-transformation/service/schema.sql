@@ -158,4 +158,5 @@ BEGIN
       table_name
     );
   END LOOP;
-END $$;
+END;
+$$;
