@@ -21,7 +21,7 @@ I analyze fragmented workflows, define requirements and decision logic, and prot
 
 | Project | Zev’s contribution | What it demonstrates |
 |---|---|---|
-| Order Management System | Mapped workflows and failure points; defined requirements, routing, controls, and an interactive order-management prototype | Process analysis, operating-model design, workflow orchestration, governance |
+| Travel Operations Control Tower | Mapped workflows and failure points; defined requirements, routing, controls, and an interactive control-tower prototype | Process analysis, operating-model design, workflow orchestration, governance |
 | AI Sales CRM | Designed reconciliation, relationship state, AI analysis gates, and safe next-action rules | Data modelling, deterministic controls, AI boundaries, auditability |
 | Warehouse Management System | Designed evidence-led review paths and human decision points | Process improvement, decision support, validation, human control |
 | [Finance Control Hub](case-studies/finance-control-hub/index.html) | Translated a freight-finance reconciliation need into a seeded dataset, matching rules, exception controls and approval-gated workbench | Finance process analysis, data modelling, deterministic reconciliation, human approvals |
@@ -72,4 +72,4 @@ node --check case-studies/prospecting-operations/demo/app.js
 node --check case-studies/travel-logistics-transformation/demo/app.js
 ```
 
-The Order Management System now also includes a separate PostgreSQL service foundation at `case-studies/travel-logistics-transformation/service`. Its API, migration, tenant and role controls, supplier capacity rules, SLA handling, and remaining integration gates are documented in that folder. The public static demo remains browser-local until an identity provider, database, file store, and messaging or booking adapters are selected.
+The Travel Operations Control Tower now also includes a separate PostgreSQL service foundation at `case-studies/travel-logistics-transformation/service`. Its API, migration, tenant and role controls, supplier capacity rules, SLA handling, and remaining integration gates are documented in that folder. The public static demo remains browser-local until an identity provider, database, file store, and messaging or booking adapters are selected.

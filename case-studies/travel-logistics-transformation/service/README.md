@@ -1,6 +1,6 @@
-# Order Management Service
+# Travel Operations Control Tower Service
 
-This folder adds a PostgreSQL-backed API foundation for the Order Management System. The public GitHub Pages demo still uses browser-local example data. This service has not been deployed or connected to the demo, a booking provider, a chat provider, a driver app, an identity provider, or an object-storage account.
+This folder adds a PostgreSQL-backed API foundation for the Travel Operations Control Tower. The public GitHub Pages demo still uses browser-local example data. This service has not been deployed or connected to the demo, a booking provider, a chat provider, a driver app, an identity provider, or an object-storage account.
 
 ## What the service enforces
 
