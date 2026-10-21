@@ -1,0 +1,17 @@
+{
+  "name": "order-management-service",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "migrate": "node migrate.mjs",
+    "test": "node --test ../../../test/oms-service.test.mjs",
+    "test:db": "node --test test/oms-postgres.test.mjs"
+  },
+  "dependencies": {
+    "pg": "^8.13.1"
+  }
+}
